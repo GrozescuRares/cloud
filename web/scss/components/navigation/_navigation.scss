@@ -1,0 +1,20 @@
+/*********** NAVIGATION SECTION *********/
+.navigation-section {
+    background: #0f192a;
+    height: 100%;
+    overflow: auto;
+    padding: 40px 70px;
+    z-index: 1;
+    @include position(fixed, 80px, null, null, 0);
+
+    a {
+        padding-left: 10px;
+        border-left: 2px solid $brand-light;
+        @include font($color: #ffffff, $line-height: 2.2em);
+
+        &:hover, &.active {
+            border-left: 2px solid $brand-light;
+            @include font($font-weight: bold, $color: $brand-light, $text-decoration: none);
+        }
+    }
+}

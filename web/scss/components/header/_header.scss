@@ -1,0 +1,85 @@
+/*********** HEADER *********/
+#header {
+    background: #114B5F;
+    padding: 4px 0 0;
+    margin: 0;
+    border-bottom: 1px solid #d3d3d3;
+    @include size($width: 100%, $height: auto);
+
+    .logo {
+        float: left;
+        display: block;
+        z-index: 200;
+        position: relative;
+        padding-top: 25px;
+        @include font($font-size: 1.2em, $font-family: $bold, $color: #ffffff);
+    }
+
+    .nav {
+        float: right;
+    }
+
+    .navbar-header {
+        float: left;
+    }
+
+    .navbar-collapse {
+        padding: 5px 15px 10px;
+
+        a:not(.btn) {
+            padding: 23px 17px 10px;
+            @include font($color: #ffffff, $font-size: .9em);
+        }
+        
+        li.active {
+            a {
+                @include font($font-family: $bold, $color: $brand-light);
+                background: none;
+            }
+        }
+
+        & > li:last-child {
+            margin-left: 15px;
+        }
+
+
+        .dropdown {
+            &-toggle {
+                i {
+                    @include font($font-size: 2em, $color: $brand-light);
+                }
+
+                @include on_event {
+                    background: transparent;
+
+                    i {
+                        color: $accent;
+                    }
+                }
+            }
+
+            &-menu {
+                background: #e2e0e0;
+                border-radius: 0;
+                padding: 0;
+                box-shadow: 0 3px 10px 0 hsla(0%, 0%, 0%, 0.1);
+                text-align: center;
+
+                a {
+                    @include font($text-transform: none);
+                    padding: 15px;
+                }
+
+                & > li > a:hover {
+                    background: $brand-light;
+                    color: #ffffff;
+                }
+            }
+        }
+
+    }
+
+    a.btn.success {
+        color: #ffffff;
+    }
+}

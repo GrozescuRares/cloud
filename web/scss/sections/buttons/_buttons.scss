@@ -1,0 +1,88 @@
+
+/*********** BUTTONS *********/
+a.btn, button.btn:not(.dropdown-toggle) {
+    display: inline-block;
+    margin: 8px;
+    padding: 7px 25px;
+    position: relative;
+    opacity: .9;
+    border: 1px solid $medium;
+    background: transparent;
+    @include border-radius(0);
+    @include prefix(transition, all 0.3s, webkit moz ms o);
+    @include font($font-size: 12px, $line-height: 35px, $color: $brand-light, $text-decoration: none !important);
+    @include prefix(transform, perspective(1px) translateZ(0), webkit moz ms o);
+    @include prefix(transition-duration, 0.3s, webkit moz ms o);
+
+    &:before {
+        content: "";
+        z-index: -1;
+        background: $medium;
+        @include position(absolute, 0, 0, 0, 0);
+        @include prefix(transform, scaleX(0), webkit moz ms o);
+        @include prefix(transform-origin, 0 50%, webkit moz ms o);
+        @include prefix(transition-property, transform, webkit moz ms o);
+        @include prefix(transition-duration, 0.3s, webkit moz ms o);
+        @include prefix(transition-timing-function, ease-out, webkit moz ms o);
+    }
+
+    @include on_event {
+        color: #ffffff;
+    }
+
+    &.success, &.submit {
+        border: 1px solid $brand-light;
+        background: $brand-light;
+        min-width: 130px;
+        @include font($color: #ffffff, $font-family: $bold);
+
+        &:before {
+            background: $accent-active;
+        }
+
+        &:hover {
+            border-color: $accent-active;
+        }
+    }
+
+    &.cancel {
+        border: 1px solid #cccccc;
+        min-width: 120px;
+        @include font($color: #5f6273, $font-family: $bold);
+    }
+
+    &:first-of-type {
+        margin: 8px 0;
+    }
+}
+
+.btn:hover:before, .btn:focus:before, .btn:active:before {
+    @include prefix(transform, scaleX(1), webkit moz ms o);
+}
+
+.edit-btn-wrapper {
+    float: right;
+    padding-top: 40px;
+
+    .btn:last-child {
+        margin-right: 0;
+    }
+}
+
+.edit {
+    border: 1px solid $brand-light !important;
+    @include font($font-family: $bold, $color: $brand-light);
+}
+
+.account-btn {
+    margin-top: 20px;
+    
+    .btn {
+        min-width: 150px;
+        max-width: 100%;
+
+        &.submit {
+            min-width: 200px !important;
+        }
+    }
+}

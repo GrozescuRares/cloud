@@ -1,0 +1,227 @@
+
+/*-------------------------
+Inputs
+-------------------------*/
+%label-movement {
+    top: -3rem;
+    @include font($font-size: 0.75em, $color: $brand-light);
+    @include prefix(transition, all 0.2s ease-in-out, webkit moz ms o);
+}
+
+.styled-input {
+    position: relative;
+    float: left;
+    margin-bottom: 25px;
+    width: 100%;
+
+    label:not(.error) {
+        display: block;
+        padding: 0 0 .4rem;
+        margin-bottom: 2px;
+        pointer-events: none;
+        @include font($font-size: .7em, $text-transform: uppercase, $color: $medium, $font-family: $bold);
+        
+        span {
+            @include font($font-size: 10px, $text-transform: none, $font-family: $regular);
+        }
+    }
+    
+    label.error {
+        display: block;
+    }
+
+    input {
+        padding: 1rem;
+        border: 1px solid #f0f0f0; 
+        box-shadow: 0 3px 5px 0 hsla(0%, 0%, 0%, 0.1);
+        @include size($width: 100%);
+        @include font($font-size: 1em);
+        background: #ffffff;
+
+        ~ span {
+            display: block;
+            background: $brand-light;
+            @include prefix(transition, all 0.2s ease-in-out, webkit moz ms o);
+            @include size($width: 0, $height: 3px);
+            @include position(absolute, null, null, 0, 0);
+        }
+
+        &:focus, &.has-value {
+            outline: 0;
+
+            ~ label {
+                @extend %label-movement;
+            }
+
+            ~ span {
+                @include size($width: 100%);
+                @include prefix(transition, all 0.2s ease-in-out, webkit moz ms o);
+            }
+        }
+        &:valid ~ label {
+            @extend %label-movement;
+        }
+
+        &.autocomplete-ajax-x {
+            box-shadow: none;
+        }
+    }
+
+    textarea {
+        box-shadow: 0 3px 5px 0 hsla(0%, 0%, 0%, 0.1);
+        border: 1px solid #f0f0f0;
+        resize: none;
+        @include size($width: 100%, $min-height: 128px);
+    }
+    
+}
+
+label.error {
+    @include font($color: #f42525, $font-size: 12px, $font-weight: 100);
+    position: absolute;
+    display: block;
+    clear: both;
+    float: none;
+    bottom: -27px;
+}
+
+.login {
+    padding-bottom: 20px;
+
+    .styled-input {
+        .input-wrapper {
+            position: relative;
+            float: right;
+            padding: 0;
+            @include size($max-width: 270px, $width: 80%);
+
+            p {
+                font-size: 10px;
+            }
+
+            span {
+                top: 42px;
+                bottom: auto;
+            }
+
+            &.user:before, &.pass:before {
+                content: "\f023";
+                padding: 7px 0 0 9px;
+                @include position(absolute, 3px, null, null, 3px);
+                @include font($font-family: "FontAwesome", $color: #656565, $font-size: 16px);
+            }
+
+            &.user:before {
+                content: "\f007";
+            }
+
+            input {
+                padding-left: 28px;
+            }
+        }
+
+        label:not(.error) {
+            padding-top: 10px;
+            display: inline-block;
+        }
+    }
+
+    .login-form {
+        text-align: left;
+    }
+}
+
+.autocomplete {
+    position: relative;
+    min-height: 80px;
+    margin-bottom: 7px;
+
+    &-ajax, &-ajax-x {
+        z-index: 2;
+        padding: 1rem;
+        background: transparent;
+        border: none;
+        @include position(absolute, null, null, null, null);
+    }
+    &-ajax-x {
+        z-index: 1;
+    }
+
+    &-suggestions {
+        cursor: pointer;
+        background: #ffffff;
+        cursor: default;
+        overflow: auto;
+        border: 1px solid $medium;
+        box-shadow: 0 3px 5px 0 hsla(0%, 0%, 0%, 0.1);
+        @include size($max-height: 140px !important);
+    }
+
+    &-suggestion {
+        padding: 6px 20px;
+        white-space: nowrap;
+        overflow: hidden;
+
+        strong {
+            color: $brand-light;
+        }
+
+        @include on_event {
+            background: #f5f5f5;
+        }
+    }
+
+    input {
+        width: 100%;
+        background: #ffffff;
+    }
+
+    & input:disabled {
+        background: #ededed;
+    }
+
+}
+
+textarea:disabled {
+    background: #ededed;
+}
+
+.input-wrapper {
+    padding: 0 7px;
+
+    &:first-of-type {
+        padding-left: 0 !important;
+    }
+}
+
+.field-error {
+    input {
+        border: 1px solid #f42525 !important;
+    }
+}
+
+.login .field-error {
+    label:not(.error) {
+        display: none;
+    }
+}
+
+.approver-information {
+    input {
+        width: 97%;
+    }
+    .autocomplete input {
+        width: 100%;        
+    }
+}
+
+input:disabled {
+    background: #ededed;
+}
+
+.custom-label {
+    display: block;
+    padding: 0 0 .4rem;
+    margin-bottom: 2px;
+    @include font($font-size: .7em, $text-transform: uppercase, $color: $medium, $font-family: $bold);
+}

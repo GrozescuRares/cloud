@@ -1,0 +1,15 @@
+@media (max-width: 420px) {
+    .account-btn .btn, .account-btn .btn.submit {
+        @include size($width: 48%, $max-width: none, $min-width: 1px !important);
+        
+        &:nth-child(2) {
+            margin-left: 0;
+        }
+    }
+}
+
+@media (max-width: 360px) {
+    .edit-btn-wrapper .btn {
+        min-width: 0 !important;
+    }
+}

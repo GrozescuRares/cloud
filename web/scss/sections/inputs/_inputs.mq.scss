@@ -1,0 +1,11 @@
+@media (max-width: 767px) {
+    .autocomplete {
+        input {
+            width: 100%;
+        }
+    }
+    
+    .modal .no-l-padding, .modal .input-wrapper {
+        padding-right: 0 !important;
+    }
+}
