@@ -33,3 +33,26 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+    app.tokens.action_listener:
+        class: AppBundle\EventListener\LoggedUserListener
+        arguments:
+            - '@security.token_storage'
+            - '@router'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    app.user.service:
+        class: AppBundle\Service\UserService
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@security.password_encoder'
+            - '@app.file_uploader.service'
+
+    AppBundle\Service\UserService: '@app.user.service'
+
+    app.file_uploader.service:
+        class: AppBundle\Service\FileUploaderService
+        arguments:
+            $targetDirectory: '%brochures_directory%'
+
+    AppBundle\Service\FileUploaderService: '@app.file_uploader.service'

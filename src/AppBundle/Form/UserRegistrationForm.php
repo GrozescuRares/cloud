@@ -33,18 +33,13 @@ class UserRegistrationForm extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
+
         $builder
-            ->add(
-                'username',
-                TextType::class,
-                [
+            ->add('username', TextType::class, [
                     'label' => 'Username',
-                ]
-            )
-            ->add(
-                'plainPassword',
-                RepeatedType::class,
-                [
+            ])
+            ->add('plainPassword', RepeatedType::class, [
                     'type' => PasswordType::class,
                     'first_options' => [
                         'label' => 'Password',
@@ -52,39 +47,24 @@ class UserRegistrationForm extends AbstractType
                     'second_options' => [
                         'label' => 'Confirm password',
                     ],
-                ]
-            )
-            ->add(
-                'email',
-                EmailType::class,
-                [
+            ])
+            ->add('email', EmailType::class, [
                     'label' => 'Email',
-                ]
-            )
-            ->add(
-                'address',
-                TextType::class,
-                [
+            ])
+            ->add('address', TextType::class, [
                     'label' => 'Address',
                     'required' => false,
-                ]
-            )
-            ->add(
-                'dateOfBirth',
-                DateType::class,
-                [
+            ])
+            ->add('dateOfBirth', DateType::class, [
                     'placeholder' => [
                         'year' => 'Year',
                         'month' => 'Month',
                         'day' => 'Day',
                     ],
-                    'years' => range(1930, 2018),
-                ]
-            )
-            ->add(
-                'gender',
-                ChoiceType::class,
-                [
+                    'years' => range(1930, date('Y')),
+                    'input' => 'string',
+            ])
+            ->add('gender', ChoiceType::class, [
                     'choices' => [
                         'Male' => 'Male',
                         'Female' => 'Female',
@@ -94,29 +74,19 @@ class UserRegistrationForm extends AbstractType
                     'attr' => [
                         'class' => 'col-md-3 col-sm-3 col-xs-6 no-lr-padding',
                     ],
-                ]
-            )
-            ->add(
-                'bio',
-                TextareaType::class,
-                [
+            ])
+            ->add('bio', TextareaType::class, [
                     'required' => false,
-                ]
-            )
-            ->add(
-                'profilePicture',
-                FileType::class,
-                ['label' => 'Profile Picture']
-            )
-            ->add(
-                'submit',
-                SubmitType::class,
-                [
+            ])
+            ->add('image', FileType::class, [
+                    'label' => 'Profile Picture',
+                    'required' => false,
+            ])
+            ->add('submit', SubmitType::class, [
                     'attr' => [
                         'class' => 'btn submit pull-right',
                     ],
-                ]
-            );
+            ]);
     }
 
 
@@ -140,4 +110,3 @@ class UserRegistrationForm extends AbstractType
         return 'appbundle_user';
     }
 }
-

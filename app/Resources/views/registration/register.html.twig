@@ -10,7 +10,7 @@
                         <div class="col-md-12 col-xs-12 no-lr-padding text-center title">
                             <h1 class="text-center">Client Registration</h1>
                         </div>
-                        <form action="{{ path('register') }} " method="post">
+                        <form action="{{ path('register') }} " method="post" enctype="multipart/form-data">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
@@ -114,11 +114,12 @@
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
                                         <label>Profile Picture <span class="light">(optional)</span></label>
-                                        {{ form_errors(registration_form.profilePicture) }}
-                                        {{ form_widget(registration_form.profilePicture) }}
+                                        {{ form_errors(registration_form.image) }}
+                                        {{ form_widget(registration_form.image) }}
                                     </div>
                                 </div>
                             </div>
+                            {{ form_row(registration_form._token) }}
                             <div class="col-md-12 col-xs-12">
                                 {{ form_widget(registration_form.submit) }}
                             </div>

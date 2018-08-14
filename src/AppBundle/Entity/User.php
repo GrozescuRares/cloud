@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * User
@@ -12,7 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity("username")
- * @UniqueEntity("password")
+ * @UniqueEntity("email")
  */
 class User implements UserInterface, \Serializable
 {
@@ -49,14 +50,14 @@ class User implements UserInterface, \Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="firstName", type="string", length=255)
+     * @ORM\Column(name="firstName", type="string", length=255, nullable=true)
      */
     private $firstName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="lastName", type="string", length=255)
+     * @ORM\Column(name="lastName", type="string", length=255, nullable=true)
      */
     private $lastName;
 
@@ -70,7 +71,7 @@ class User implements UserInterface, \Serializable
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateOfBirth", type="date")
+     * @ORM\Column(name="dateOfBirth", type="string" , length=30)
      */
     private $dateOfBirth;
 
@@ -89,6 +90,12 @@ class User implements UserInterface, \Serializable
     private $bio;
 
     /**
+     *
+     * @Assert\File(mimeTypes={ "image/png", "image/jpeg", "image/jpg" })
+     */
+    private $image;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="profilePicture", type="string", length=255, nullable=true)
@@ -97,6 +104,45 @@ class User implements UserInterface, \Serializable
 
 
     private $plainPassword;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Role", inversedBy="users")
+     * @ORM\JoinColumn(name="role_id", referencedColumnName="roleId", nullable=true)
+     * @var Role $role
+     */
+    private $role;
+
+    /**
+     * @return mixed
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param mixed $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    /**
+     * @return Role
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function setRole(Role $role)
+    {
+        $this->role = $role;
+    }
 
     /**
      * @return int
@@ -363,7 +409,6 @@ class User implements UserInterface, \Serializable
     }
 
 
-
     /**
      * Get profilePicture
      *
@@ -407,26 +452,6 @@ class User implements UserInterface, \Serializable
             ) = unserialize($serialized);
     }
 
-    /**
-     * Returns the roles granted to the user.
-     *
-     * <code>
-     * public function getRoles()
-     * {
-     *     return array('ROLE_USER');
-     * }
-     * </code>
-     *
-     * Alternatively, the roles might be stored on a ``roles`` property,
-     * and populated in any number of different ways when the user object
-     * is created.
-     *
-     * @return (Role|string)[] The user roles
-     */
-    public function getRoles()
-    {
-        // TODO: Implement getRoles() method.
-    }
 
     /**
      * Returns the salt that was originally used to encode the password.
@@ -449,5 +474,40 @@ class User implements UserInterface, \Serializable
     public function eraseCredentials()
     {
         $this->plainPassword = null;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return serialize([
+            $this->userId,
+            $this->username,
+            $this->password,
+        ]);
+    }
+
+    /**
+     * Returns the roles granted to the user.
+     *
+     * <code>
+     * public function getRoles()
+     * {
+     *     return array('ROLE_USER');
+     * }
+     * </code>
+     *
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return (Role|string)[] The user roles
+     */
+    public function getRoles()
+    {
+        return [
+            $this->getRole()->getDescription(),
+        ];
     }
 }

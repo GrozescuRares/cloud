@@ -12,6 +12,7 @@ use AppBundle\Entity\Member;
 use AppBundle\Entity\User;
 use AppBundle\Form\Type\MemberType;
 use AppBundle\Form\UserRegistrationForm;
+use AppBundle\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,22 +29,36 @@ class RegistrationController extends Controller
     /**
      * @Route("/register", name="register")
      *
-     * @param Request $request
+     * @param Request     $request
+     *
+     * @param UserService $userService
      *
      * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function testAction(Request $request)
+    public function registerAction(Request $request, UserService $userService)
     {
         $user = new User();
 
         $form = $this->createForm(UserRegistrationForm::class, $user);
 
-        return $this->render(
-            'registration/index.html.twig',
-            [
-                'registration_form' => $form->createView(),
-            ]
-        );
+        $form->handleRequest($request);
+
+        if (!($form->isSubmitted() && $form->isValid())) {
+            return $this->render(
+                'registration/register.html.twig',
+                [
+                    'registration_form' => $form->createView(),
+                ]
+            );
+        }
+
+        $userService->insertUser($user);
+
+        $this->addFlash('success', 'You are now successfully registered.');
+
+        return $this->redirectToRoute('register');
     }
 
 }
