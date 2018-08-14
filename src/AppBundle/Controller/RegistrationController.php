@@ -9,7 +9,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Member;
+use AppBundle\Entity\User;
 use AppBundle\Form\Type\MemberType;
+use AppBundle\Form\UserRegistrationForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,7 +34,16 @@ class RegistrationController extends Controller
      */
     public function registerAction(Request $request)
     {
-        return $this->render('registration/index.html.twig');
+        $user = new User();
+
+        $form = $this->createForm(UserRegistrationForm::class, $user);
+
+        return $this->render(
+            'registration/test.html.twig',
+            [
+                'registration_form' => $form,
+            ]
+        );
     }
 }
 
