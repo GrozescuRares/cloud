@@ -1,193 +1,131 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div class="content general">
-    <div class="container-fluid">
-        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
-            <div class="row">
-                <div class="wrapper">
-                    <a href="{{ path('login') }}" >Back</a>
-                    <div class="col-md-12 col-xs-12 no-lr-padding text-center title">
-                        <h1 class="text-center">Client Registration</h1>
-                    </div>
-                    <form action="{{ path('register') }} " method="post">
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label>Username</label>
-                                    <div class="rel">
-                                        <input type="text" name="username"/>
-                                        <span></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label>Password</label>
-                                    <div class="rel">
-                                        <input type="text" name="password" />
-                                        <span></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label>confirm Password</label>
-                                    <div class="rel">
-                                        <input type="text" name="confirmPassword" />
-                                        <span></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label>E-mail</label>
-                                    <div class="rel">
-                                        <input type="text" name="email" />
-                                        <span></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label>Address <span class="light">(optional)</span></label>
-                                    <div class="rel">
-                                        <input type="text" name="address"/>
-                                        <span></span>
-                                    </div>
-                                </div>
-                            </div>
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="row">
+                    <div class="wrapper">
+                        <a href="{{ path('login') }}" >Back</a>
+                        <div class="col-md-12 col-xs-12 no-lr-padding text-center title">
+                            <h1 class="text-center">Client Registration</h1>
                         </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                        <form action="{{ path('register') }} " method="post">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
-                                    <label class="custom-label">Date of birth</label>
-                                </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
-                                        <select class="selectpicker">
-                                            <option selected="selected" disabled="disabled">Day</option>
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                            <option>6</option>
-                                            <option>7</option>
-                                            <option>8</option>
-                                            <option>9</option>
-                                            <option>10</option>
-                                            <option>11</option>
-                                            <option>12</option>
-                                            <option>13</option>
-                                            <option>14</option>
-                                            <option>15</option>
-                                            <option>16</option>
-                                            <option>17</option>
-                                            <option>18</option>
-                                            <option>19</option>
-                                            <option>20</option>
-                                            <option>21</option>
-                                            <option>22</option>
-                                            <option>23</option>
-                                            <option>24</option>
-                                            <option>25</option>
-                                            <option>26</option>
-                                            <option>27</option>
-                                            <option>28</option>
-                                            <option>29</option>
-                                            <option>30</option>
-                                            <option>31</option>
-                                        </select>
+                                        {{ form_label(registration_form.username) }}
+                                        <div class="rel">
+                                            {{ form_errors(registration_form.username) }}
+                                            {{ form_widget(registration_form.username) }}
+                                            <span></span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-5 col-sm-5 col-xs-12 no-padding-xs">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
-                                        <select class="selectpicker">
-                                            <option selected="selected" disabled="disabled">Month</option>
-                                            <option>January</option>
-                                            <option>February</option>
-                                            <option>March</option>
-                                            <option>April</option>
-                                            <option>May</option>
-                                            <option>June</option>
-                                            <option>July</option>
-                                            <option>August</option>
-                                            <option>September</option>
-                                            <option>Octomber</option>
-                                            <option>November</option>
-                                            <option>December</option>
-                                        </select>
+                                        {{ form_label(registration_form.plainPassword.first) }}
+                                        <div class="rel">
+                                            {{ form_errors(registration_form.plainPassword.first) }}
+                                            {{ form_widget(registration_form.plainPassword.first) }}
+                                            <span></span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-4 col-xs-12 no-lr-padding">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
-                                        <select class="selectpicker">
-                                            <option selected="selected" disabled="disabled">Year</option>
-                                            <option>2004</option>
-                                            <option>2003</option>
-                                            <option>2002</option>
-                                            <option>2001</option>
-                                            <option>2000</option>
-                                            <option>1999</option>
-                                            <option>1998</option>
-                                            <option>1997</option>
-                                            <option>1996</option>
-                                            <option>1995</option>
-                                            <option>1994</option>
-                                            <option>1993</option>
-                                            <option>1992</option>
-                                            <option>1991</option>
-                                            <option>1990</option>
-                                            <option>1989</option>
-                                            <option>1988</option>
-                                            <option>1987</option>
-                                            <option>1986</option>
-                                            <option>1985</option>
-                                            <option>1984</option>
-                                            <option>1983</option>
-                                            <option>1982</option>
-                                            <option>1981</option>
-                                            <option>1980</option>
-                                        </select>
+                                        {{ form_label(registration_form.plainPassword.second) }}
+                                        <div class="rel">
+                                            {{ form_errors(registration_form.plainPassword.second) }}
+                                            {{ form_widget(registration_form.plainPassword.second) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(registration_form.email) }}
+                                        <div class="rel">
+                                            {{ form_errors(registration_form.email) }}
+                                            {{ form_widget(registration_form.email) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>Address <span class="light">(optional)</span></label>
+                                        <div class="rel">
+                                            {{ form_errors(registration_form.address) }}
+                                            {{ form_widget(registration_form.address) }}
+                                            <span></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
-                                <label class="custom-label large">Gender</label>
-                                <div class="custom-form">
-                                    <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
-                                        <input type="radio" id="genderChoice1"
-                                               name="gender" value="email">
-                                        <label for="genderChoice1">Male</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="col-md-12 col-xs-12 no-lr-padding">
+                                        <label class="custom-label">Date of birth</label>
                                     </div>
-                                    <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
-                                        <input type="radio" id="genderChoice2"
-                                               name="gender" value="phone">
-                                        <label for="genderChoice2">Female</label>
+                                    <div class="col-md-3 col-sm-3 col-xs-12 no-lr-padding">
+                                        <div class="styled-input">
+                                            {{ form_errors(registration_form.dateOfBirth.day) }}
+                                            {{ form_widget(registration_form.dateOfBirth.day, {'attr': {'class': 'selectpicker'}}) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-5 col-sm-5 col-xs-12 no-padding-xs">
+                                        <div class="styled-input">
+                                            {{ form_errors(registration_form.dateOfBirth.month) }}
+                                            {{ form_widget(registration_form.dateOfBirth.month, {'attr': {'class': 'selectpicker'}}) }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12 no-lr-padding">
+                                        <div class="styled-input">
+                                            {{ form_errors(registration_form.dateOfBirth.year) }}
+                                            {{ form_widget(registration_form.dateOfBirth.year, {'attr': {'class': 'selectpicker'}}) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
+                                    <label class="custom-label large">Gender</label>
+                                    <div class="custom-form">
+                                        <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                            {{ form_widget(registration_form.gender.children[0]) }}
+                                            {{ form_label(registration_form.gender.children[0]) }}
+
+                                        </div>
+                                        <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                            {{ form_widget(registration_form.gender.children[1]) }}
+                                            {{ form_label(registration_form.gender.children[1]) }}
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label class="custom-label">Bio <span class="light">(optional)</span></label>
+                                        {{ form_errors(registration_form.bio) }}
+                                        {{ form_widget(registration_form.bio) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>Profile Picture <span class="light">(optional)</span></label>
+                                        {{ form_errors(registration_form.profilePicture) }}
+                                        {{ form_widget(registration_form.profilePicture) }}
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label class="custom-label">Bio <span class="light">(optional)</span></label>
-                                    <textarea></textarea>
-                                </div>
+                            <div class="col-md-12 col-xs-12">
+                                {{ form_widget(registration_form.submit) }}
                             </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label>Profile Picture <span class="light">(optional)</span></label>
-                                    <input type="file" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-xs-12">
-                            <button type="submit" class="btn submit pull-right">submit</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

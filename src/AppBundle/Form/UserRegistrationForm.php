@@ -9,7 +9,6 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\User;
-use SebastianBergmann\CodeCoverage\Report\Text;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -18,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -50,7 +50,7 @@ class UserRegistrationForm extends AbstractType
                         'label' => 'Password',
                     ],
                     'second_options' => [
-                        'label' => 'Repeat password',
+                        'label' => 'Confirm password',
                     ],
                 ]
             )
@@ -78,8 +78,7 @@ class UserRegistrationForm extends AbstractType
                         'month' => 'Month',
                         'day' => 'Day',
                     ],
-                    'widget' => 'single_text',
-                    'attr' => ['class' => 'selectpicker'],
+                    'years' => range(1930, 2018),
                 ]
             )
             ->add(
@@ -90,12 +89,16 @@ class UserRegistrationForm extends AbstractType
                         'Male' => 'Male',
                         'Female' => 'Female',
                     ],
-
+                    'expanded' => true,
+                    'multiple' => false,
+                    'attr' => [
+                        'class' => 'col-md-3 col-sm-3 col-xs-6 no-lr-padding',
+                    ],
                 ]
             )
             ->add(
                 'bio',
-                TextType::class,
+                TextareaType::class,
                 [
                     'required' => false,
                 ]
@@ -105,7 +108,15 @@ class UserRegistrationForm extends AbstractType
                 FileType::class,
                 ['label' => 'Profile Picture']
             )
-            ->add('register', SubmitType::class);
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'attr' => [
+                        'class' => 'btn submit pull-right',
+                    ],
+                ]
+            );
     }
 
 

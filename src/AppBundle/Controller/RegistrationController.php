@@ -32,18 +32,19 @@ class RegistrationController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function registerAction(Request $request)
+    public function testAction(Request $request)
     {
         $user = new User();
 
         $form = $this->createForm(UserRegistrationForm::class, $user);
 
         return $this->render(
-            'registration/test.html.twig',
+            'registration/index.html.twig',
             [
-                'registration_form' => $form,
+                'registration_form' => $form->createView(),
             ]
         );
     }
+
 }
 
