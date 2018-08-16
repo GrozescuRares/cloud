@@ -75,7 +75,8 @@ class User implements UserInterface, \Serializable
      *
      * @Assert\Choice(
      *     choices = { "Male", "Female" },
-     *     message = "Choose a valid gender."
+     *     message = "Choose a valid gender.",
+     *     strict = true
      * )
      */
     private $gender;

@@ -62,11 +62,11 @@ class RegistrationController extends Controller
 
         $userService->registerUser($user);
 
-        return $this->redirectToRoute('registration_confirmation');
+        return $this->redirectToRoute('registration-confirmation');
     }
 
     /**
-     * @Route("/registration-confirmation", name="registration_confirmation")
+     * @Route("/registration-confirmation", name="registration-confirmation")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */

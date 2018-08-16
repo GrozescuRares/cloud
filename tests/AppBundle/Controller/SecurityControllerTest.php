@@ -40,8 +40,8 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = 'rares';
-        $form['_password'] = 'handstand';
+        $form['_username'] = 'testtest';
+        $form['_password'] = '12345';
 
         $client->submit($form);
 
@@ -75,4 +75,112 @@ class SecurityControllerTest extends WebTestCase
         $this->assertContains('Bad credentials', $crawler->filter('div.alert')->text());
     }
 
+    /**
+     * Tests log in with inactive account
+     */
+    public function testLoginWithInactiveAccount()
+    {
+        $client = static:: createClient();
+
+        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+
+        $form = $crawler->selectButton('submit')->form();
+
+        $form['_username'] = 'testInactive';
+        $form['_password'] = '12345';
+
+        $client->submit($form);
+
+        $this->assertTrue(
+            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('login'))
+        );
+
+        $crawler = $client->followRedirect();
+
+        $this->assertContains('This account is not active !', $crawler->filter('div.alert')->text());
+    }
+
+    /**
+     * Tests that logged user can't access the login page
+     */
+    public function testThatLoggedUserCanNotAccessLogInPage()
+    {
+        $client = static:: createClient();
+
+        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+
+        $form = $crawler->selectButton('submit')->form();
+
+        $form['_username'] = 'testtest';
+        $form['_password'] = '12345';
+
+        $client->submit($form);
+
+        $this->assertTrue(
+            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
+        );
+
+        $client->followRedirect();
+
+        $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+        $this->assertTrue(
+            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('dashboard'))
+        );
+    }
+
+    /**
+     * Tests that logged user can't access the registration page
+     */
+    public function testThatLoggedUserCanNotAccessRegisterPage()
+    {
+        $client = static:: createClient();
+
+        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+
+        $form = $crawler->selectButton('submit')->form();
+
+        $form['_username'] = 'testtest';
+        $form['_password'] = '12345';
+
+        $client->submit($form);
+
+        $this->assertTrue(
+            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
+        );
+
+        $client->followRedirect();
+
+        $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+        $this->assertTrue(
+            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('dashboard'))
+        );
+    }
+
+    /**
+     * Tests that logged user can't access the activate-account page
+     */
+    public function testThatLoggedUserCanNotAccessActivateAccountPage()
+    {
+        $client = static:: createClient();
+
+        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+
+        $form = $crawler->selectButton('submit')->form();
+
+        $form['_username'] = 'testtest';
+        $form['_password'] = '12345';
+
+        $client->submit($form);
+
+        $this->assertTrue(
+            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
+        );
+
+        $client->followRedirect();
+
+        $client->request('GET', $client->getContainer()->get('router')->generate('activate-account', ['activationToken' => 'dfefefe']));
+        $this->assertTrue(
+            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('dashboard'))
+        );
+    }
 }

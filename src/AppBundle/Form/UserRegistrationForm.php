@@ -69,6 +69,7 @@ class UserRegistrationForm extends AbstractType
                         'Male' => 'Male',
                         'Female' => 'Female',
                     ],
+                    'data' => 'Male',
                     'expanded' => true,
                     'multiple' => false,
                     'attr' => [
