@@ -15,7 +15,9 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
 {
     /**
      * @param string $username
+     *
      * @return mixed|null|\Symfony\Component\Security\Core\User\UserInterface
+     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function loadUserByUsername($username)
@@ -26,12 +28,10 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
             ->getQuery()
             ->getOneOrNullResult();
 
-
         if ($user and ! $user->isActivated()) {
             throw new BadCredentialsException('This account is not active !');
         }
 
         return $user;
     }
-
 }

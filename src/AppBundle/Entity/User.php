@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
+ *
  * @UniqueEntity("username")
  * @UniqueEntity("email")
  */
@@ -20,7 +21,7 @@ class User implements UserInterface, \Serializable
     /**
      * @var int
      *
-     * @ORM\Column(name="userId", type="integer")
+     * @ORM\Column(name="userId", type="integer")*
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -30,6 +31,7 @@ class User implements UserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=255, unique=true)
+     *
      * @Assert\NotBlank()
      * @Assert\Length(min=5)
      */
@@ -47,6 +49,7 @@ class User implements UserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
+     *
      * @Assert\Email(
      *     message = "The email '{{ value }}' is not a valid email.",
      *     checkMX = true
@@ -122,9 +125,10 @@ class User implements UserInterface, \Serializable
     private $plainPassword;
 
     /**
+     * @var Role $role
+     *
      * @ORM\ManyToOne(targetEntity="Role", inversedBy="users")
      * @ORM\JoinColumn(name="role_id", referencedColumnName="roleId", nullable=true)
-     * @var Role $role
      */
     private $role;
 

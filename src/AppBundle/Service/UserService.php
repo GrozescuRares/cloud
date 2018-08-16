@@ -31,11 +31,8 @@ class UserService
      * UserService constructor.
      *
      * @param EntityManager       $em
-     *
      * @param UserPasswordEncoder $encoder
-     *
      * @param FileUploaderService $fileUploaderService
-     *
      * @param MailInterface       $mailHelper
      */
     public function __construct(EntityManager $em, UserPasswordEncoder $encoder, FileUploaderService $fileUploaderService, MailInterface $mailHelper)
@@ -51,11 +48,8 @@ class UserService
      * @param User $user
      *
      * @throws \Doctrine\ORM\OptimisticLockException
-     *
      * @throws \Twig_Error_Syntax
-     *
      * @throws \Twig_Error_Loader
-     *
      * @throws \Twig_Error_Runtime
      */
     public function registerUser(User $user)

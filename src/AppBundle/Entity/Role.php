@@ -90,4 +90,3 @@ class Role
         return $this->description;
     }
 }
-

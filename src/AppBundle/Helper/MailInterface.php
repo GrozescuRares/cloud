@@ -16,15 +16,11 @@ interface MailInterface
 {
     /**
      * @param string $to
-     *
      * @param string $subject
-     *
      * @param array  $message
-     *
      * @param string $template
      *
      * @return mixed
      */
     public function sendEmail(string $to, string $subject, array $message, string $template);
-
 }

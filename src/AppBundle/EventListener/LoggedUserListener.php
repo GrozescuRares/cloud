@@ -19,6 +19,7 @@ class LoggedUserListener
 
     /**
      * LoggedUserListener constructor.
+     *
      * @param TokenStorageInterface $t
      * @param RouterInterface       $r
      */
@@ -59,6 +60,7 @@ class LoggedUserListener
 
     /**
      * @param $currentRoute
+     *
      * @return bool
      */
     private function isAuthenticatedUserOnAnonymousPage($currentRoute)

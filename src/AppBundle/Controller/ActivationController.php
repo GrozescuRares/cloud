@@ -22,7 +22,6 @@ class ActivationController extends Controller
      * @Route("/activate-account/{activationToken}", name="activate-account")
      *
      * @param string      $activationToken
-     *
      * @param UserService $userService
      *
      * @return \Symfony\Component\HttpFoundation\Response
@@ -52,5 +51,4 @@ class ActivationController extends Controller
             'success' => true,
         ]);
     }
-
 }

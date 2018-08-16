@@ -30,17 +30,13 @@ class RegistrationController extends Controller
      * @Route("/register", name="register")
      *
      * @param Request     $request
-     *
      * @param UserService $userService
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Doctrine\ORM\OptimisticLockException
-     *
      * @throws \Twig_Error_Syntax
-     *
      * @throws \Twig_Error_Loader
-     *
      * @throws \Twig_Error_Runtime
      */
     public function registerAction(Request $request, UserService $userService)

@@ -55,19 +55,84 @@ class RegistrationControllerTest extends WebTestCase
         $this->assertTrue(
             $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('registration-confirmation'))
         );
+    }
 
-        $client->followRedirect();
+    /**
+     * Tests nonMatching passwords
+     */
+    public function testNonMatchingPasswords()
+    {
+        $client = static:: createClient();
 
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('activate-account', [
-            'activationToken' => md5($username).md5($email),
-        ]));
+        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
 
-        $this->assertContains('Your account is active now', $crawler->filter('h1')->text());
+        $form = $crawler->selectButton('appbundle_user[submit]')->form();
 
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('activate-account', [
-            'activationToken' => md5($username).md5($email),
-        ]));
+        $username = 'user'.substr(md5(time()), 0, 6);
+        $email = substr(md5(time()), 0, 6).'@ceva.com';
+        $form['appbundle_user[username]'] = $username;
+        $form['appbundle_user[email]'] = $email;
+        $form['appbundle_user[plainPassword][first]'] = 'passwrd';
+        $form['appbundle_user[plainPassword][second]'] = 'password';
+        $form['appbundle_user[dateOfBirth][day]'] = '1';
+        $form['appbundle_user[dateOfBirth][month]'] = '2';
+        $form['appbundle_user[dateOfBirth][year]'] = '1950';
 
-        $this->assertContains('Oops', $crawler->filter('h1')->text());
+        $crawler = $client->submit($form);
+
+        $this->assertContains('This value is not valid', $crawler->filter('div.rel ul li')->text());
+    }
+
+
+    /**
+     * Tests invalid passwords
+     */
+    public function testInvalidPassword()
+    {
+        $client = static:: createClient();
+
+        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+
+        $form = $crawler->selectButton('appbundle_user[submit]')->form();
+
+        $username = 'user'.substr(md5(time()), 0, 6);
+        $email = substr(md5(time()), 0, 6).'@ceva.com';
+        $form['appbundle_user[username]'] = $username;
+        $form['appbundle_user[email]'] = $email;
+        $form['appbundle_user[plainPassword][first]'] = '1';
+        $form['appbundle_user[plainPassword][second]'] = '1';
+        $form['appbundle_user[dateOfBirth][day]'] = '1';
+        $form['appbundle_user[dateOfBirth][month]'] = '2';
+        $form['appbundle_user[dateOfBirth][year]'] = '1950';
+
+        $crawler = $client->submit($form);
+
+        $this->assertContains('This value is too short. It should have 5 characters or more.', $crawler->filter('div.rel ul li')->text());
+    }
+
+    /**
+     * Tests invalid Username
+     */
+    public function testInvalidUsername()
+    {
+        $client = static:: createClient();
+
+        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+
+        $form = $crawler->selectButton('appbundle_user[submit]')->form();
+
+        $username = 'user';
+        $email = substr(md5(time()), 0, 6).'@ceva.com';
+        $form['appbundle_user[username]'] = $username;
+        $form['appbundle_user[email]'] = $email;
+        $form['appbundle_user[plainPassword][first]'] = '1';
+        $form['appbundle_user[plainPassword][second]'] = '1';
+        $form['appbundle_user[dateOfBirth][day]'] = '1';
+        $form['appbundle_user[dateOfBirth][month]'] = '2';
+        $form['appbundle_user[dateOfBirth][year]'] = '1950';
+
+        $crawler = $client->submit($form);
+
+        $this->assertContains('This value is too short. It should have 5 characters or more.', $crawler->filter('div.rel ul li')->text());
     }
 }

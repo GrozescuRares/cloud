@@ -20,6 +20,7 @@ class MailHelper implements MailInterface
 
     /**
      * MailHelper constructor.
+     *
      * @param \Swift_Mailer     $mailer
      * @param \Twig_Environment $templating
      */
@@ -31,17 +32,12 @@ class MailHelper implements MailInterface
 
     /**
      * @param string $to
-     *
      * @param string $subject
-     *
      * @param array  $message
-     *
      * @param string $template
      *
      * @throws \Twig_Error_Loader
-     *
      * @throws \Twig_Error_Runtime
-     *
      * @throws \Twig_Error_Syntax
      */
     public function sendEmail(string $to, string $subject, array $message, string $template)
@@ -55,5 +51,4 @@ class MailHelper implements MailInterface
             );
         $this->mailer->send($message);
     }
-
 }
