@@ -30,6 +30,8 @@ class User implements UserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=255, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=5)
      */
     private $username;
 
@@ -37,6 +39,7 @@ class User implements UserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=64)
+
      */
     private $password;
 
@@ -44,6 +47,10 @@ class User implements UserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email.",
+     *     checkMX = true
+     * )
      */
     private $email;
 
@@ -65,6 +72,11 @@ class User implements UserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="gender", type="string", length=10)
+     *
+     * @Assert\Choice(
+     *     choices = { "Male", "Female" },
+     *     message = "Choose a valid gender."
+     * )
      */
     private $gender;
 
@@ -102,7 +114,10 @@ class User implements UserInterface, \Serializable
      */
     private $profilePicture;
 
-
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(min=5)
+     */
     private $plainPassword;
 
     /**
@@ -111,6 +126,74 @@ class User implements UserInterface, \Serializable
      * @var Role $role
      */
     private $role;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isActivated", type="boolean")
+     */
+    private $isActivated;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="activationToken", type="string", length=255)
+     */
+    private $activationToken;
+
+    /**
+     *
+     * @ORM\Column(name="expirationDate", type="datetime")
+     */
+    private $expirationDate;
+
+    /**
+     * @return bool
+     */
+    public function isActivated()
+    {
+        return $this->isActivated;
+    }
+
+    /**
+     * @param bool $isActivated
+     */
+    public function setIsActivated($isActivated)
+    {
+        $this->isActivated = $isActivated;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActivationToken()
+    {
+        return $this->activationToken;
+    }
+
+    /**
+     * @param string $activationToken
+     */
+    public function setActivationToken($activationToken)
+    {
+        $this->activationToken = $activationToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExpirationDate()
+    {
+        return $this->expirationDate;
+    }
+
+    /**
+     * @param mixed $expirationDate
+     */
+    public function setExpirationDate($expirationDate)
+    {
+        $this->expirationDate = $expirationDate;
+    }
 
     /**
      * @return mixed

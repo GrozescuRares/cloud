@@ -47,6 +47,7 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@security.password_encoder'
             - '@app.file_uploader.service'
+            - '@app.mail_helper.helper'
 
     AppBundle\Service\UserService: '@app.user.service'
 
@@ -56,3 +57,11 @@ services:
             $targetDirectory: '%brochures_directory%'
 
     AppBundle\Service\FileUploaderService: '@app.file_uploader.service'
+
+
+    app.mail_helper.helper:
+        class: AppBundle\Helper\MailHelper
+
+    AppBundle\Helper\MailHelper: '@app.mail_helper.helper'
+
+    AppBundle\Helper\MailInterface: '@AppBundle\Helper\MailHelper'

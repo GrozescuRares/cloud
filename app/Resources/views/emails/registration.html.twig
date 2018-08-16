@@ -1,0 +1,11 @@
+<h3>You did it! You registered!</h3>
+
+Hi {{ username }}! You're successfully registered.
+
+{# example, assuming you have a route named "login" #}
+To activate the account, go to: <a href="http://hotel-management.local{{ path('activate-account', {'activationToken' : activationToken}) }}">here</a>.<br>
+
+Your credentials:<br>
+    Username: {{ username }}<br>
+    Password: {{ password }}<br>
+Thanks!

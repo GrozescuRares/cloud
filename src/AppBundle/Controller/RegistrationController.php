@@ -36,6 +36,12 @@ class RegistrationController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @throws \Twig_Error_Syntax
+     *
+     * @throws \Twig_Error_Loader
+     *
+     * @throws \Twig_Error_Runtime
      */
     public function registerAction(Request $request, UserService $userService)
     {
@@ -54,12 +60,18 @@ class RegistrationController extends Controller
             );
         }
 
-        $userService->insertUser($user);
+        $userService->registerUser($user);
 
-        $this->addFlash('success', 'You are now successfully registered.');
-
-        return $this->redirectToRoute('register');
+        return $this->redirectToRoute('registration_confirmation');
     }
 
+    /**
+     * @Route("/registration-confirmation", name="registration_confirmation")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function registrationConfirmationAction()
+    {
+        return $this->render('registration/confirmation.html.twig');
+    }
 }
-

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="error-template">
+                <h1>
+                    {{ message }} !</h1>
+                    {% if success %}
+                        <div class="error-actions">
+                            <a href="{{ path('login') }}" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
+                                Take Me To Login </a>
+                        </div>
+                    {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

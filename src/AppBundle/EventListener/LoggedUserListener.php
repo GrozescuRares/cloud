@@ -65,7 +65,7 @@ class LoggedUserListener
     {
         return in_array(
             $currentRoute,
-            ['login', 'register']
+            ['login', 'register', 'activate-account']
         );
     }
 }

@@ -10,16 +10,16 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class FileUploaderService
 {
     /**
-     * @var $targetDirectory
+     * @var string $targetDirectory
      */
     private $targetDirectory;
 
     /**
      * FileUploaderService constructor.
      *
-     * @param $targetDirectory
+     * @param string $targetDirectory
      */
-    public function __construct($targetDirectory)
+    public function __construct(string $targetDirectory)
     {
         $this->targetDirectory = $targetDirectory;
     }
@@ -39,7 +39,7 @@ class FileUploaderService
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getTargetDirectory()
     {
