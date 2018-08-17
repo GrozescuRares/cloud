@@ -21,7 +21,6 @@ class RegistrationAndActivationTest extends WebTestCase
      */
     public function testSuccesfullyRegistrationAccountActivationAndLogIn()
     {
-
         /*
          * Registration
          */
@@ -86,7 +85,6 @@ class RegistrationAndActivationTest extends WebTestCase
      */
     public function testRegistrationFailedLoginAccountActivationAndSuccessfullyLogIn()
     {
-
         /*
          * Registration
          */
@@ -167,7 +165,6 @@ class RegistrationAndActivationTest extends WebTestCase
      */
     public function testRegistrationActivationAnotherActivationAndLogIn()
     {
-
         /*
          * Registration
          */
