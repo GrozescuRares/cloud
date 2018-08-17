@@ -23,17 +23,17 @@ class ActivationController extends Controller
     /**
      * @Route("/activate-account/{activationToken}", name="activate-account")
      *
-     * @param string      $activationToken
-     * @param UserService $userService
+     * @param string $activationToken
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function activationAction($activationToken, UserService $userService)
+    public function activationAction($activationToken)
     {
 
         try {
+            $userService = $this->get('app.user.service');
             $userService->activateAccount($activationToken);
 
             return $this->render(
