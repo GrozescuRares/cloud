@@ -10,6 +10,8 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Exception\TokenExpiredException;
+use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailInterface;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
@@ -92,11 +94,9 @@ class UserService
     /**
      * @param string $activationToken
      *
-     * @return int      1 if everything was ok
-     *                 -1 if the token expired
-     *                 -2 if the token is invalid
-     *
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws UserNotFoundException
+     * @throws TokenExpiredException
      */
     public function activateAccount($activationToken)
     {
@@ -105,8 +105,8 @@ class UserService
             'isActivated' => false,
         ]);
 
-        if (!$user) {
-            return -2; //invalid token
+        if (!$user instanceof User) {
+            throw new UserNotFoundException('There is no user with token: '.$activationToken);
         }
 
         if ($user->getExpirationDate() < new \DateTime()) {
@@ -123,14 +123,12 @@ class UserService
             $this->em->persist($user);
             $this->em->flush();
 
-            return -1; //expired token
+            throw new TokenExpiredException('Token: '.$activationToken.' expired.');
         }
 
         $user->setIsActivated(true);
         $this->em->persist($user);
         $this->em->flush();
-
-        return 1; //ok
     }
 
     /**
