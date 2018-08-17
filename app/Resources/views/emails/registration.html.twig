@@ -4,7 +4,7 @@
 
 {# example, assuming you have a route named "login" #}
 {% trans %}To activate the account, go to: {% endtrans %}
-<a href="http://hotel-management.local{{ path('activate-account', {'activationToken' : activationToken}) }}">
+<a href="{{ url('activate-account', {'activationToken' : activationToken}) }}">
     {% trans %} here. {% endtrans %}
 </a>
 <br>
