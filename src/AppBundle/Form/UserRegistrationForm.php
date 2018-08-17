@@ -39,6 +39,12 @@ class UserRegistrationForm extends AbstractType
             ->add('username', TextType::class, [
                     'label' => 'Username',
             ])
+            ->add('firstName', TextType::class, [
+                'label' => 'First Name',
+            ])
+            ->add('lastName', TextType::class, [
+                'label' => 'Last Name',
+            ])
             ->add('plainPassword', RepeatedType::class, [
                     'type' => PasswordType::class,
                     'first_options' => [

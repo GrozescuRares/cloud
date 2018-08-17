@@ -24,6 +24,26 @@
                                 </div>
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
+                                        {{ form_label(registration_form.firstName) }}
+                                        <div class="rel">
+                                            {{ form_errors(registration_form.firstName) }}
+                                            {{ form_widget(registration_form.firstName) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(registration_form.lastName) }}
+                                        <div class="rel">
+                                            {{ form_errors(registration_form.lastName) }}
+                                            {{ form_widget(registration_form.lastName) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
                                         {{ form_label(registration_form.plainPassword.first) }}
                                         <div class="rel">
                                             {{ form_errors(registration_form.plainPassword.first) }}
@@ -52,6 +72,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
                                         <label>Address <span class="light">(optional)</span></label>
@@ -62,8 +84,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="col-md-12 col-xs-12 no-lr-padding">
                                         <label class="custom-label">Date of birth</label>

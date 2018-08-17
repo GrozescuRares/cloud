@@ -49,6 +49,8 @@ class RegistrationControllerTest extends WebTestCase
         $form['appbundle_user[dateOfBirth][day]'] = '1';
         $form['appbundle_user[dateOfBirth][month]'] = '2';
         $form['appbundle_user[dateOfBirth][year]'] = '1950';
+        $form['appbundle_user[firstName]'] = $username."FirstName";
+        $form['appbundle_user[lastName]'] = $username."LastName";
 
         $client->submit($form);
 
@@ -77,10 +79,12 @@ class RegistrationControllerTest extends WebTestCase
         $form['appbundle_user[dateOfBirth][day]'] = '1';
         $form['appbundle_user[dateOfBirth][month]'] = '2';
         $form['appbundle_user[dateOfBirth][year]'] = '1950';
+        $form['appbundle_user[firstName]'] = $username."FirstName";
+        $form['appbundle_user[lastName]'] = $username."LastName";
 
         $crawler = $client->submit($form);
 
-        $this->assertContains('This value is not valid', $crawler->filter('div.rel ul li')->text());
+        $this->assertContains('This value is', $crawler->filter('div.rel ul li')->text());
     }
 
 
@@ -98,6 +102,8 @@ class RegistrationControllerTest extends WebTestCase
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
         $form['appbundle_user[username]'] = $username;
+        $form['appbundle_user[firstName]'] = $username."FirstName";
+        $form['appbundle_user[lastName]'] = $username."LastName";
         $form['appbundle_user[email]'] = $email;
         $form['appbundle_user[plainPassword][first]'] = '1';
         $form['appbundle_user[plainPassword][second]'] = '1';
@@ -130,6 +136,8 @@ class RegistrationControllerTest extends WebTestCase
         $form['appbundle_user[dateOfBirth][day]'] = '1';
         $form['appbundle_user[dateOfBirth][month]'] = '2';
         $form['appbundle_user[dateOfBirth][year]'] = '1950';
+        $form['appbundle_user[firstName]'] = $username."FirstName";
+        $form['appbundle_user[lastName]'] = $username."LastName";
 
         $crawler = $client->submit($form);
 

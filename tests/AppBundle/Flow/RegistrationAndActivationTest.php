@@ -41,6 +41,8 @@ class RegistrationAndActivationTest extends WebTestCase
         $form['appbundle_user[dateOfBirth][day]'] = '1';
         $form['appbundle_user[dateOfBirth][month]'] = '2';
         $form['appbundle_user[dateOfBirth][year]'] = '1950';
+        $form['appbundle_user[firstName]'] = $username."FirstName";
+        $form['appbundle_user[lastName]'] = $username."LastName";
 
         $client->submit($form);
 
@@ -104,6 +106,8 @@ class RegistrationAndActivationTest extends WebTestCase
         $form['appbundle_user[dateOfBirth][day]'] = '1';
         $form['appbundle_user[dateOfBirth][month]'] = '2';
         $form['appbundle_user[dateOfBirth][year]'] = '1950';
+        $form['appbundle_user[firstName]'] = $username."FirstName";
+        $form['appbundle_user[lastName]'] = $username."LastName";
 
         $client->submit($form);
 
@@ -183,6 +187,8 @@ class RegistrationAndActivationTest extends WebTestCase
         $form['appbundle_user[dateOfBirth][day]'] = '1';
         $form['appbundle_user[dateOfBirth][month]'] = '2';
         $form['appbundle_user[dateOfBirth][year]'] = '1950';
+        $form['appbundle_user[firstName]'] = $username."FirstName";
+        $form['appbundle_user[lastName]'] = $username."LastName";
 
         $client->submit($form);
 

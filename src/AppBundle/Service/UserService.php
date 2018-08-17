@@ -62,8 +62,6 @@ class UserService
             );
         $user->setPassword($password);
         $user->setRole($this->clientRole);
-        $user->setLastName($user->getUsername().' Last Name');
-        $user->setFirstName($user->getUsername().' First Name');
         $user->setIsActivated(false);
         $user->setActivationToken(md5($user->getUsername()).md5($user->getEmail()));
         $user->setExpirationDate($this->generateActivationTime());

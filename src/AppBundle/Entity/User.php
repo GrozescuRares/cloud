@@ -60,14 +60,18 @@ class User implements UserInterface, \Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="firstName", type="string", length=255, nullable=true)
+     * @ORM\Column(name="firstName", type="string", length=255)
+     *
+     * @Assert\NotBlank()
      */
     private $firstName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="lastName", type="string", length=255, nullable=true)
+     * @ORM\Column(name="lastName", type="string", length=255)
+     *
+     * @Assert\NotBlank()
      */
     private $lastName;
 
