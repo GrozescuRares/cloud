@@ -1,6 +1,8 @@
 
-{% trans %}To activate the account, go to:{% endtrans %} <a href="{{ url('activate-account', {'activationToken' : activationToken}) }}"> {% trans %}here. {% endtrans %}</a><br>
+{{ 'emails.to_activate' | trans }}
+<a href="{{ url('activate-account', {'activationToken' : activationToken}) }}">
+    {{ 'emails.here' | trans }}
+</a>
 <br>
-{% trans %}
-Thanks!
-{% endtrans %}
+<br>
+{{ 'emails.thanks' | trans }}

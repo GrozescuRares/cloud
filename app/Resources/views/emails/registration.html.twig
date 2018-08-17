@@ -1,27 +1,17 @@
-<h3>{% trans %}You did it! You registered!{% endtrans %}</h3>
+<h3> {{ 'emails.you_did_it' | trans }} </h3>
 
-{% trans with {'%user%' : username } %} Hi %user% ! You're successfully registered.  {% endtrans %}
+{{ 'emails.hi_user' | trans({'%user%' : username}) }}
 
-{# example, assuming you have a route named "login" #}
-{% trans %}To activate the account, go to: {% endtrans %}
+{{ 'emails.to_activate' | trans }}
 <a href="{{ url('activate-account', {'activationToken' : activationToken}) }}">
-    {% trans %} here. {% endtrans %}
+    {{ 'emails.here' | trans }}
 </a>
 <br>
 
-
-{% trans %}
-Your credentials:
-{% endtrans %}
+{{ 'emails.credentials' | trans }}
 <br>
-{% trans with {'%user%' : username } %}
-    Username: %user%
-{% endtrans %}
+{{ 'emails.username' | trans({'%user%' : username}) }}
 <br>
-{% trans with {'%pass%' : password} %}
-    Password: %pass%
-{% endtrans %}
-{% trans %}
+{{ 'emails.password' | trans({'%pass%' : password}) }}
 <br>
-Thanks!
-{% endtrans %}
+{{ 'emails.thanks' | trans }}

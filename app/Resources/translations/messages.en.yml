@@ -1,35 +1,3 @@
-'%message% !': '%message% !'
-'Take Me To Login': 'Take Me To Login'
-'Registration Confirmation': 'Registration Confirmation'
-'Congratulations, the registration has been successful!': 'Congratulations, the registration has been successful!'
-'An activation message has been sent to %email%.': 'An activation message has been sent to %email%.'
-'Welcome to PitechPlus Hotel Management System!': 'Welcome to PitechPlus Hotel Management System!'
-Back: 'Back'
-'Client Registration': 'Client Registration'
-Hello: 'Hello'
-'You did it! You registered!': 'You did it! You registered!'
-'Hi %user% ! You''re successfully registered.': 'Hi %user% ! You''re successfully registered.'
-'To activate the account, go to:': 'To activate the account, go to:'
-here.: 'here.'
-'Your credentials:': 'Your credentials:'
-'Username: %user%': 'Username: %user%'
-'Password: %pass%': 'Password: %pass%'
-"<br>\nThanks!": "<br>\nThanks!"
-Thanks!: 'Thanks!'
-'Hotel Management System': 'Hotel Management System'
-'My account': 'My account'
-'User Management': 'User Management'
-'Hotel Management': 'Hotel Management'
-Bookings: 'Bookings'
-Logout: 'Logout'
-Oops!: 'Oops!'
-'%error%': '%error%'
-"Welcome to Hotel Management System,\n                                please login!": "Welcome to Hotel Management System,\n                                please login!"
-'Don’t have an account? Please': 'Don’t have an account? Please'
-register.: 'register.'
-Register: 'Register'
-Login: 'Login'
-'Registrations will be done only as Client.': 'Registrations will be done only as Client.'
 
 form:
   label:
@@ -46,3 +14,47 @@ form:
     male: 'Male'
     female: 'Female'
     submit: 'Submit'
+
+page:
+  activation-account:
+    message: '%message% !'
+    to_login: 'Take Me To Login'
+
+  error:
+    oops: 'Oops !'
+    message: '%error%'
+
+  dashboard:
+
+  confirmation:
+    title: 'Registration Confirmation'
+    congratulations: 'Congratulations, the registration has been successful!'
+    to_email: 'An activation message has been sent to %email%.'
+    welcome: 'Welcome to PitechPlus Hotel Management System!'
+
+  login:
+    welcome: 'Welcome to Hotel Management System,
+                                              please login!'
+    to_register: 'Don’t have an account? Please'
+    register: 'register.'
+    button_login: 'Login'
+    button_register: 'Register'
+
+  register:
+    title: 'Client Registration'
+    back: 'Back'
+
+emails:
+  to_activate: 'To activate the account, go to:'
+  here: 'here.'
+  thanks: 'Thanks !'
+  you_did_it: 'You did it! You registered!'
+  hi_user: "Hi %user% ! You're successfully registered."
+  credentials: 'Your credentials:'
+  username: 'Username: %user%'
+  password: 'Password: %pass%'
+
+flash_messages:
+  message: '%message%'
+  close: 'Close'
+

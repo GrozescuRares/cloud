@@ -6,15 +6,11 @@
         <div class="col-md-12">
             <div class="error-template">
                 <h1>
-                    {% trans %} Oops! {% endtrans %}
+                    {{ 'page.error.oops' | trans }}
                 </h1>
                 <h2>
-                    {% trans with {'%error%' : error} %} %error% {% endtrans %}
+                    {{ 'page.error.message' | trans({'%error%' : error} ) }}
                 </h2>
-                <div class="error-actions">
-                    <a href="{{ path('login') }}" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
-                        {% trans %} Take Me To Login {% endtrans %}</a>
-                </div>
             </div>
         </div>
     </div>

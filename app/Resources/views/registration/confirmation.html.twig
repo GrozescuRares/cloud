@@ -24,14 +24,14 @@
                                             <td class="inner contents"
                                                 style="padding-top:30px;padding-bottom:0;padding-right:30px;padding-left:30px;padding-bottom:30px;width:100%;text-align:center; background-color: #f9f9f9;">
                                                 <p class="h1"
-                                                   style="font-size:18px;font-weight:bold;Margin-bottom:18px;color:#000000;"> {% trans %} Registration Confirmation {% endtrans %}</p>
+                                                   style="font-size:18px;font-weight:bold;Margin-bottom:18px;color:#000000;"> {{ 'page.confirmation.title' | trans }}</p>
                                                 <p class="top-margin"
                                                    style="margin-top:20px;font-size:12px;Margin-bottom:10px;">
-                                                <p style='font-weight: bold; font-size:12px; line-height: 18px;'> {% trans %} Congratulations, the registration has been successful! {% endtrans %}
+                                                <p style='font-weight: bold; font-size:12px; line-height: 18px;'> {{ 'page.confirmation.congratulations' | trans }}
                                                     <br/>
-                                                    {% trans with {'%email%' : email} %} An activation message has been sent to %email%. {% endtrans %}
+                                                    {{ 'page.confirmation.to_email'| trans({'%email%' : email}) }}
                                                 </p>
-                                                <p style='margin-top:20px; color: #cd0a0a; font-size: 12px;'> {% trans %} Welcome to PitechPlus Hotel Management System! {% endtrans %}</p>
+                                                <p style='margin-top:20px; color: #cd0a0a; font-size: 12px;'> {{ 'page.confirmation.welcome'| trans }}</p>
                                             </td>
                                         </tr>
                                     </table>
