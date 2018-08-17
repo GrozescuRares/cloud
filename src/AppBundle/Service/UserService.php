@@ -25,7 +25,7 @@ class UserService
     private $clientRole;
     private $fileUploader;
     private $mailHelper;
-    const ACTIVATION_LINK_TIME = '+1 minutes';
+    private $tokenLifetime;
 
     /**
      * UserService constructor.
@@ -34,14 +34,16 @@ class UserService
      * @param UserPasswordEncoder $encoder
      * @param FileUploaderService $fileUploaderService
      * @param MailInterface       $mailHelper
+     * @param string              $tokenLifetime
      */
-    public function __construct(EntityManager $em, UserPasswordEncoder $encoder, FileUploaderService $fileUploaderService, MailInterface $mailHelper)
+    public function __construct(EntityManager $em, UserPasswordEncoder $encoder, FileUploaderService $fileUploaderService, MailInterface $mailHelper, $tokenLifetime)
     {
         $this->em = $em;
         $this->encoder = $encoder;
         $this->clientRole = $em->getRepository(Role::class)->find(4);
         $this->fileUploader = $fileUploaderService;
         $this->mailHelper = $mailHelper;
+        $this->tokenLifetime = $tokenLifetime;
     }
 
     /**
@@ -137,7 +139,7 @@ class UserService
     private function generateActivationTime()
     {
         $dateTime = new \DateTime();
-        $dateTime->modify(self::ACTIVATION_LINK_TIME);
+        $dateTime->modify($this->tokenLifetime);
 
         return $dateTime;
     }
