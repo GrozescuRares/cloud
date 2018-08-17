@@ -40,7 +40,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = 'testtest';
+        $form['_username'] = 'client';
         $form['_password'] = '12345';
 
         $client->submit($form);
@@ -111,7 +111,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = 'testtest';
+        $form['_username'] = 'client';
         $form['_password'] = '12345';
 
         $client->submit($form);
@@ -139,7 +139,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = 'testtest';
+        $form['_username'] = 'client';
         $form['_password'] = '12345';
 
         $client->submit($form);
@@ -167,7 +167,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = 'testtest';
+        $form['_username'] = 'client';
         $form['_password'] = '12345';
 
         $client->submit($form);
