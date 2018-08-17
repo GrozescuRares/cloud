@@ -33,20 +33,15 @@ class RegistrationAndActivationTest extends WebTestCase
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
-        $form['appbundle_user[username]'] = $username;
-        $form['appbundle_user[email]'] = $email;
-        $form['appbundle_user[plainPassword][first]'] = 'password';
-        $form['appbundle_user[plainPassword][second]'] = 'password';
-        $form['appbundle_user[dateOfBirth][day]'] = '1';
-        $form['appbundle_user[dateOfBirth][month]'] = '2';
-        $form['appbundle_user[dateOfBirth][year]'] = '1950';
-        $form['appbundle_user[firstName]'] = $username."FirstName";
-        $form['appbundle_user[lastName]'] = $username."LastName";
+
+        $form = $this->generateRegistrationForm($form, $username, $email, 'password', 'password');
 
         $client->submit($form);
 
         $this->assertTrue(
-            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('registration-confirmation'))
+            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('registration-confirmation', [
+                'email' => $email,
+            ]))
         );
 
         /*
@@ -69,8 +64,7 @@ class RegistrationAndActivationTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = $username;
-        $form['_password'] = 'password';
+        $form = $this->generateLoginForm($form, $username, 'password');
 
         $client->submit($form);
 
@@ -97,20 +91,15 @@ class RegistrationAndActivationTest extends WebTestCase
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
-        $form['appbundle_user[username]'] = $username;
-        $form['appbundle_user[email]'] = $email;
-        $form['appbundle_user[plainPassword][first]'] = 'password';
-        $form['appbundle_user[plainPassword][second]'] = 'password';
-        $form['appbundle_user[dateOfBirth][day]'] = '1';
-        $form['appbundle_user[dateOfBirth][month]'] = '2';
-        $form['appbundle_user[dateOfBirth][year]'] = '1950';
-        $form['appbundle_user[firstName]'] = $username."FirstName";
-        $form['appbundle_user[lastName]'] = $username."LastName";
+
+        $form = $this->generateRegistrationForm($form, $username, $email, 'password', 'password');
 
         $client->submit($form);
 
         $this->assertTrue(
-            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('registration-confirmation'))
+            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('registration-confirmation', [
+                'email' => $email,
+            ]))
         );
 
         /*
@@ -121,8 +110,7 @@ class RegistrationAndActivationTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = $username;
-        $form['_password'] = 'password';
+        $form = $this->generateLoginForm($form, $username, 'password');
 
         $client->submit($form);
 
@@ -150,8 +138,7 @@ class RegistrationAndActivationTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = $username;
-        $form['_password'] = 'password';
+        $form = $this->generateLoginForm($form, $username, 'password');
 
         $client->submit($form);
 
@@ -177,20 +164,15 @@ class RegistrationAndActivationTest extends WebTestCase
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
-        $form['appbundle_user[username]'] = $username;
-        $form['appbundle_user[email]'] = $email;
-        $form['appbundle_user[plainPassword][first]'] = 'password';
-        $form['appbundle_user[plainPassword][second]'] = 'password';
-        $form['appbundle_user[dateOfBirth][day]'] = '1';
-        $form['appbundle_user[dateOfBirth][month]'] = '2';
-        $form['appbundle_user[dateOfBirth][year]'] = '1950';
-        $form['appbundle_user[firstName]'] = $username."FirstName";
-        $form['appbundle_user[lastName]'] = $username."LastName";
+
+        $form = $this->generateRegistrationForm($form, $username, $email, 'password', 'password');
 
         $client->submit($form);
 
         $this->assertTrue(
-            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('registration-confirmation'))
+            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('registration-confirmation', [
+                'email' => $email,
+            ]))
         );
 
         /*
@@ -223,13 +205,49 @@ class RegistrationAndActivationTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = $username;
-        $form['_password'] = 'password';
+        $form = $this->generateLoginForm($form, $username, 'password');
 
         $client->submit($form);
 
         $this->assertTrue(
             $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
         );
+    }
+
+    /**
+     * @param $form
+     * @param $username
+     * @param $email
+     * @param $firstPassword
+     * @param $secondPassword
+     * @return mixed
+     */
+    private function generateRegistrationForm($form, $username, $email, $firstPassword, $secondPassword)
+    {
+        $form['appbundle_user[username]'] = $username;
+        $form['appbundle_user[email]'] = $email;
+        $form['appbundle_user[plainPassword][first]'] = $firstPassword;
+        $form['appbundle_user[plainPassword][second]'] = $secondPassword;
+        $form['appbundle_user[dateOfBirth][day]'] = '1';
+        $form['appbundle_user[dateOfBirth][month]'] = '2';
+        $form['appbundle_user[dateOfBirth][year]'] = '1950';
+        $form['appbundle_user[firstName]'] = $username."FirstName";
+        $form['appbundle_user[lastName]'] = $username."LastName";
+
+        return $form;
+    }
+
+    /**
+     * @param $form
+     * @param $username
+     * @param $password
+     * @return mixed
+     */
+    private function generateLoginForm($form, $username, $password)
+    {
+        $form['_username'] = $username;
+        $form['_password'] = $password;
+
+        return $form;
     }
 }

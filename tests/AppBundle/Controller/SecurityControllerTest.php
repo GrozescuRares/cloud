@@ -40,8 +40,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = 'testtest';
-        $form['_password'] = '12345';
+        $form = $this->generateLoginForm($form, 'client', '12345');
 
         $client->submit($form);
 
@@ -61,8 +60,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = 'rares';
-        $form['_password'] = 'hand';
+        $form = $this->generateLoginForm($form, 'noOne', '12345');
 
         $client->submit($form);
 
@@ -86,8 +84,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = 'testInactive';
-        $form['_password'] = '12345';
+        $form = $this->generateLoginForm($form, 'testInactive', '12345');
 
         $client->submit($form);
 
@@ -111,8 +108,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = 'testtest';
-        $form['_password'] = '12345';
+        $form = $this->generateLoginForm($form, 'client', '12345');
 
         $client->submit($form);
 
@@ -139,8 +135,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = 'testtest';
-        $form['_password'] = '12345';
+        $form = $this->generateLoginForm($form, 'client', '12345');
 
         $client->submit($form);
 
@@ -167,8 +162,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('submit')->form();
 
-        $form['_username'] = 'testtest';
-        $form['_password'] = '12345';
+        $form = $this->generateLoginForm($form, 'client', '12345');
 
         $client->submit($form);
 
@@ -182,5 +176,19 @@ class SecurityControllerTest extends WebTestCase
         $this->assertTrue(
             $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('dashboard'))
         );
+    }
+
+    /**
+     * @param $form
+     * @param $username
+     * @param $password
+     * @return mixed
+     */
+    private function generateLoginForm($form, $username, $password)
+    {
+        $form['_username'] = $username;
+        $form['_password'] = $password;
+
+        return $form;
     }
 }

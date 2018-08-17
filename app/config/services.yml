@@ -49,6 +49,7 @@ services:
             - '@app.file_uploader.service'
             - '@app.mail_helper.helper'
             - '%token_lifetime%'
+        public: true
 
     AppBundle\Service\UserService: '@app.user.service'
 
