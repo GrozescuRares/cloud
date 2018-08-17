@@ -29,8 +29,7 @@ class RegistrationController extends Controller
     /**
      * @Route("/register", name="register")
      *
-     * @param Request     $request
-     * @param UserService $userService
+     * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
@@ -39,7 +38,7 @@ class RegistrationController extends Controller
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      */
-    public function registerAction(Request $request, UserService $userService)
+    public function registerAction(Request $request)
     {
         $user = new User();
 
@@ -56,6 +55,7 @@ class RegistrationController extends Controller
             );
         }
 
+        $userService = $this->get('app.user.service');
         $userService->registerUser($user);
 
         return $this->redirectToRoute('registration-confirmation', [
