@@ -1,11 +1,27 @@
-<h3>You did it! You registered!</h3>
+<h3>{% trans %}You did it! You registered!{% endtrans %}</h3>
 
-Hi {{ username }}! You're successfully registered.
+{% trans with {'%user%' : username } %} Hi %user% ! You're successfully registered.  {% endtrans %}
 
 {# example, assuming you have a route named "login" #}
-To activate the account, go to: <a href="http://hotel-management.local{{ path('activate-account', {'activationToken' : activationToken}) }}">here</a>.<br>
+{% trans %}To activate the account, go to: {% endtrans %}
+<a href="http://hotel-management.local{{ path('activate-account', {'activationToken' : activationToken}) }}">
+    {% trans %} here. {% endtrans %}
+</a>
+<br>
 
-Your credentials:<br>
-    Username: {{ username }}<br>
-    Password: {{ password }}<br>
+
+{% trans %}
+Your credentials:
+{% endtrans %}
+<br>
+{% trans with {'%user%' : username } %}
+    Username: %user%
+{% endtrans %}
+<br>
+{% trans with {'%pass%' : password} %}
+    Password: %pass%
+{% endtrans %}
+{% trans %}
+<br>
 Thanks!
+{% endtrans %}

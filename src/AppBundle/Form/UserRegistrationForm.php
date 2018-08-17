@@ -37,43 +37,43 @@ class UserRegistrationForm extends AbstractType
 
         $builder
             ->add('username', TextType::class, [
-                    'label' => 'Username',
+                    'label' => 'form.label.username',
             ])
             ->add('firstName', TextType::class, [
-                'label' => 'First Name',
+                'label' => 'form.label.firstName',
             ])
             ->add('lastName', TextType::class, [
-                'label' => 'Last Name',
+                'label' => 'form.label.lastName',
             ])
             ->add('plainPassword', RepeatedType::class, [
                     'type' => PasswordType::class,
                     'first_options' => [
-                        'label' => 'Password',
+                        'label' => 'form.label.password',
                     ],
                     'second_options' => [
-                        'label' => 'Confirm password',
+                        'label' => 'form.label.confirmPassword',
                     ],
             ])
             ->add('email', EmailType::class, [
-                    'label' => 'Email',
+                    'label' => 'form.label.email',
             ])
             ->add('address', TextType::class, [
-                    'label' => 'Address',
+                    'label' => 'form.label.address',
                     'required' => false,
             ])
             ->add('dateOfBirth', DateType::class, [
                     'placeholder' => [
-                        'year' => 'Year',
-                        'month' => 'Month',
-                        'day' => 'Day',
+                        'year' => 'form.label.year',
+                        'month' => 'form.label.month',
+                        'day' => 'form.label.day',
                     ],
                     'years' => range(1930, date('Y')),
                     'input' => 'string',
             ])
             ->add('gender', ChoiceType::class, [
                     'choices' => [
-                        'Male' => 'Male',
-                        'Female' => 'Female',
+                        'form.label.male' => 'Male',
+                        'form.label.female' => 'Female',
                     ],
                     'data' => 'Male',
                     'expanded' => true,
@@ -86,13 +86,13 @@ class UserRegistrationForm extends AbstractType
                     'required' => false,
             ])
             ->add('image', FileType::class, [
-                    'label' => 'Profile Picture',
                     'required' => false,
             ])
             ->add('submit', SubmitType::class, [
                     'attr' => [
                         'class' => 'btn submit pull-right',
                     ],
+                    'label' => 'form.label.submit',
             ]);
     }
 

@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    Hello {{ app.user.username }}
+    {% trans %} Hello {% endtrans %} {{ app.user.username }}
 {% endblock %}

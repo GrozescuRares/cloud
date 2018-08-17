@@ -8,13 +8,17 @@
                 <div class="wrapper">
                     <div class="container-small">
                         <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
-                            <h1 class="text-center">Welcome to Hotel Management System,
-                                please login!</h1>
+                            <h1 class="text-center">
+                                {% trans %}
+                                Welcome to Hotel Management System,
+                                please login!
+                                {% endtrans %}
+                            </h1>
                         </div>
                         <form class="login-form" action="{{ path('login') }}" method="post">
                             <div class="col-md-12 col-xs-12 no-lr-padding">
                                 <div class="styled-input">
-                                    <label>Username</label>
+                                    <label>{% trans %} form.label.username {% endtrans %}</label>
                                     <div class="rel">
                                         <input id="_username" name="_username" type="text" placeholder="Current Username" />
                                         <span></span>
@@ -23,7 +27,7 @@
                             </div>
                             <div class="col-md-12 col-xs-12 no-lr-padding">
                                 <div class="styled-input">
-                                    <label>Password</label>
+                                    <label>{% trans %} form.label.password {% endtrans %}</label>
                                     <div class="rel">
                                         <input id="_password" name="_password" type="password" placeholder="Current Password" />
                                         <span></span>
@@ -31,15 +35,18 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <p>Don’t have an account? Please <a href="{{ path('register') }}" class="register">register.</a></p>
+                                <p> {% trans %} Don’t have an account? Please {% endtrans %}
+                                    <a href="{{ path('register') }}" class="register"> {% trans %} register. {% endtrans %}
+                                    </a>
+                                </p>
                             </div>
                             <div class="col-md-12 col-xs-12 no-lr-padding button-wrapper">
-                                <a href="{{ path('register') }}" class="register-link">Register</a>
-                                <button type="submit" id="submit" class="btn submit pull-right">Login</button>
+                                <a href="{{ path('register') }}" class="register-link"> {% trans %} Register {% endtrans %}</a>
+                                <button type="submit" id="submit" class="btn submit pull-right"> {% trans %} Login {% endtrans %}</button>
                             </div>
                         </form>
                         <div class="col-md-12 col-xs-12 no-lr-padding text-center login-form-info">
-                            <p class="light">Registrations will be done only as Client.</p>
+                            <p class="light">{% trans %} Registrations will be done only as Client. {% endtrans %}</p>
                         </div>
                     </div>
                 </div>

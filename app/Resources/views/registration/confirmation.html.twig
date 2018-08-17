@@ -1,50 +1,51 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="webkit" style="max-width:700px;" >
-        <!--[if (gte mso 9)|(IE)]>
-        <table width="600" align="center" style="border-spacing:0;font-family:sans-serif;color:#333333;" >
-            <tr>
-                <td style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;" >
-        <![endif]-->
+    <center class="wrapper"
+            style="table-layout:fixed;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;Margin:0 auto;width:100%;max-width:716px;">
+        <div class="webkit" style="max-width:700px;">
+            <!--[if (gte mso 9)|(IE)]>
+            <table width="600" align="center" style="border-spacing:0;font-family:sans-serif;color:#333333;">
+                <tr>
+                    <td style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;">
+            <![endif]-->
 
-        <table class="outer" align="center" style="border-spacing:0;font-family:sans-serif;color:#333333;Margin:0 auto;width:100%;max-width:700px;" >
-            <tr>
-                <td style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;" >
-                    <table class="outer" align="center" style="border-spacing:0;font-family:sans-serif;color:#333333;Margin:0 auto;width:100%;max-width:700px;" >
-                        <tr>
-                            <td class="one-column" style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;" >
-                                <table width="100%" style="border-spacing:0;font-family:sans-serif;color:#333333;" >
-                                    <tr>
-                                        <td class="inner contents" style="padding-top:30px;padding-bottom:0;padding-right:30px;padding-left:30px;padding-bottom:30px;width:100%;text-align:center; background-color: #f9f9f9;" >
-                                            <p class="h1" style="font-size:18px;font-weight:bold;Margin-bottom:18px;color:#000000;" >Registration Confirmation</p>
-                                            <p class="top-margin" style="margin-top:20px;font-size:12px;Margin-bottom:10px;" >
-                                                A paragraph of <span style='color: #cd0a0a'>text</span> with an
-                                                <a href="#" style="display: inline-block; text-decoration: underline; color:#0e8488; font-weight: bold;">
-                                                    unassigned link.
-                                                </a>
-                                            </p>
-                                            <p style='font-size:12px;'>A second <span style='text-decoration: underline;'>row</span> of text with a <a href="#" style="display: inline-block; font-weight: bold; text-decoration: underline; color:#0e8488;">
-                                                    web link.
-                                                </a>
-                                            </p>
-                                            <p style='font-weight: bold; font-size:12px; line-height: 18px;'>Congratulations, the registration has been sussessful! <br />
-                                                An activation message has been sent to your e-mail.
-                                            </p>
-                                            <p style='margin-top:20px; color: #cd0a0a; font-size: 12px;'>Welcome to PitechPlus Hotel Management System!</p>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
+            <table class="outer" align="center"
+                   style="border-spacing:0;font-family:sans-serif;color:#333333;Margin:0 auto;width:100%;max-width:700px;">
+                <tr>
+                    <td style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;">
+                        <table class="outer" align="center"
+                               style="border-spacing:0;font-family:sans-serif;color:#333333;Margin:0 auto;width:100%;max-width:700px;">
+                            <tr>
+                                <td class="one-column"
+                                    style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;">
+                                    <table width="100%" style="border-spacing:0;font-family:sans-serif;color:#333333;">
+                                        <tr>
+                                            <td class="inner contents"
+                                                style="padding-top:30px;padding-bottom:0;padding-right:30px;padding-left:30px;padding-bottom:30px;width:100%;text-align:center; background-color: #f9f9f9;">
+                                                <p class="h1"
+                                                   style="font-size:18px;font-weight:bold;Margin-bottom:18px;color:#000000;"> {% trans %} Registration Confirmation {% endtrans %}</p>
+                                                <p class="top-margin"
+                                                   style="margin-top:20px;font-size:12px;Margin-bottom:10px;">
+                                                <p style='font-weight: bold; font-size:12px; line-height: 18px;'> {% trans %} Congratulations, the registration has been successful! {% endtrans %}
+                                                    <br/>
+                                                    {% trans with {'%email%' : email} %} An activation message has been sent to %email%. {% endtrans %}
+                                                </p>
+                                                <p style='margin-top:20px; color: #cd0a0a; font-size: 12px;'> {% trans %} Welcome to PitechPlus Hotel Management System! {% endtrans %}</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
             </tr>
-        </table>
-        <!--[if (gte mso 9)|(IE)]>
-        </td>
-        </tr>
-        </table>
-        <![endif]-->
-    </div>
+            </table>
+            <![endif]-->
+        </div>
+    </center>
 {% endblock %}

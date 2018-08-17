@@ -1,4 +1,6 @@
 
-To activate the account, go to: <a href="http://hotel-management.local{{ path('activate-account', {'activationToken' : activationToken}) }}">here</a>.<br>
+{% trans %}To activate the account, go to:{% endtrans %} <a href="http://hotel-management.local{{ path('activate-account', {'activationToken' : activationToken}) }}"> {% trans %}here. {% endtrans %}</a><br>
 <br>
+{% trans %}
 Thanks!
+{% endtrans %}

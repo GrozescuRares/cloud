@@ -1,0 +1,49 @@
+#Activation
+########################################################
+
+## activate-account.html.twig
+
+'%message% !': '%message% !'
+'Take Me To Login': 'Take Me To Login'
+
+########################################################
+
+#Dashboard
+########################################################
+
+## dashboard.html.twig
+
+
+
+'Registration Confirmation': 'Registration Confirmation'
+'Congratulations, the registration has been successful!': 'Congratulations, the registration has been successful!'
+'An activation message has been sent to %email%.': 'An activation message has been sent to %email%.'
+'Welcome to PitechPlus Hotel Management System!': 'Welcome to PitechPlus Hotel Management System!'
+Back: Back
+'Client Registration': 'Client Registration'
+Hello: Hello
+'You did it! You registered!': 'You did it! You registered!'
+'Hi %user% ! You''re successfully registered.': 'Hi %user% ! You''re successfully registered.'
+'To activate the account, go to:': 'To activate the account, go to:'
+here.: here.
+'Your credentials:': 'Your credentials:'
+'Username: %user%': 'Username: %user%'
+'Password: %pass%': 'Password: %pass%'
+"<br>\nThanks!": "<br>\nThanks!"
+Thanks!: Thanks!
+
+form:
+  label:
+    username: 'Username'
+    firstName: 'First Name'
+    lastName: 'Last Name'
+    password: 'Password'
+    confirmPassword: 'Confirm Password'
+    email: 'Email'
+    address: 'Address'
+    year: 'Year'
+    month: 'Month'
+    day: 'Day'
+    male: 'Male'
+    female: 'Female'
+    submit: 'Submit'

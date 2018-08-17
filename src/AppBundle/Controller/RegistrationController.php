@@ -58,16 +58,22 @@ class RegistrationController extends Controller
 
         $userService->registerUser($user);
 
-        return $this->redirectToRoute('registration-confirmation');
+        return $this->redirectToRoute('registration-confirmation', [
+            'email' => $user->getEmail(),
+        ]);
     }
 
     /**
-     * @Route("/registration-confirmation", name="registration-confirmation")
+     * @Route("/registration-confirmation/{email}", name="registration-confirmation")
+     *
+     * @param string $email
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function registrationConfirmationAction()
+    public function registrationConfirmationAction($email)
     {
-        return $this->render('registration/confirmation.html.twig');
+        return $this->render('registration/confirmation.html.twig', [
+            'email' => $email,
+        ]);
     }
 }
