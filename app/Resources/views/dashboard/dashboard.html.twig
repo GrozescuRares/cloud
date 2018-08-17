@@ -1,5 +1,21 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    Hello {{ app.user.username }}
+
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="row">
+                    <div class="wrapper homepage">
+                        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                            <h1 class="text-center">Welcome, {{ app.user.username }}!</h1>
+                        </div>
+                        <p class="light text-center">Welcome to our little application</p>
+                        <p class="margin-top-small text-center">What would you like to do next? Please choose from the menu.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

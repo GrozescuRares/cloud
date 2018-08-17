@@ -8,18 +8,29 @@
                     <span></span>
                     <span></span>
                 </button>
-                <a href="02-homepage.php" class="logo">
+                <a href="{{ path('dashboard') }}" class="logo">
                     Hotel Management System
                 </a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="06-my-account.php">My account</a></li>
-                    <li class="active"><a href="05-user-management.php">User Management</a></li>
-                    <li><a href="09-hotel-information-owner.php">Hotel Management</a></li>
-                    <li><a href="15-my-bookings.php">Bookings</a></li>
-                    <li><a href="01-login.php" class="btn success">Logout</a></li>
+                    <li {% if app.request.get('_route') == "my-account" %} class="active" {% endif %}>
+                        <a href="06-my-account.php">My account</a>
+                    </li>
+                    <li {% if app.request.get('_route') == "user-management" %} class="active" {% endif %}>
+                        <a href="05-user-management.php">User Management</a>
+                    </li>
+                    <li {% if app.request.get('_route') == "hotel-managemenet" %} class="active" {% endif %}>
+                        <a href="09-hotel-information-owner.php">Hotel Management
+                        </a>
+                    </li>
+                    <li {% if app.request.get('_route') == "bookings" %} class="active" {% endif %}>
+                        <a href="15-my-bookings.php">Bookings</a><
+                    </li>
+                    <li>
+                        <a href="{{ path('logout') }}" class="btn success">Logout</a>
+                    </li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div>

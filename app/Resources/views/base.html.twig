@@ -4,10 +4,14 @@
         {% include 'header.inc.html.twig' %}
     </head>
     <body>
-        <div class="container">
-            {% include 'flash-messages.html.twig' %}
-            {% block body %}{% endblock %}
-        </div>
+
+        {% if app.user %}
+            {% include 'header.html.twig' %}
+        {% endif %}
+        {% include 'flash-messages.html.twig' %}
+
+        {% block body %}{% endblock %}
+
         {% include 'footer.inc.html.twig' %}
 
         {% block javascripts %}{% endblock %}
