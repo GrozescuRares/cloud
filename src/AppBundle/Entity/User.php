@@ -21,7 +21,7 @@ class User implements UserInterface, \Serializable
     /**
      * @var int
      *
-     * @ORM\Column(name="userId", type="integer")*
+     * @ORM\Column(name="userId", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -166,10 +166,14 @@ class User implements UserInterface, \Serializable
 
     /**
      * @param bool $isActivated
+     *
+     * @return $this
      */
     public function setIsActivated($isActivated)
     {
         $this->isActivated = $isActivated;
+
+        return $this;
     }
 
     /**
@@ -182,10 +186,14 @@ class User implements UserInterface, \Serializable
 
     /**
      * @param string $activationToken
+     *
+     * @return $this
      */
     public function setActivationToken($activationToken)
     {
         $this->activationToken = $activationToken;
+
+        return $this;
     }
 
     /**
@@ -198,10 +206,14 @@ class User implements UserInterface, \Serializable
 
     /**
      * @param mixed $expirationDate
+     *
+     * @return $this
      */
     public function setExpirationDate($expirationDate)
     {
         $this->expirationDate = $expirationDate;
+
+        return $this;
     }
 
     /**
@@ -214,10 +226,14 @@ class User implements UserInterface, \Serializable
 
     /**
      * @param mixed $image
+     *
+     * @return $this
      */
     public function setImage($image)
     {
         $this->image = $image;
+
+        return $this;
     }
 
     /**
@@ -230,10 +246,14 @@ class User implements UserInterface, \Serializable
 
     /**
      * @param Role $role
+     *
+     * @return $this
      */
     public function setRole(Role $role)
     {
         $this->role = $role;
+
+        return $this;
     }
 
     /**
@@ -246,10 +266,14 @@ class User implements UserInterface, \Serializable
 
     /**
      * @param int $userId
+     *
+     * @return $this
      */
     public function setUserId($userId)
     {
         $this->userId = $userId;
+
+        return $this;
     }
 
 
