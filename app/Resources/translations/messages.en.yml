@@ -25,6 +25,7 @@ page:
     message: '%error%'
 
   dashboard:
+    hello: 'Hello %user% !'
 
   confirmation:
     title: 'Registration Confirmation'
