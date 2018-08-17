@@ -2,7 +2,8 @@
     <nav id="header" class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <button id="nav-icon1" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <button id="nav-icon1" type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -14,19 +15,22 @@
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right" id="navigation">
                     <li {% if app.request.get('_route') == "my-account" %} class="active" {% endif %}>
-                        <a href="06-my-account.php">My account</a>
+                        <a href="06-my-account.php" class="navigation-item">My account</a>
                     </li>
-                    <li {% if app.request.get('_route') == "user-management" %} class="active" {% endif %}>
-                        <a href="05-user-management.php">User Management</a>
-                    </li>
-                    <li {% if app.request.get('_route') == "hotel-managemenet" %} class="active" {% endif %}>
-                        <a href="09-hotel-information-owner.php">Hotel Management
-                        </a>
-                    </li>
+
+                    {% if is_granted('ROLE_MANAGER') %}
+                        <li {% if app.request.get('_route') == "user-management" %} class="active" {% endif %}>
+                            <a href="05-user-management.php" class="navigation-item">User Management</a>
+                        </li>
+                        <li {% if app.request.get('_route') == "hotel-managemenet" %} class="active" {% endif %}>
+                            <a href="09-hotel-information-owner.php" class="navigation-item">Hotel Management
+                            </a>
+                        </li>
+                    {% endif %}
                     <li {% if app.request.get('_route') == "bookings" %} class="active" {% endif %}>
-                        <a href="15-my-bookings.php">Bookings</a><
+                        <a href="15-my-bookings.php" class="navigation-item">Bookings</a>
                     </li>
                     <li>
                         <a href="{{ path('logout') }}" class="btn success">Logout</a>
