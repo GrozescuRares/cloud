@@ -280,8 +280,6 @@ class UserServiceTest extends TestCase
         $this->emMock->expects($this->once())
             ->method('flush');
 
-        $this->throwException(new TokenExpiredException());
-
         $this->userService->activateAccount('dfsdfssdf');
     }
 
@@ -302,8 +300,6 @@ class UserServiceTest extends TestCase
                 ]
             )
             ->willReturn(null);
-
-        $this->throwException(new UserNotFoundException());
 
         $this->emMock->expects($this->never())
             ->method('persist');
