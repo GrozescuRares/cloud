@@ -42,7 +42,9 @@ class UserService
     {
         $this->em = $em;
         $this->encoder = $encoder;
-        $this->clientRole = $em->getRepository(Role::class)->find(4);
+        $this->clientRole = $em->getRepository(Role::class)->findOneBy([
+            'description' => 'ROLE_CLIENT',
+        ]);
         $this->fileUploader = $fileUploaderService;
         $this->mailHelper = $mailHelper;
         $this->tokenLifetime = $tokenLifetime;

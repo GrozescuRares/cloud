@@ -8,15 +8,20 @@
 
 namespace Tests\AppBundle\Service;
 
+use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UserNotFoundException;
+use AppBundle\Helper\MailHelper;
+use AppBundle\Repository\RoleRepository;
+use AppBundle\Repository\UserRepository;
+use AppBundle\Service\FileUploaderService;
 use AppBundle\Service\UserService;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use PHPUnit\Framework\TestCase;
-use Tests\AppBundle\Stub\GetRepositoryUserExpiredTokenStub;
-use Tests\AppBundle\Stub\GetRepositroyNonValid;
-use Tests\AppBundle\Stub\GetRepositoryValidStub;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
 /**
  * Class UserServiceTest
@@ -24,380 +29,320 @@ use Tests\AppBundle\Stub\GetRepositoryValidStub;
  */
 class UserServiceTest extends TestCase
 {
+    /** @var EntityManager|\PHPUnit_Framework_MockObject_MockObject */
+    protected $emMock;
+
+    /** @var Role|\PHPUnit_Framework_MockObject_MockObject */
+    protected $clientRoleMock;
+
+    /** @var UserPasswordEncoder| \PHPUnit_Framework_MockObject_MockObject */
+    protected $userPasswordEncoderMock;
+
+    /** @var FileUploaderService| \PHPUnit_Framework_MockObject_MockObject */
+    protected $fileUploaderMock;
+
+    /** @var MailHelper| \PHPUnit_Framework_MockObject_MockObject */
+    protected $mailMock;
+
+    /** @var UserRepository| \PHPUnit_Framework_MockObject_MockObject */
+    protected $userRepositoryMock;
+
+    /** @var UserService */
+    protected $userService;
+
+    /**
+     *
+     */
+    public function setUp()
+    {
+        $this->emMock = $this->createMock(EntityManager::class);
+
+        $this->clientRoleMock = $this->createMock(Role::class);
+
+        $roleRepositoryMock = $this->createMock(RoleRepository::class);
+
+        $roleRepositoryMock->expects($this->once())
+            ->method('findOneBy')
+            ->with(
+                [
+                    'description' => 'ROLE_CLIENT',
+                ]
+            )
+            ->willReturn($this->clientRoleMock);
+
+        $this->userRepositoryMock = $this->createMock(UserRepository::class);
+
+        $this->emMock->expects($this->at(0))
+            ->method('getRepository')
+            ->willReturn($roleRepositoryMock);
+
+        $this->emMock->expects($this->at(1))
+            ->method('getRepository')
+            ->willReturn($this->userRepositoryMock);
+
+        $this->userPasswordEncoderMock = $this->createMock(UserPasswordEncoder::class);
+
+        $this->fileUploaderMock = $this->createMock(FileUploaderService::class);
+
+        $this->mailMock = $this->createMock(MailHelper::class);
+
+        $this->userService = new UserService(
+            $this->emMock,
+            $this->userPasswordEncoderMock,
+            $this->fileUploaderMock,
+            $this->mailMock,
+            '+1 times'
+        );
+    }
+
     /**
      * Tests a successful user registration
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
      */
     public function testSuccessfullyRegisterUser()
     {
-        $response = new \stdClass();
-        $response->response = true;
-
-        $getRepositoryValidStub = new GetRepositoryValidStub();
-
-        $emMock = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $emMock->expects($this->once())
-            ->method('persist')
-            ->will($this->returnValue($response));
-
-        $emMock->expects($this->once())
-            ->method('flush')
-            ->will($this->returnValue($response));
-
-        $emMock->expects($this->once())
-            ->method('getRepository')
-            ->will($this->returnValue($getRepositoryValidStub));
-
-        $passwordEncoder = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\UserPasswordEncoder')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $passwordEncoder->expects($this->once())
+        $this->userPasswordEncoderMock->expects($this->once())
             ->method('encodePassword')
-            ->will($this->returnValue($response));
+            ->willReturn("hashedUserPassword");
 
-        $fileUploaderMock = $this->getMockBuilder('AppBundle\Service\FileUploaderService')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $uploadeFileMock = $this->createMock(UploadedFile::class);
 
-        $fileUploaderMock->expects($this->once())
+        $this->fileUploaderMock->expects($this->once())
             ->method('upload')
-            ->will($this->returnValue($response));
+            ->willReturn("fileName");
 
-        $uploadedFileMock = $this->getMockBuilder('Symfony\Component\HttpFoundation\File\UploadedFile')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->emMock->expects($this->once())
+            ->method('persist');
 
-        $mailMock = $this->getMockBuilder('AppBundle\Helper\MailHelper')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->emMock->expects($this->once())
+            ->method('flush');
 
-        $mailMock->expects($this->once())
+        $this->mailMock->expects($this->once())
             ->method('sendEmail')
-            ->will($this->returnValue($response));
+            ->willReturn(1);
 
-        $userService = new UserService($emMock, $passwordEncoder, $fileUploaderMock, $mailMock, '+1 minutes');
+        /** @var User| \PHPUnit_Framework_MockObject_MockObject */
+        $userMock = $this->createMock(User::class);
 
-        $user = new User();
-        $user->setUsername('Rares')
-            ->setEmail('grozescu@grozescu.com')
-            ->setImage($uploadedFileMock);
+        $userMock->expects($this->exactly(2))
+            ->method('getPlainPassword')
+            ->willReturn('password');
 
+        $userMock->expects($this->once())
+            ->method('getImage')
+            ->willReturn($uploadeFileMock);
 
-        try {
-            $userService->registerUser($user);
-            $this->assertTrue(true);
-        } catch (OptimisticLockException $e) {
-            $this->assertTrue(false);
-        } catch (\Twig_Error_Loader $e) {
-            $this->assertTrue(false);
-        } catch (\Twig_Error_Runtime $e) {
-            $this->assertTrue(false);
-        } catch (\Twig_Error_Syntax $e) {
-            $this->assertTrue(false);
-        }
+        $userMock->expects($this->exactly(2))
+            ->method('getEmail')
+            ->willReturn('email@email.com');
+
+        $this->userService->registerUser($userMock);
     }
 
     /**
      * Tests a duplicated user registration
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
      */
     public function testDuplicatedRegisterUser()
     {
-        $response = new \stdClass();
-        $response->response = true;
+        /** @var  $optimisticLockExceptionMock OptimisticLockException| \PHPUnit_Framework_MockObject_MockObject */
+        $optimisticLockExceptionMock = $this->createMock(OptimisticLockException::class);
 
-        $exception = new OptimisticLockException('message', new \stdClass());
+        $this->expectException(OptimisticLockException::class);
 
-        $getRepositoryValidStub = new GetRepositoryValidStub();
-
-        $emMock = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $emMock->expects($this->once())
-            ->method('persist')
-            ->will($this->returnValue($response));
-
-        $emMock->expects($this->once())
-            ->method('flush')
-            ->willThrowException($exception);
-
-        $emMock->expects($this->once())
-            ->method('getRepository')
-            ->will($this->returnValue($getRepositoryValidStub));
-
-        $passwordEncoder = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\UserPasswordEncoder')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $passwordEncoder->expects($this->once())
+        $this->userPasswordEncoderMock->expects($this->once())
             ->method('encodePassword')
-            ->will($this->returnValue($response));
+            ->willReturn("hashedUserPassword");
 
-        $fileUploaderMock = $this->getMockBuilder('AppBundle\Service\FileUploaderService')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->emMock->expects($this->once())
+            ->method('persist');
 
-        $fileUploaderMock->expects($this->once())
-            ->method('upload')
-            ->will($this->returnValue($response));
+        $this->emMock->expects($this->once())
+            ->method('flush')
+            ->willThrowException($optimisticLockExceptionMock);
 
-        $uploadedFileMock = $this->getMockBuilder('Symfony\Component\HttpFoundation\File\UploadedFile')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->mailMock->expects($this->never())
+            ->method('sendEmail');
 
-        $mailMock = $this->getMockBuilder('AppBundle\Helper\MailHelper')
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var User| \PHPUnit_Framework_MockObject_MockObject */
+        $userMock = $this->createMock(User::class);
 
-        $mailMock->expects($this->never())
-            ->method('sendEmail')
-            ->will($this->returnValue($response));
-
-        $userService = new UserService($emMock, $passwordEncoder, $fileUploaderMock, $mailMock, '+1 minutes');
-
-        $user = new User();
-        $user->setUsername('Rares')
-            ->setEmail('grozescu@grozescu.com')
-            ->setImage($uploadedFileMock);
-
-        try {
-            $userService->registerUser($user);
-            $this->assertTrue(false);
-        } catch (OptimisticLockException $e) {
-            $this->assertTrue(true);
-        } catch (\Twig_Error_Loader $e) {
-            $this->assertTrue(false);
-        } catch (\Twig_Error_Runtime $e) {
-            $this->assertTrue(false);
-        } catch (\Twig_Error_Syntax $e) {
-            $this->assertTrue(false);
-        }
+        $this->userService->registerUser($userMock);
     }
 
     /**
      * Tests a successful user registration with no profile picture
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
      */
     public function testNoProfileImageRegisterUser()
     {
-        $response = new \stdClass();
-        $response->response = true;
-
-        $getRepositoryValidStub = new GetRepositoryValidStub();
-
-        $emMock = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $emMock->expects($this->once())
-            ->method('persist')
-            ->will($this->returnValue($response));
-
-        $emMock->expects($this->once())
-            ->method('flush')
-            ->will($this->returnValue($response));
-
-        $emMock->expects($this->once())
-            ->method('getRepository')
-            ->will($this->returnValue($getRepositoryValidStub));
-
-        $passwordEncoder = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\UserPasswordEncoder')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $passwordEncoder->expects($this->once())
+        $this->userPasswordEncoderMock->expects($this->once())
             ->method('encodePassword')
-            ->will($this->returnValue($response));
+            ->willReturn("hashedUserPassword");
 
-        $fileUploaderMock = $this->getMockBuilder('AppBundle\Service\FileUploaderService')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->fileUploaderMock->expects($this->never())
+            ->method('upload');
 
-        $fileUploaderMock->expects($this->never())
-            ->method('upload')
-            ->will($this->returnValue($response));
+        $this->emMock->expects($this->once())
+            ->method('persist');
 
-        $mailMock = $this->getMockBuilder('AppBundle\Helper\MailHelper')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->emMock->expects($this->once())
+            ->method('flush');
 
-        $mailMock->expects($this->once())
+        $this->mailMock->expects($this->once())
             ->method('sendEmail')
-            ->will($this->returnValue($response));
+            ->willReturn(1);
 
-        $userService = new UserService($emMock, $passwordEncoder, $fileUploaderMock, $mailMock, '+1 minutes');
+        /** @var User| \PHPUnit_Framework_MockObject_MockObject */
+        $userMock = $this->createMock(User::class);
 
-        $user = new User();
-        $user->setUsername('Rares')
-            ->setEmail('grozescu@grozescu.com');
-        try {
-            $userService->registerUser($user);
-            $this->assertTrue(true);
-        } catch (OptimisticLockException $e) {
-            $this->assertTrue(false);
-        } catch (\Twig_Error_Loader $e) {
-            $this->assertTrue(false);
-        } catch (\Twig_Error_Runtime $e) {
-            $this->assertTrue(false);
-        } catch (\Twig_Error_Syntax $e) {
-            $this->assertTrue(false);
-        }
+        $userMock->expects($this->exactly(2))
+            ->method('getPlainPassword')
+            ->willReturn('password');
+
+        $userMock->expects($this->once())
+            ->method('getImage')
+            ->willReturn(null);
+
+        $userMock->expects($this->exactly(2))
+            ->method('getEmail')
+            ->willReturn('email@email.com');
+
+        $this->userService->registerUser($userMock);
     }
 
     /**
      * Tests a successful account activation
+     * @throws OptimisticLockException
      */
     public function testSuccessfullyAccountActivation()
     {
-        $response = new \stdClass();
-        $response->response = true;
 
-        $userAndGetRepositoryValidStub = new GetRepositoryValidStub();
+        $user = $this->createMock(User::class);
 
-        $emMock = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $user->expects($this->once())
+            ->method('getExpirationDate')
+            ->willReturn($this->generateActivationTime());
 
-        $emMock->expects($this->once())
-            ->method('persist')
-            ->will($this->returnValue($response));
+        $this->userRepositoryMock->expects($this->once())
+            ->method('findOneBy')
+            ->with(
+                [
+                    'activationToken' => 'dfsdfssdf',
+                    'isActivated' => false,
+                ]
+            )
+            ->willReturn($user);
+        $this->emMock->expects($this->once())
+            ->method('persist');
 
-        $emMock->expects($this->once())
-            ->method('flush')
-            ->will($this->returnValue($response));
+        $this->emMock->expects($this->once())
+            ->method('flush');
 
-        $emMock->expects($this->any())
-            ->method('getRepository')
-            ->will($this->returnValue($userAndGetRepositoryValidStub));
-
-        $passwordEncoder = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\UserPasswordEncoder')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $fileUploaderMock = $this->getMockBuilder('AppBundle\Service\FileUploaderService')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $mailMock = $this->getMockBuilder('AppBundle\Helper\MailHelper')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-
-        $userService = new UserService($emMock, $passwordEncoder, $fileUploaderMock, $mailMock, '+1 minutes');
-
-        try {
-            $userService->activateAccount('dfsiwgsfhihswiu');
-            $this->assertTrue(true);
-        } catch (OptimisticLockException $e) {
-            $this->assertTrue(false);
-        } catch (TokenExpiredException $e) {
-            $this->assertTrue(false);
-        } catch (UserNotFoundException $e) {
-            $this->assertTrue(false);
-        }
+        $this->userService->activateAccount('dfsdfssdf');
     }
 
     /**
      * Tests a resend email account activation
+     * @throws OptimisticLockException
      */
     public function testResendEmailAccountActivation()
     {
-        $response = new \stdClass();
-        $response->response = true;
+        $this->expectException(TokenExpiredException::class);
 
-        $userAndGetRepositoryValidStub = new GetRepositoryUserExpiredTokenStub();
+        $userMock = $this->createMock(User::class);
 
-        $emMock = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userMock->expects($this->once())
+            ->method('getExpirationDate')
+            ->willReturn($this->generateExpiredActivationTime());
+        $userMock->expects($this->once())
+            ->method('getEmail')
+            ->willReturn('email@email.com');
+        $userMock->expects($this->once())
+            ->method('getActivationToken')
+            ->willReturn('sygfudhiifsnjoisdj');
 
-        $emMock->expects($this->once())
-            ->method('persist')
-            ->will($this->returnValue($response));
+        $this->userRepositoryMock->expects($this->once())
+            ->method('findOneBy')
+            ->with(
+                [
+                    'activationToken' => 'dfsdfssdf',
+                    'isActivated' => false,
+                ]
+            )
+            ->willReturn($userMock);
 
-        $emMock->expects($this->once())
-            ->method('flush')
-            ->will($this->returnValue($response));
-
-        $emMock->expects($this->any())
-            ->method('getRepository')
-            ->will($this->returnValue($userAndGetRepositoryValidStub));
-
-        $passwordEncoder = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\UserPasswordEncoder')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $fileUploaderMock = $this->getMockBuilder('AppBundle\Service\FileUploaderService')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $mailMock = $this->getMockBuilder('AppBundle\Helper\MailHelper')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $mailMock->expects($this->once())
+        $this->mailMock->expects($this->once())
             ->method('sendEmail')
-            ->will($this->returnValue($response));
+            ->willReturn(1);
 
+        $this->emMock->expects($this->once())
+            ->method('persist');
+        $this->emMock->expects($this->once())
+            ->method('flush');
 
-        $userService = new UserService($emMock, $passwordEncoder, $fileUploaderMock, $mailMock, '+1 minutes');
+        $this->throwException(new TokenExpiredException());
 
-        try {
-            $userService->activateAccount('dfsiwgsfhihswiu');
-            $this->assertTrue(false);
-        } catch (OptimisticLockException $e) {
-            $this->assertTrue(false);
-        } catch (TokenExpiredException $e) {
-            $this->assertTrue(true);
-        } catch (UserNotFoundException $e) {
-            $this->assertTrue(false);
-        }
+        $this->userService->activateAccount('dfsdfssdf');
     }
 
     /**
      * Tests user not found exception - no user with that token
+     * @throws OptimisticLockException
      */
     public function testNoUserWithThatTokenAccountActivation()
     {
-        $response = new \stdClass();
-        $response->response = true;
+        $this->expectException(UserNotFoundException::class);
 
-        $userAndGetRepositoryValidStub = new GetRepositroyNonValid();
+        $this->userRepositoryMock->expects($this->once())
+            ->method('findOneBy')
+            ->with(
+                [
+                    'activationToken' => 'dfsdfssdf',
+                    'isActivated' => false,
+                ]
+            )
+            ->willReturn(null);
 
-        $emMock = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->throwException(new UserNotFoundException());
 
-        $emMock->expects($this->any())
-            ->method('getRepository')
-            ->will($this->returnValue($userAndGetRepositoryValidStub));
+        $this->emMock->expects($this->never())
+            ->method('persist');
 
-        $passwordEncoder = $this->getMockBuilder('Symfony\Component\Security\Core\Encoder\UserPasswordEncoder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->emMock->expects($this->never())
+            ->method('flush');
 
-        $fileUploaderMock = $this->getMockBuilder('AppBundle\Service\FileUploaderService')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->userService->activateAccount('dfsdfssdf');
+    }
 
-        $mailMock = $this->getMockBuilder('AppBundle\Helper\MailHelper')
-            ->disableOriginalConstructor()
-            ->getMock();
+    /**
+     * @return \DateTime
+     */
+    private function generateActivationTime()
+    {
+        $dateTime = new \DateTime();
+        $dateTime->modify('+1 minutes');
 
+        return $dateTime;
+    }
 
-        $userService = new UserService($emMock, $passwordEncoder, $fileUploaderMock, $mailMock, '+1 minutes');
+    /**
+     * @return \DateTime
+     */
+    private function generateExpiredActivationTime()
+    {
+        $dateTime = new \DateTime();
+        $dateTime->modify('-1 minutes');
 
-        try {
-            $userService->activateAccount('dfsiwgsfhihswiu');
-            $this->assertTrue(false);
-        } catch (OptimisticLockException $e) {
-            $this->assertTrue(false);
-        } catch (TokenExpiredException $e) {
-            $this->assertTrue(false);
-        } catch (UserNotFoundException $e) {
-            $this->assertTrue(true);
-        }
+        return $dateTime;
     }
 }
