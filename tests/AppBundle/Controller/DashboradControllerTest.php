@@ -22,7 +22,6 @@ class DashboradControllerTest extends WebTestCase
     public function testDashboardRoute()
     {
         $client = static::createClient();
-
         $client->request('GET', '/');
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());

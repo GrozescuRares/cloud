@@ -26,7 +26,6 @@ class RegistrationAndActivationTest extends WebTestCase
          */
 
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
@@ -35,7 +34,6 @@ class RegistrationAndActivationTest extends WebTestCase
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
         $form = $this->generateRegistrationForm($form, $username, $email, 'password', 'password');
-
         $client->submit($form);
 
         $this->assertTrue(
@@ -63,9 +61,7 @@ class RegistrationAndActivationTest extends WebTestCase
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
         $form = $this->generateLoginForm($form, $username, 'password');
-
         $client->submit($form);
 
         $this->assertTrue(
@@ -84,7 +80,6 @@ class RegistrationAndActivationTest extends WebTestCase
          */
 
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
@@ -93,7 +88,6 @@ class RegistrationAndActivationTest extends WebTestCase
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
         $form = $this->generateRegistrationForm($form, $username, $email, 'password', 'password');
-
         $client->submit($form);
 
         $this->assertTrue(
@@ -109,9 +103,7 @@ class RegistrationAndActivationTest extends WebTestCase
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
         $form = $this->generateLoginForm($form, $username, 'password');
-
         $client->submit($form);
 
         $this->assertTrue(
@@ -137,9 +129,7 @@ class RegistrationAndActivationTest extends WebTestCase
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
         $form = $this->generateLoginForm($form, $username, 'password');
-
         $client->submit($form);
 
         $this->assertTrue(
@@ -157,7 +147,6 @@ class RegistrationAndActivationTest extends WebTestCase
          */
 
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
@@ -166,7 +155,6 @@ class RegistrationAndActivationTest extends WebTestCase
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
         $form = $this->generateRegistrationForm($form, $username, $email, 'password', 'password');
-
         $client->submit($form);
 
         $this->assertTrue(
@@ -204,9 +192,7 @@ class RegistrationAndActivationTest extends WebTestCase
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
         $form = $this->generateLoginForm($form, $username, 'password');
-
         $client->submit($form);
 
         $this->assertTrue(

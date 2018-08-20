@@ -22,7 +22,6 @@ class RegistrationControllerTest extends WebTestCase
     public function testRegisterRoute()
     {
         $client = static::createClient();
-
         $crawler = $client->request('GET', '/register');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
@@ -35,7 +34,6 @@ class RegistrationControllerTest extends WebTestCase
     public function testSuccessfullyRegisterFormSubmitWithTokenActivation()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
@@ -59,7 +57,6 @@ class RegistrationControllerTest extends WebTestCase
     public function testNonMatchingPasswords()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
@@ -68,7 +65,6 @@ class RegistrationControllerTest extends WebTestCase
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
         $form = $this->generateRegistrationForm($form, $username, $email, '11', '1');
-
         $crawler = $client->submit($form);
 
         $this->assertContains('This value is', $crawler->filter('div.rel ul li')->text());
@@ -81,7 +77,6 @@ class RegistrationControllerTest extends WebTestCase
     public function testInvalidPassword()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
@@ -90,7 +85,6 @@ class RegistrationControllerTest extends WebTestCase
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
         $form = $this->generateRegistrationForm($form, $username, $email, '1', '1');
-
         $crawler = $client->submit($form);
 
         $this->assertContains('This value is too short. It should have 5 characters or more.', $crawler->filter('div.rel ul li')->text());
@@ -102,7 +96,6 @@ class RegistrationControllerTest extends WebTestCase
     public function testInvalidUsername()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();

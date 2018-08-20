@@ -22,7 +22,6 @@ class ActivationControllerTest extends WebTestCase
     public function testActivateAccountRoute()
     {
         $client = static::createClient();
-
         $client->request('GET', '/activate-account/dskhnkfdndn');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
@@ -34,7 +33,6 @@ class ActivationControllerTest extends WebTestCase
     public function testInvalidToken()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('activate-account', [
             'activationToken' => 'dfsgdyjsghdkjbhvdfkbhfh',
         ]));
