@@ -12,10 +12,10 @@ use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 
 /**
- * Class GetRepositoryUserExpiredToken
+ * Class GetRepositoryUserExpiredTokenStub
  * @package Tests\AppBundle\Stub
  */
-class GetRepositoryUserExpiredToken
+class GetRepositoryUserExpiredTokenStub
 {
     /**
      * @return User

@@ -14,7 +14,7 @@ use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Service\UserService;
 use Doctrine\ORM\OptimisticLockException;
 use PHPUnit\Framework\TestCase;
-use Tests\AppBundle\Stub\GetRepositoryUserExpiredToken;
+use Tests\AppBundle\Stub\GetRepositoryUserExpiredTokenStub;
 use Tests\AppBundle\Stub\GetRepositroyNonValid;
 use Tests\AppBundle\Stub\GetRepositoryValidStub;
 
@@ -307,7 +307,7 @@ class UserServiceTest extends TestCase
         $response = new \stdClass();
         $response->response = true;
 
-        $userAndGetRepositoryValidStub = new GetRepositoryUserExpiredToken();
+        $userAndGetRepositoryValidStub = new GetRepositoryUserExpiredTokenStub();
 
         $emMock = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
