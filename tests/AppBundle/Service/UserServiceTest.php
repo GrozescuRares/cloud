@@ -31,22 +31,16 @@ class UserServiceTest extends TestCase
 {
     /** @var EntityManager|\PHPUnit_Framework_MockObject_MockObject */
     protected $emMock;
-
     /** @var Role|\PHPUnit_Framework_MockObject_MockObject */
     protected $clientRoleMock;
-
     /** @var UserPasswordEncoder| \PHPUnit_Framework_MockObject_MockObject */
     protected $userPasswordEncoderMock;
-
     /** @var FileUploaderService| \PHPUnit_Framework_MockObject_MockObject */
     protected $fileUploaderMock;
-
     /** @var MailHelper| \PHPUnit_Framework_MockObject_MockObject */
     protected $mailMock;
-
     /** @var UserRepository| \PHPUnit_Framework_MockObject_MockObject */
     protected $userRepositoryMock;
-
     /** @var UserService */
     protected $userService;
 
@@ -56,9 +50,7 @@ class UserServiceTest extends TestCase
     public function setUp()
     {
         $this->emMock = $this->createMock(EntityManager::class);
-
         $this->clientRoleMock = $this->createMock(Role::class);
-
         $roleRepositoryMock = $this->createMock(RoleRepository::class);
 
         $roleRepositoryMock->expects($this->once())
