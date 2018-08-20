@@ -1,4 +1,8 @@
 
-To activate the account, go to: <a href="http://hotel-management.local{{ path('activate-account', {'activationToken' : activationToken}) }}">here</a>.<br>
+{{ 'emails.to_activate' | trans }}
+<a href="{{ url('activate-account', {'activationToken' : activationToken}) }}">
+    {{ 'emails.here' | trans }}
+</a>
 <br>
-Thanks!
+<br>
+{{ 'emails.thanks' | trans }}

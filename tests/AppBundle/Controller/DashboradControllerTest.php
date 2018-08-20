@@ -22,7 +22,6 @@ class DashboradControllerTest extends WebTestCase
     public function testDashboardRoute()
     {
         $client = static::createClient();
-
         $client->request('GET', '/');
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
@@ -34,14 +33,10 @@ class DashboradControllerTest extends WebTestCase
     public function testDashboardPageDesignAfterOwnerLogIn()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
-        $form['_username'] = 'owner';
-        $form['_password'] = 'owner';
-
+        $form = $this->generateLoginForm($form, 'owner', 'owner');
         $client->submit($form);
 
         $this->assertTrue(
@@ -59,14 +54,10 @@ class DashboradControllerTest extends WebTestCase
     public function testDashboardPageDesignAfterManagerLogIn()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
-        $form['_username'] = 'manager1';
-        $form['_password'] = 'manager';
-
+        $form = $this->generateLoginForm($form, 'manager1', 'manager');
         $client->submit($form);
 
         $this->assertTrue(
@@ -84,14 +75,10 @@ class DashboradControllerTest extends WebTestCase
     public function testDashboardPageDesignAfterEmployeeLogIn()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
-        $form['_username'] = 'employee';
-        $form['_password'] = '12345';
-
+        $form = $this->generateLoginForm($form, 'employee', '12345');
         $client->submit($form);
 
         $this->assertTrue(
@@ -109,14 +96,10 @@ class DashboradControllerTest extends WebTestCase
     public function testDashboardPageDesignAfterClientLogIn()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
-        $form['_username'] = 'client';
-        $form['_password'] = '12345';
-
+        $form = $this->generateLoginForm($form, 'client', '12345');
         $client->submit($form);
 
         $this->assertTrue(
@@ -126,5 +109,19 @@ class DashboradControllerTest extends WebTestCase
         $crawler = $client->followRedirect();
 
         $this->assertCount(3, $crawler->filter('#navigation li'));
+    }
+
+    /**
+     * @param $form
+     * @param $username
+     * @param $password
+     * @return mixed
+     */
+    private function generateLoginForm($form, $username, $password)
+    {
+        $form['_username'] = $username;
+        $form['_password'] = $password;
+
+        return $form;
     }
 }

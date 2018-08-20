@@ -22,7 +22,6 @@ class SecurityControllerTest extends WebTestCase
     public function testLoginRoute()
     {
         $client = static::createClient();
-
         $crawler = $client->request('GET', '/login');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
@@ -35,14 +34,10 @@ class SecurityControllerTest extends WebTestCase
     public function testSuccessfullyLogInFormSubmit()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
-        $form['_username'] = 'client';
-        $form['_password'] = '12345';
-
+        $form = $this->generateLoginForm($form, 'client', '12345');
         $client->submit($form);
 
         $this->assertTrue(
@@ -56,14 +51,10 @@ class SecurityControllerTest extends WebTestCase
     public function testBadCredentials()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
-        $form['_username'] = 'rares';
-        $form['_password'] = 'hand';
-
+        $form = $this->generateLoginForm($form, 'noOne', '12345');
         $client->submit($form);
 
         $this->assertTrue(
@@ -81,14 +72,10 @@ class SecurityControllerTest extends WebTestCase
     public function testLoginWithInactiveAccount()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
-        $form['_username'] = 'testInactive';
-        $form['_password'] = '12345';
-
+        $form = $this->generateLoginForm($form, 'testInactive', '12345');
         $client->submit($form);
 
         $this->assertTrue(
@@ -106,14 +93,10 @@ class SecurityControllerTest extends WebTestCase
     public function testThatLoggedUserCanNotAccessLogInPage()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
-        $form['_username'] = 'client';
-        $form['_password'] = '12345';
-
+        $form = $this->generateLoginForm($form, 'client', '12345');
         $client->submit($form);
 
         $this->assertTrue(
@@ -121,8 +104,8 @@ class SecurityControllerTest extends WebTestCase
         );
 
         $client->followRedirect();
-
         $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+
         $this->assertTrue(
             $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('dashboard'))
         );
@@ -134,14 +117,10 @@ class SecurityControllerTest extends WebTestCase
     public function testThatLoggedUserCanNotAccessRegisterPage()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
-        $form['_username'] = 'client';
-        $form['_password'] = '12345';
-
+        $form = $this->generateLoginForm($form, 'client', '12345');
         $client->submit($form);
 
         $this->assertTrue(
@@ -162,14 +141,10 @@ class SecurityControllerTest extends WebTestCase
     public function testThatLoggedUserCanNotAccessActivateAccountPage()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
-
-        $form['_username'] = 'client';
-        $form['_password'] = '12345';
-
+        $form = $this->generateLoginForm($form, 'client', '12345');
         $client->submit($form);
 
         $this->assertTrue(
@@ -182,5 +157,19 @@ class SecurityControllerTest extends WebTestCase
         $this->assertTrue(
             $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('dashboard'))
         );
+    }
+
+    /**
+     * @param $form
+     * @param $username
+     * @param $password
+     * @return mixed
+     */
+    private function generateLoginForm($form, $username, $password)
+    {
+        $form['_username'] = $username;
+        $form['_password'] = $password;
+
+        return $form;
     }
 }

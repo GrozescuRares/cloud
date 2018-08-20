@@ -16,18 +16,20 @@ class MailHelper implements MailInterface
 {
     private $mailer;
     private $templating;
-    const FROM = 'pitech.hotel.management@gmail.com';
+    private $email;
 
     /**
      * MailHelper constructor.
      *
      * @param \Swift_Mailer     $mailer
      * @param \Twig_Environment $templating
+     * @param string            $email
      */
-    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $templating)
+    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $templating, $email)
     {
         $this->mailer = $mailer;
         $this->templating = $templating;
+        $this->email = $email;
     }
 
     /**
@@ -43,7 +45,7 @@ class MailHelper implements MailInterface
     public function sendEmail(string $to, string $subject, array $message, string $template)
     {
         $message = (new \Swift_Message($subject))
-            ->setFrom(self::FROM)
+            ->setFrom($this->email)
             ->setTo($to)
             ->setBody(
                 $this->templating->render($template, $message),

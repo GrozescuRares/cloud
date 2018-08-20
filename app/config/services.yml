@@ -48,19 +48,25 @@ services:
             - '@security.password_encoder'
             - '@app.file_uploader.service'
             - '@app.mail_helper.helper'
+            - '%token_lifetime%'
+        public: true
 
     AppBundle\Service\UserService: '@app.user.service'
 
     app.file_uploader.service:
         class: AppBundle\Service\FileUploaderService
         arguments:
-            $targetDirectory: '%brochures_directory%'
+            - '%brochures_directory%'
 
     AppBundle\Service\FileUploaderService: '@app.file_uploader.service'
 
 
     app.mail_helper.helper:
         class: AppBundle\Helper\MailHelper
+        arguments:
+            - '@swiftmailer.mailer'
+            - '@twig'
+            - '%hotel_email%'
 
     AppBundle\Helper\MailHelper: '@app.mail_helper.helper'
 

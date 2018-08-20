@@ -8,10 +8,10 @@
                 <div class="row">
                     <div class="wrapper homepage">
                         <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
-                            <h1 class="text-center">Welcome, {{ app.user.username }}!</h1>
+                            <h1 class="text-center">{{ 'page.dashboard.welcome_user'| trans({'%user%' : app.user.username}) }}</h1>
                         </div>
-                        <p class="light text-center">Welcome to our little application</p>
-                        <p class="margin-top-small text-center">What would you like to do next? Please choose from the menu.</p>
+                        <p class="light text-center">{{ 'page.dashboard.welcome'| trans }}</p>
+                        <p class="margin-top-small text-center">{{ 'page.dashboard.next'| trans }}</p>
                     </div>
                 </div>
             </div>

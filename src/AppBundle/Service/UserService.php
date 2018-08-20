@@ -10,6 +10,8 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Exception\TokenExpiredException;
+use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailInterface;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
@@ -25,7 +27,7 @@ class UserService
     private $clientRole;
     private $fileUploader;
     private $mailHelper;
-    const ACTIVATION_LINK_TIME = '+1 minutes';
+    private $tokenLifetime;
 
     /**
      * UserService constructor.
@@ -34,14 +36,18 @@ class UserService
      * @param UserPasswordEncoder $encoder
      * @param FileUploaderService $fileUploaderService
      * @param MailInterface       $mailHelper
+     * @param string              $tokenLifetime
      */
-    public function __construct(EntityManager $em, UserPasswordEncoder $encoder, FileUploaderService $fileUploaderService, MailInterface $mailHelper)
+    public function __construct(EntityManager $em, UserPasswordEncoder $encoder, FileUploaderService $fileUploaderService, MailInterface $mailHelper, $tokenLifetime)
     {
         $this->em = $em;
         $this->encoder = $encoder;
-        $this->clientRole = $em->getRepository(Role::class)->find(4);
+        $this->clientRole = $em->getRepository(Role::class)->findOneBy([
+            'description' => 'ROLE_CLIENT',
+        ]);
         $this->fileUploader = $fileUploaderService;
         $this->mailHelper = $mailHelper;
+        $this->tokenLifetime = $tokenLifetime;
     }
 
     /**
@@ -90,11 +96,9 @@ class UserService
     /**
      * @param string $activationToken
      *
-     * @return int      1 if everything was ok
-     *                 -1 if the token expired
-     *                 -2 if the token is invalid
-     *
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws UserNotFoundException
+     * @throws TokenExpiredException
      */
     public function activateAccount($activationToken)
     {
@@ -103,8 +107,8 @@ class UserService
             'isActivated' => false,
         ]);
 
-        if (!$user) {
-            return -2; //invalid token
+        if (!$user instanceof User) {
+            throw new UserNotFoundException('There is no user with token: '.$activationToken);
         }
 
         if ($user->getExpirationDate() < new \DateTime()) {
@@ -121,14 +125,12 @@ class UserService
             $this->em->persist($user);
             $this->em->flush();
 
-            return -1; //expired token
+            throw new TokenExpiredException('Token: '.$activationToken.' expired.');
         }
 
         $user->setIsActivated(true);
         $this->em->persist($user);
         $this->em->flush();
-
-        return 1; //ok
     }
 
     /**
@@ -137,7 +139,7 @@ class UserService
     private function generateActivationTime()
     {
         $dateTime = new \DateTime();
-        $dateTime->modify(self::ACTIVATION_LINK_TIME);
+        $dateTime->modify($this->tokenLifetime);
 
         return $dateTime;
     }
