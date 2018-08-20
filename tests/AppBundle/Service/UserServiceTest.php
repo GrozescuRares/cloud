@@ -73,9 +73,7 @@ class UserServiceTest extends TestCase
             ->willReturn($this->userRepositoryMock);
 
         $this->userPasswordEncoderMock = $this->createMock(UserPasswordEncoder::class);
-
         $this->fileUploaderMock = $this->createMock(FileUploaderService::class);
-
         $this->mailMock = $this->createMock(MailHelper::class);
 
         $this->userService = new UserService(
