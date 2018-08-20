@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\User;
+use AppBundle\Exception\UserNotFoundException;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
@@ -30,7 +31,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
             ->getOneOrNullResult();
 
         if (!$user instanceof User) {
-            throw new BadCredentialsException('Bad credentials !');
+            throw new UserNotFoundException('Bad credentials !');
         }
         if (!$user->isActivated()) {
             throw new BadCredentialsException('This account is not active !');
