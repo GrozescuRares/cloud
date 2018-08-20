@@ -16,7 +16,6 @@ security:
         db_provider:
             entity:
                 class: AppBundle:User
-                property: username
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
@@ -30,6 +29,7 @@ security:
                 login_path: login
                 check_path: login
                 default_target_path: dashboard
+                always_use_default_target_path: true
 
             logout:
                 path:   /logout
@@ -47,4 +47,6 @@ security:
     access_control:
     - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/registration-confirmation, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/activate-account, role: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/, role: ROLE_CLIENT }

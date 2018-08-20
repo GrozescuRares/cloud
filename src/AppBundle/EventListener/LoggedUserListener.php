@@ -19,6 +19,7 @@ class LoggedUserListener
 
     /**
      * LoggedUserListener constructor.
+     *
      * @param TokenStorageInterface $t
      * @param RouterInterface       $r
      */
@@ -59,13 +60,14 @@ class LoggedUserListener
 
     /**
      * @param $currentRoute
+     *
      * @return bool
      */
     private function isAuthenticatedUserOnAnonymousPage($currentRoute)
     {
         return in_array(
             $currentRoute,
-            ['login', 'register']
+            ['login', 'register', 'activate-account']
         );
     }
 }

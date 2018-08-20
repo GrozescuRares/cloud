@@ -6,9 +6,9 @@
             <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                 <div class="row">
                     <div class="wrapper">
-                        <a href="{{ path('login') }}" >Back</a>
+                        <a href="{{ path('login') }}" >{{'page.register.back' | trans }}</a>
                         <div class="col-md-12 col-xs-12 no-lr-padding text-center title">
-                            <h1 class="text-center">Client Registration</h1>
+                            <h1 class="text-center">{{ 'page.register.title'| trans }}</h1>
                         </div>
                         <form action="{{ path('register') }} " method="post" enctype="multipart/form-data">
                             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -18,6 +18,26 @@
                                         <div class="rel">
                                             {{ form_errors(registration_form.username) }}
                                             {{ form_widget(registration_form.username) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(registration_form.firstName) }}
+                                        <div class="rel">
+                                            {{ form_errors(registration_form.firstName) }}
+                                            {{ form_widget(registration_form.firstName) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(registration_form.lastName) }}
+                                        <div class="rel">
+                                            {{ form_errors(registration_form.lastName) }}
+                                            {{ form_widget(registration_form.lastName) }}
                                             <span></span>
                                         </div>
                                     </div>
@@ -52,6 +72,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
                                         <label>Address <span class="light">(optional)</span></label>
@@ -62,8 +84,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="col-md-12 col-xs-12 no-lr-padding">
                                         <label class="custom-label">Date of birth</label>

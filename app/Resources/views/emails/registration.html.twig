@@ -1,0 +1,17 @@
+<h3> {{ 'emails.you_did_it' | trans }} </h3>
+
+{{ 'emails.hi_user' | trans({'%user%' : username}) }}
+
+{{ 'emails.to_activate' | trans }}
+<a href="{{ url('activate-account', {'activationToken' : activationToken}) }}">
+    {{ 'emails.here' | trans }}
+</a>
+<br>
+
+{{ 'emails.credentials' | trans }}
+<br>
+{{ 'emails.username' | trans({'%user%' : username}) }}
+<br>
+{{ 'emails.password' | trans({'%pass%' : password}) }}
+<br>
+{{ 'emails.thanks' | trans }}

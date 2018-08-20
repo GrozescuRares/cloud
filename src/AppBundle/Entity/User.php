@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
+ *
  * @UniqueEntity("username")
  * @UniqueEntity("email")
  */
@@ -30,6 +31,9 @@ class User implements UserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=255, unique=true)
+     *
+     * @Assert\NotBlank()
+     * @Assert\Length(min=5)
      */
     private $username;
 
@@ -37,6 +41,7 @@ class User implements UserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=64)
+
      */
     private $password;
 
@@ -44,20 +49,29 @@ class User implements UserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
+     *
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email.",
+     *     checkMX = true
+     * )
      */
     private $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="firstName", type="string", length=255, nullable=true)
+     * @ORM\Column(name="firstName", type="string", length=255)
+     *
+     * @Assert\NotBlank()
      */
     private $firstName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="lastName", type="string", length=255, nullable=true)
+     * @ORM\Column(name="lastName", type="string", length=255)
+     *
+     * @Assert\NotBlank()
      */
     private $lastName;
 
@@ -65,6 +79,12 @@ class User implements UserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="gender", type="string", length=10)
+     *
+     * @Assert\Choice(
+     *     choices = { "Male", "Female" },
+     *     message = "Choose a valid gender.",
+     *     strict = true
+     * )
      */
     private $gender;
 
@@ -102,15 +122,99 @@ class User implements UserInterface, \Serializable
      */
     private $profilePicture;
 
-
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(min=5)
+     */
     private $plainPassword;
 
     /**
+     * @var Role $role
+     *
      * @ORM\ManyToOne(targetEntity="Role", inversedBy="users")
      * @ORM\JoinColumn(name="role_id", referencedColumnName="roleId", nullable=true)
-     * @var Role $role
      */
     private $role;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isActivated", type="boolean")
+     */
+    private $isActivated;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="activationToken", type="string", length=255)
+     */
+    private $activationToken;
+
+    /**
+     *
+     * @ORM\Column(name="expirationDate", type="datetime")
+     */
+    private $expirationDate;
+
+    /**
+     * @return bool
+     */
+    public function isActivated()
+    {
+        return $this->isActivated;
+    }
+
+    /**
+     * @param bool $isActivated
+     *
+     * @return $this
+     */
+    public function setIsActivated($isActivated)
+    {
+        $this->isActivated = $isActivated;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActivationToken()
+    {
+        return $this->activationToken;
+    }
+
+    /**
+     * @param string $activationToken
+     *
+     * @return $this
+     */
+    public function setActivationToken($activationToken)
+    {
+        $this->activationToken = $activationToken;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExpirationDate()
+    {
+        return $this->expirationDate;
+    }
+
+    /**
+     * @param mixed $expirationDate
+     *
+     * @return $this
+     */
+    public function setExpirationDate($expirationDate)
+    {
+        $this->expirationDate = $expirationDate;
+
+        return $this;
+    }
 
     /**
      * @return mixed
@@ -122,10 +226,14 @@ class User implements UserInterface, \Serializable
 
     /**
      * @param mixed $image
+     *
+     * @return $this
      */
     public function setImage($image)
     {
         $this->image = $image;
+
+        return $this;
     }
 
     /**
@@ -138,10 +246,14 @@ class User implements UserInterface, \Serializable
 
     /**
      * @param Role $role
+     *
+     * @return $this
      */
     public function setRole(Role $role)
     {
         $this->role = $role;
+
+        return $this;
     }
 
     /**
@@ -154,10 +266,14 @@ class User implements UserInterface, \Serializable
 
     /**
      * @param int $userId
+     *
+     * @return $this
      */
     public function setUserId($userId)
     {
         $this->userId = $userId;
+
+        return $this;
     }
 
 

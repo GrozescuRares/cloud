@@ -29,15 +29,16 @@ class RegistrationController extends Controller
     /**
      * @Route("/register", name="register")
      *
-     * @param Request     $request
-     *
-     * @param UserService $userService
+     * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
      */
-    public function registerAction(Request $request, UserService $userService)
+    public function registerAction(Request $request)
     {
         $user = new User();
 
@@ -54,12 +55,25 @@ class RegistrationController extends Controller
             );
         }
 
-        $userService->insertUser($user);
+        $userService = $this->get('app.user.service');
+        $userService->registerUser($user);
 
-        $this->addFlash('success', 'You are now successfully registered.');
-
-        return $this->redirectToRoute('register');
+        return $this->redirectToRoute('registration-confirmation', [
+            'email' => $user->getEmail(),
+        ]);
     }
 
+    /**
+     * @Route("/registration-confirmation/{email}", name="registration-confirmation")
+     *
+     * @param string $email
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function registrationConfirmationAction($email)
+    {
+        return $this->render('registration/confirmation.html.twig', [
+            'email' => $email,
+        ]);
+    }
 }
-

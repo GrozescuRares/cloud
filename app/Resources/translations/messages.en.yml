@@ -1,0 +1,61 @@
+
+form:
+  label:
+    username: 'Username'
+    firstName: 'First Name'
+    lastName: 'Last Name'
+    password: 'Password'
+    confirmPassword: 'Confirm Password'
+    email: 'Email'
+    address: 'Address'
+    year: 'Year'
+    month: 'Month'
+    day: 'Day'
+    male: 'Male'
+    female: 'Female'
+    submit: 'Submit'
+
+page:
+  activation-account:
+    message: '%message% !'
+    to_login: 'Take Me To Login'
+
+  error:
+    oops: 'Oops !'
+    message: '%error%'
+
+  dashboard:
+    hello: 'Hello %user% !'
+
+  confirmation:
+    title: 'Registration Confirmation'
+    congratulations: 'Congratulations, the registration has been successful!'
+    to_email: 'An activation message has been sent to %email%.'
+    welcome: 'Welcome to PitechPlus Hotel Management System!'
+
+  login:
+    welcome: 'Welcome to Hotel Management System,
+                                              please login!'
+    to_register: 'Don’t have an account? Please'
+    register: 'register.'
+    button_login: 'Login'
+    button_register: 'Register'
+
+  register:
+    title: 'Client Registration'
+    back: 'Back'
+
+emails:
+  to_activate: 'To activate the account, go to:'
+  here: 'here.'
+  thanks: 'Thanks !'
+  you_did_it: 'You did it! You registered!'
+  hi_user: "Hi %user% ! You're successfully registered."
+  credentials: 'Your credentials:'
+  username: 'Username: %user%'
+  password: 'Password: %pass%'
+
+flash_messages:
+  message: '%message%'
+  close: 'Close'
+

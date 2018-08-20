@@ -44,10 +44,14 @@ class Role
 
     /**
      * @param mixed $users
+     *
+     * @return $this
      */
     public function setUsers($users)
     {
         $this->users = $users;
+
+        return $this;
     }
 
     /**
@@ -60,10 +64,14 @@ class Role
 
     /**
      * @param int $roleId
+     *
+     * @return $this
      */
     public function setRoleId($roleId)
     {
         $this->roleId = $roleId;
+
+        return $this;
     }
 
     /**
@@ -90,4 +98,3 @@ class Role
         return $this->description;
     }
 }
-

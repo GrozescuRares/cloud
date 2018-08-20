@@ -27,5 +27,4 @@ class DashboardController extends Controller
     {
         return $this->render('dashboard/dashboard.html.twig');
     }
-
 }
