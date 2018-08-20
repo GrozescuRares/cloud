@@ -67,7 +67,6 @@ class UserServiceTest extends TestCase
         $this->emMock->expects($this->at(0))
             ->method('getRepository')
             ->willReturn($roleRepositoryMock);
-
         $this->emMock->expects($this->at(1))
             ->method('getRepository')
             ->willReturn($this->userRepositoryMock);
@@ -103,13 +102,10 @@ class UserServiceTest extends TestCase
         $this->fileUploaderMock->expects($this->once())
             ->method('upload')
             ->willReturn("fileName");
-
         $this->emMock->expects($this->once())
             ->method('persist');
-
         $this->emMock->expects($this->once())
             ->method('flush');
-
         $this->mailMock->expects($this->once())
             ->method('sendEmail')
             ->willReturn(1);
@@ -120,11 +116,9 @@ class UserServiceTest extends TestCase
         $userMock->expects($this->exactly(2))
             ->method('getPlainPassword')
             ->willReturn('password');
-
         $userMock->expects($this->once())
             ->method('getImage')
             ->willReturn($uploadeFileMock);
-
         $userMock->expects($this->exactly(2))
             ->method('getEmail')
             ->willReturn('email@email.com');
@@ -149,14 +143,11 @@ class UserServiceTest extends TestCase
         $this->userPasswordEncoderMock->expects($this->once())
             ->method('encodePassword')
             ->willReturn("hashedUserPassword");
-
         $this->emMock->expects($this->once())
             ->method('persist');
-
         $this->emMock->expects($this->once())
             ->method('flush')
             ->willThrowException($optimisticLockExceptionMock);
-
         $this->mailMock->expects($this->never())
             ->method('sendEmail');
 
@@ -178,16 +169,12 @@ class UserServiceTest extends TestCase
         $this->userPasswordEncoderMock->expects($this->once())
             ->method('encodePassword')
             ->willReturn("hashedUserPassword");
-
         $this->fileUploaderMock->expects($this->never())
             ->method('upload');
-
         $this->emMock->expects($this->once())
             ->method('persist');
-
         $this->emMock->expects($this->once())
             ->method('flush');
-
         $this->mailMock->expects($this->once())
             ->method('sendEmail')
             ->willReturn(1);
@@ -198,11 +185,9 @@ class UserServiceTest extends TestCase
         $userMock->expects($this->exactly(2))
             ->method('getPlainPassword')
             ->willReturn('password');
-
         $userMock->expects($this->once())
             ->method('getImage')
             ->willReturn(null);
-
         $userMock->expects($this->exactly(2))
             ->method('getEmail')
             ->willReturn('email@email.com');
@@ -222,7 +207,6 @@ class UserServiceTest extends TestCase
         $user->expects($this->once())
             ->method('getExpirationDate')
             ->willReturn($this->generateActivationTime());
-
         $this->userRepositoryMock->expects($this->once())
             ->method('findOneBy')
             ->with(
@@ -234,7 +218,6 @@ class UserServiceTest extends TestCase
             ->willReturn($user);
         $this->emMock->expects($this->once())
             ->method('persist');
-
         $this->emMock->expects($this->once())
             ->method('flush');
 
@@ -274,7 +257,6 @@ class UserServiceTest extends TestCase
         $this->mailMock->expects($this->once())
             ->method('sendEmail')
             ->willReturn(1);
-
         $this->emMock->expects($this->once())
             ->method('persist');
         $this->emMock->expects($this->once())
@@ -285,7 +267,6 @@ class UserServiceTest extends TestCase
 
     /**
      * Tests user not found exception - no user with that token
-     * @throws OptimisticLockException
      */
     public function testNoUserWithThatTokenAccountActivation()
     {
@@ -303,7 +284,6 @@ class UserServiceTest extends TestCase
 
         $this->emMock->expects($this->never())
             ->method('persist');
-
         $this->emMock->expects($this->never())
             ->method('flush');
 
