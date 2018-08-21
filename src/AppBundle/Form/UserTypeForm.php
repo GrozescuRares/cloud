@@ -26,7 +26,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Class MemberType
  * @package AppBundle\Form
  */
-class UserRegistrationForm extends AbstractType
+class UserTypeForm extends AbstractType
 {
     /**
      * {@inheritdoc}

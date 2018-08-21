@@ -11,7 +11,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Member;
 use AppBundle\Entity\User;
 use AppBundle\Form\Type\MemberType;
-use AppBundle\Form\UserRegistrationForm;
+use AppBundle\Form\UserTypeForm;
 use AppBundle\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
@@ -42,7 +42,7 @@ class RegistrationController extends Controller
     {
         $user = new User();
 
-        $form = $this->createForm(UserRegistrationForm::class, $user);
+        $form = $this->createForm(UserTypeForm::class, $user);
 
         $form->handleRequest($request);
 
