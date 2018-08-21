@@ -32,7 +32,7 @@ class User implements UserInterface, \Serializable
      *
      * @ORM\Column(name="username", type="string", length=255, unique=true)
      *
-     * @Assert\NotBlank(groups={"register", "edit-my-account"})
+     * @Assert\NotBlank(groups={"register", "edit-my-account"}, message="constraints.username")
      * @Assert\Length(min=5, groups={"register", "edit-my-account"})
      */
     private $username;
@@ -51,9 +51,9 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      *
      * @Assert\Email(
-     *     message = "The email '{{ value }}' is not a valid email.",
      *     checkMX = true,
-     *     groups={"register", "edit-my-account"}
+     *     groups={"register", "edit-my-account"},
+     *     message="constraints.email"
      * )
      */
     private $email;
@@ -63,7 +63,7 @@ class User implements UserInterface, \Serializable
      *
      * @ORM\Column(name="firstName", type="string", length=255)
      *
-     * @Assert\NotBlank(groups={"register", "edit-my-account"})
+     * @Assert\NotBlank(groups={"register", "edit-my-account"}, message="constraints.first_name")
      */
     private $firstName;
 
@@ -72,7 +72,7 @@ class User implements UserInterface, \Serializable
      *
      * @ORM\Column(name="lastName", type="string", length=255)
      *
-     * @Assert\NotBlank(groups={"register", "edit-my-account"})
+     * @Assert\NotBlank(groups={"register", "edit-my-account"}, message="constraints.last_name")
      */
     private $lastName;
 
@@ -83,9 +83,9 @@ class User implements UserInterface, \Serializable
      *
      * @Assert\Choice(
      *     choices = { "Male", "Female" },
-     *     message = "Choose a valid gender.",
      *     strict = true,
-     *     groups={"register", "edit-my-account"}
+     *     groups={"register", "edit-my-account"},
+     *     message="constraints.gender"
      * )
      */
     private $gender;
@@ -114,7 +114,8 @@ class User implements UserInterface, \Serializable
     /**
      *
      * @Assert\File(mimeTypes={ "image/png", "image/jpeg", "image/jpg" },
-     *     groups={"register", "edit-my-account"})
+     *     groups={"register", "edit-my-account"}
+     * )
      */
     private $image;
 
@@ -126,7 +127,7 @@ class User implements UserInterface, \Serializable
     private $profilePicture;
 
     /**
-     * @Assert\NotBlank(groups={"register"})
+     * @Assert\NotBlank(groups={"register"}, message="constraints.password")
      * @Assert\Length(min=5, groups={"register", "edit-my-account"})
      */
     private $plainPassword;

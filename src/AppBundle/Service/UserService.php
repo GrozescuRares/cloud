@@ -140,6 +140,22 @@ class UserService
      */
     public function updateUser(User $user)
     {
+        if (!empty($user->getPlainPassword())) {
+            $password = $this
+                ->encoder
+                ->encodePassword(
+                    $user,
+                    $user->getPlainPassword()
+                );
+            $user->setPassword($password);
+        }
+
+        $file = $user->getImage();
+        if ($file) {
+            $fileName = $this->fileUploader->upload($file);
+            $user->setProfilePicture($fileName);
+        }
+
         $this->em->persist($user);
         $this->em->flush();
     }

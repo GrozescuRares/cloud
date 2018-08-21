@@ -13,7 +13,7 @@
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class='user-info'>
                                 <div class='user-info-image'>
-                                    <img src='{% if app.user.profilePicture %} {{ asset('img/' ~ app.user.profilePicture) }} {% else %} {{ asset('img/user.png') }} {% endif %}'
+                                    <img src='{% if app.user.profilePicture %} {{ asset('uploads/profile/' ~ app.user.profilePicture) }} {% else %} {{ asset('img/user.png') }} {% endif %}'
                                          alt='user info'/>
                                 </div>
                                 <p class='user-info-fName'>{{ app.user.firstName }}</p>

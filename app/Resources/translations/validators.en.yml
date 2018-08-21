@@ -1,0 +1,9 @@
+
+constraints:
+  username: 'The username should not be blank.'
+  email: 'That is not a valid e-mail address.'
+  first_name: 'The first name should not be blank.'
+  last_name: 'The last name should not be blank.'
+  gender: 'Please choose between Male or Female.'
+  image: 'That is not an allowed format.'
+  password: 'This value should not be blank.'

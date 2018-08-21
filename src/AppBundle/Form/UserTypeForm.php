@@ -80,6 +80,7 @@ class UserTypeForm extends AbstractType
                     'second_options' => [
                         'label' => 'form.label.confirmPassword',
                     ],
+                    'required' => false,
                 ]
             )
             ->add(
