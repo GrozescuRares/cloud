@@ -63,6 +63,8 @@ page:
   edit-my-account:
     back: 'Back'
     title: 'Edit my account'
+    new_password: 'New password'
+    confirm_new_password: 'Confirm new password'
 
 
 emails:
