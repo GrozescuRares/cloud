@@ -32,8 +32,8 @@ class User implements UserInterface, \Serializable
      *
      * @ORM\Column(name="username", type="string", length=255, unique=true)
      *
-     * @Assert\NotBlank()
-     * @Assert\Length(min=5)
+     * @Assert\NotBlank(groups={"register", "edit-my-account"})
+     * @Assert\Length(min=5, groups={"register", "edit-my-account"})
      */
     private $username;
 
@@ -52,7 +52,8 @@ class User implements UserInterface, \Serializable
      *
      * @Assert\Email(
      *     message = "The email '{{ value }}' is not a valid email.",
-     *     checkMX = true
+     *     checkMX = true,
+     *     groups={"register", "edit-my-account"}
      * )
      */
     private $email;
@@ -62,7 +63,7 @@ class User implements UserInterface, \Serializable
      *
      * @ORM\Column(name="firstName", type="string", length=255)
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"register", "edit-my-account"})
      */
     private $firstName;
 
@@ -71,7 +72,7 @@ class User implements UserInterface, \Serializable
      *
      * @ORM\Column(name="lastName", type="string", length=255)
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"register", "edit-my-account"})
      */
     private $lastName;
 
@@ -83,7 +84,8 @@ class User implements UserInterface, \Serializable
      * @Assert\Choice(
      *     choices = { "Male", "Female" },
      *     message = "Choose a valid gender.",
-     *     strict = true
+     *     strict = true,
+     *     groups={"register", "edit-my-account"}
      * )
      */
     private $gender;
@@ -111,7 +113,8 @@ class User implements UserInterface, \Serializable
 
     /**
      *
-     * @Assert\File(mimeTypes={ "image/png", "image/jpeg", "image/jpg" })
+     * @Assert\File(mimeTypes={ "image/png", "image/jpeg", "image/jpg" },
+     *     groups={"register", "edit-my-account"})
      */
     private $image;
 
@@ -123,8 +126,8 @@ class User implements UserInterface, \Serializable
     private $profilePicture;
 
     /**
-     * @Assert\NotBlank()
-     * @Assert\Length(min=5)
+     * @Assert\NotBlank(groups={"register"})
+     * @Assert\Length(min=5, groups={"register", "edit-my-account"})
      */
     private $plainPassword;
 

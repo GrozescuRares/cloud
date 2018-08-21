@@ -134,6 +134,17 @@ class UserService
     }
 
     /**
+     * @param User $user
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function updateUser(User $user)
+    {
+        $this->em->persist($user);
+        $this->em->flush();
+    }
+
+    /**
      * @return \DateTime
      */
     private function generateActivationTime()

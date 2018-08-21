@@ -42,7 +42,9 @@ class RegistrationController extends Controller
     {
         $user = new User();
 
-        $form = $this->createForm(UserTypeForm::class, $user);
+        $form = $this->createForm(UserTypeForm::class, $user, [
+            'validation_groups' => ['register'],
+        ]);
 
         $form->handleRequest($request);
 

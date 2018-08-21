@@ -35,12 +35,16 @@ class MyAccountController extends Controller
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function editMyAccountAction(Request $request)
     {
         $user = $this->getUser();
 
-        $form = $this->createForm(UserTypeForm::class, $user);
+        $form = $this->createForm(UserTypeForm::class, $user, [
+            'validation_groups' => ['edit-my-account'],
+        ]);
         $form->handleRequest($request);
 
         if (!($form->isSubmitted() && $form->isValid())) {
@@ -51,6 +55,9 @@ class MyAccountController extends Controller
                 ]
             );
         }
+
+        $userService = $this->get('app.user.service');
+        $userService->updateUser($user);
 
         $this->addFlash('success', 'Your data was saved.');
 

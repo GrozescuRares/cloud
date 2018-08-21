@@ -76,7 +76,7 @@
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
-                                        <label>Address <span class="light">(optional)</span></label>
+                                        <label>{{ 'form.label.address'| trans }} <span class="light">(optional)</span></label>
                                         <div class="rel">
                                             {{ form_errors(registration_form.address) }}
                                             {{ form_widget(registration_form.address) }}
@@ -86,7 +86,7 @@
                                 </div>
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="col-md-12 col-xs-12 no-lr-padding">
-                                        <label class="custom-label">Date of birth</label>
+                                        <label class="custom-label">{{ 'form.label.date_of_birth'| trans }}</label>
                                     </div>
                                     <div class="col-md-3 col-sm-3 col-xs-12 no-lr-padding">
                                         <div class="styled-input">
@@ -109,7 +109,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
-                                    <label class="custom-label large">Gender</label>
+                                    <label class="custom-label large">{{ 'form.label.gender'| trans }}</label>
                                     <div class="custom-form">
                                         <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
                                             {{ form_widget(registration_form.gender.children[0]) }}
@@ -126,14 +126,14 @@
 
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
-                                        <label class="custom-label">Bio <span class="light">(optional)</span></label>
+                                        <label class="custom-label">{{ 'form.label.bio'| trans }} <span class="light">(optional)</span></label>
                                         {{ form_errors(registration_form.bio) }}
                                         {{ form_widget(registration_form.bio) }}
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
-                                        <label>Profile Picture <span class="light">(optional)</span></label>
+                                        <label>{{ 'form.label.profile_picture'| trans }} <span class="light">(optional)</span></label>
                                         {{ form_errors(registration_form.image) }}
                                         {{ form_widget(registration_form.image) }}
                                     </div>

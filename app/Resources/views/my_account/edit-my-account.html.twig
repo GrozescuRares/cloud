@@ -6,22 +6,12 @@
             <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                 <div class="row">
                     <div class="wrapper">
-                        <a href="{{ path('login') }}" >{{'page.register.back' | trans }}</a>
+                        <a href="{{ path('my-account') }}" >{{'page.edit-my-account.back' | trans }}</a>
                         <div class="col-md-12 col-xs-12 no-lr-padding text-center title">
-                            <h1 class="text-center">{{ 'page.register.title'| trans }}</h1>
+                            <h1 class="text-center">{{ 'page.edit-my-account.title'| trans }}</h1>
                         </div>
                         <form action="{{ path('edit-my-account') }} " method="post" enctype="multipart/form-data">
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <div class="col-md-12 col-xs-12 no-lr-padding">
-                                    <div class="styled-input">
-                                        {{ form_label(edit_form.username) }}
-                                        <div class="rel">
-                                            {{ form_errors(edit_form.username) }}
-                                            {{ form_widget(edit_form.username) }}
-                                            <span></span>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
                                         {{ form_label(edit_form.firstName) }}
@@ -44,7 +34,7 @@
                                 </div>
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
-                                        {{ form_label(edit_form.plainPassword.first) }}
+                                        <label>New Password</label>
                                         <div class="rel">
                                             {{ form_errors(edit_form.plainPassword.first) }}
                                             {{ form_widget(edit_form.plainPassword.first) }}
@@ -54,7 +44,7 @@
                                 </div>
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
-                                        {{ form_label(edit_form.plainPassword.second) }}
+                                        <label>Confirm new password</label>
                                         <div class="rel">
                                             {{ form_errors(edit_form.plainPassword.second) }}
                                             {{ form_widget(edit_form.plainPassword.second) }}
@@ -73,10 +63,12 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-md-6 col-sm-6 col-xs-12">
+
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
-                                        <label>Address <span class="light">(optional)</span></label>
+                                        <label>{{ 'form.label.address'| trans }} <span class="light">(optional)</span></label>
                                         <div class="rel">
                                             {{ form_errors(edit_form.address) }}
                                             {{ form_widget(edit_form.address) }}
@@ -86,7 +78,7 @@
                                 </div>
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="col-md-12 col-xs-12 no-lr-padding">
-                                        <label class="custom-label">Date of birth</label>
+                                        <label class="custom-label">{{ 'form.label.date_of_birth'| trans }}</label>
                                     </div>
                                     <div class="col-md-3 col-sm-3 col-xs-12 no-lr-padding">
                                         <div class="styled-input">
@@ -109,7 +101,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
-                                    <label class="custom-label large">Gender</label>
+                                    <label class="custom-label large">{{ 'form.label.gender'| trans }}</label>
                                     <div class="custom-form">
                                         <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
                                             {{ form_widget(edit_form.gender.children[0]) }}
@@ -126,14 +118,14 @@
 
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
-                                        <label class="custom-label">Bio <span class="light">(optional)</span></label>
+                                        <label class="custom-label">{{ 'form.label.bio'| trans }} <span class="light">(optional)</span></label>
                                         {{ form_errors(edit_form.bio) }}
                                         {{ form_widget(edit_form.bio) }}
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">
-                                        <label>Profile Picture <span class="light">(optional)</span></label>
+                                        <label>{{ 'form.label.profile_picture'| trans }}<span class="light">(optional)</span></label>
                                         {{ form_errors(edit_form.image) }}
                                         {{ form_widget(edit_form.image) }}
                                     </div>
