@@ -39,9 +39,7 @@ class DashboradControllerTest extends WebTestCase
         $form = $this->generateLoginForm($form, 'owner', 'owner');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
-        );
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $crawler = $client->followRedirect();
 
@@ -60,9 +58,7 @@ class DashboradControllerTest extends WebTestCase
         $form = $this->generateLoginForm($form, 'manager1', 'manager');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
-        );
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $crawler = $client->followRedirect();
 
@@ -81,9 +77,7 @@ class DashboradControllerTest extends WebTestCase
         $form = $this->generateLoginForm($form, 'employee', '12345');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
-        );
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $crawler = $client->followRedirect();
 
@@ -102,9 +96,7 @@ class DashboradControllerTest extends WebTestCase
         $form = $this->generateLoginForm($form, 'client', '12345');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
-        );
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $crawler = $client->followRedirect();
 
