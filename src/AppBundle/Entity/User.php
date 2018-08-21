@@ -137,6 +137,19 @@ class User implements UserInterface, \Serializable
     private $role;
 
     /**
+     * @var Hotel $hotel
+     *
+     * @ORM\ManyToOne(targetEntity="Hotel", inversedBy="users")
+     * @ORM\JoinColumn(name="hotel_id", referencedColumnName="hotelId", nullable=true)
+     */
+    private $hotel;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Hotel", mappedBy="owner")
+     */
+    private $ownedHotels;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="isActivated", type="boolean")
@@ -155,6 +168,46 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(name="expirationDate", type="datetime")
      */
     private $expirationDate;
+
+    /**
+     * @return mixed
+     */
+    public function getOwnedHotels()
+    {
+        return $this->ownedHotels;
+    }
+
+    /**
+     * @param mixed $ownedHotels
+     *
+     * @return User
+     */
+    public function setOwnedHotels($ownedHotels)
+    {
+        $this->ownedHotels = $ownedHotels;
+
+        return $this;
+    }
+
+    /**
+     * @return Hotel
+     */
+    public function getHotel()
+    {
+        return $this->hotel;
+    }
+
+    /**
+     * @param Hotel $hotel
+     *
+     * @return $this
+     */
+    public function setHotel($hotel)
+    {
+        $this->hotel = $hotel;
+
+        return $this;
+    }
 
     /**
      * @return bool

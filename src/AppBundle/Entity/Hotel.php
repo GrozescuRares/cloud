@@ -42,6 +42,58 @@ class Hotel
      */
     private $description;
 
+    /**
+     * @ORM\OneToMany(targetEntity="User", mappedBy="hotel")
+     */
+    private $users;
+
+    /**
+     * @var User $owner
+     *
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="ownedHotels")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="userId", nullable=true)
+     */
+    private $owner;
+
+    /**
+     * @return User
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param User $owner
+     *
+     * @return Hotel
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * @param array $users
+     *
+     * @return $this
+     */
+    public function setUsers($users)
+    {
+        $this->users = $users;
+
+        return $this;
+    }
 
     /**
      * Get id
@@ -125,4 +177,3 @@ class Hotel
         return $this->description;
     }
 }
-
