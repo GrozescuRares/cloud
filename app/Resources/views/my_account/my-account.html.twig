@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="content general">
+    <div class="container-fluid">
+        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+            <div class="row">
+                <div class="wrapper">
+                    <a href="{{  path('dashboard') }}" >Back</a>
+                    <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                        <h1 class="text-center">My account</h1>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class='user-info'>
+                            <div class='user-info-image'>
+                                <img src='{{ asset('img/user.png') }}' alt='user info'/>
+                            </div>
+                            <p class='user-info-fName'>First Name</p>
+                            <p class='user-info-lName'>Last Name</p>
+                            <p class='user-info-role'>Employee</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <form>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>E-mail</label>
+                                    <div class="rel">
+                                        grozescurares@yahoo.com
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>Address</label>
+                                    <div class="rel">
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <label class="custom-label">Date of birth</label>
+                                </div>
+
+
+
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
+                                <label class="custom-label large">Gender</label>
+
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>Bio</label>
+                                    <div class="rel">
+
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 account-btn pull-right no-lr-padding">
+
+                                <button type="submit" class="btn edit pull-right">Edit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
