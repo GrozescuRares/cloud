@@ -46,6 +46,41 @@ class MyAccountControllerTest extends WebTestCase
     }
 
     /**
+     * Tests the edit-my-account route with no user logged
+     */
+    public function testEditMyAccountRoute()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/edit-my-account');
+
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Tests a successfully account edit
+     */
+    public function testSuccessfulAccountEdit()
+    {
+        $client = static:: createClient();
+        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+
+        $form = $crawler->selectButton('submit')->form();
+        $form = $this->generateLoginForm($form, 'client', '12345');
+        $client->submit($form);
+
+        $client->followRedirect();
+        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('edit-my-account'));
+
+        $bio = 'bio'.substr(md5(time()), 0, 6);
+
+        $form = $crawler->selectButton('appbundle_user[submit]')->form();
+        $form = $this->generateRegistrationForm($form, $bio);
+        $crawler = $client->submit($form);
+
+        $this->assertContains('Your data was saved', $crawler->filter('div.alert')->text());
+    }
+
+    /**
      * @param $form
      * @param $username
      * @param $password
@@ -55,6 +90,18 @@ class MyAccountControllerTest extends WebTestCase
     {
         $form['_username'] = $username;
         $form['_password'] = $password;
+
+        return $form;
+    }
+
+    /**
+     * @param $form
+     * @param string $bio
+     * @return mixed
+     */
+    private function generateRegistrationForm($form, $bio)
+    {
+        $form['appbundle_user[bio]'] = $bio;
 
         return $form;
     }

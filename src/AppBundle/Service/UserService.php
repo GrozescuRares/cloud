@@ -10,6 +10,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Exception\OldPasswordException;
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailInterface;
