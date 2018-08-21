@@ -34,7 +34,6 @@ class SecurityControllerTest extends WebTestCase
     public function testSuccessfullyLogInFormSubmit()
     {
         $client = static:: createClient();
-
         $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
 
         $form = $crawler->selectButton('submit')->form();
