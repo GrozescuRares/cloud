@@ -45,6 +45,18 @@ page:
     title: 'Client Registration'
     back: 'Back'
 
+  my-account:
+    back: 'Back'
+    title: 'My account'
+    labels:
+      email: 'E-mail'
+      address: 'Address'
+      date_of_birth: 'Date of birth'
+      gender: 'Gender'
+      bio: 'Bio'
+    edit: 'Edit'
+
+
 emails:
   to_activate: 'To activate the account, go to:'
   here: 'here.'

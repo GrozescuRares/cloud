@@ -1,74 +1,88 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div class="content general">
-    <div class="container-fluid">
-        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
-            <div class="row">
-                <div class="wrapper">
-                    <a href="{{  path('dashboard') }}" >Back</a>
-                    <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
-                        <h1 class="text-center">My account</h1>
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                        <div class='user-info'>
-                            <div class='user-info-image'>
-                                <img src='{{ asset('img/user.png') }}' alt='user info'/>
-                            </div>
-                            <p class='user-info-fName'>First Name</p>
-                            <p class='user-info-lName'>Last Name</p>
-                            <p class='user-info-role'>Employee</p>
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="row">
+                    <div class="wrapper">
+                        <a href="{{ path('dashboard') }}">{{ 'page.my-account.back'| trans }}</a>
+                        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                            <h1 class="text-center">{{ 'page.my-account.title'| trans }}</h1>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                        <form>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label>E-mail</label>
-                                    <div class="rel">
-                                        grozescurares@yahoo.com
-                                        <span></span>
-                                    </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class='user-info'>
+                                <div class='user-info-image'>
+                                    <img src='{% if app.user.profilePicture %} {{ asset('img/' ~ app.user.profilePicture) }} {% else %} {{ asset('img/user.png') }} {% endif %}'
+                                         alt='user info'/>
                                 </div>
+                                <p class='user-info-fName'>{{ app.user.firstName }}</p>
+                                <p class='user-info-lName'>{{ app.user.lastName }}</p>
+                                <p class='user-info-role'>{{ app.user.role }}</p>
                             </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label>Address</label>
-                                    <div class="rel">
-                                        <span></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <form>
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
-                                    <label class="custom-label">Date of birth</label>
-                                </div>
-
-
-
-                            </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
-                                <label class="custom-label large">Gender</label>
-
-                            </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label>Bio</label>
-                                    <div class="rel">
-
-                                        <span></span>
+                                    <div class="styled-input">
+                                        <label>{{ 'page.my-account.labels.email'| trans }}</label>
+                                        <div class="rel">
+                                            {{ app.user.email }}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-12 col-xs-12 account-btn pull-right no-lr-padding">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'page.my-account.labels.address'| trans }}</label>
+                                        <div class="rel">
+                                            {% if app.user.address %}
+                                                {{ app.user.address }}
+                                            {% else %}
+                                                No address configured
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'page.my-account.labels.date_of_birth'| trans }}</label>
+                                        <div class="rel">
+                                            {{ app.user.dateOfBirth }}
+                                        </div>
+                                    </div>
 
-                                <button type="submit" class="btn edit pull-right">Edit</button>
-                            </div>
-                        </form>
+
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'page.my-account.labels.gender'| trans }}</label>
+                                        <div class="rel">
+                                            {{ app.user.gender }}
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'page.my-account.labels.bio'| trans }}</label>
+                                        <div class="rel">
+                                            {% if app.user.bio %}
+                                                {{ app.user.bio }}
+                                            {% else %}
+                                                No bio configured
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 account-btn pull-right no-lr-padding">
+
+                                    <a class="btn edit pull-right" href="#">{{ 'page.my-account.edit'| trans }}</a>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

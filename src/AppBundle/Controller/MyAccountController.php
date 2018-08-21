@@ -19,6 +19,8 @@ class MyAccountController extends Controller
 {
     /**
      * @Route("/my-account", name="my-account")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function myAccountAction()
     {
