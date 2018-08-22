@@ -159,13 +159,13 @@ class User implements UserInterface, \Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="activationToken", type="string", length=255)
+     * @ORM\Column(name="activationToken", type="string", length=255, nullable=true)
      */
     private $activationToken;
 
     /**
      *
-     * @ORM\Column(name="expirationDate", type="datetime")
+     * @ORM\Column(name="expirationDate", type="datetime", nullable=true)
      */
     private $expirationDate;
 
