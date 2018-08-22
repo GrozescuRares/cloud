@@ -41,14 +41,12 @@ class AddUserTypeForm extends AbstractType
                     $loggedUser = $event->getForm()->getConfig()->getOptions()['loggedUser'];
 
                     if ($loggedUser->getRoles() === ['ROLE_OWNER']) {
+                        $hotels = $event->getForm()->getConfig()->getOptions()['hotels'];
                         $form->add(
                             'hotel',
                             ChoiceType::class,
                             [
-                                'choices' => [
-                                    'hotel1' => 'hotel1',
-                                    'hotel2' => 'hotel2',
-                                ],
+                                'choices' => $hotels,
                             ]
                         );
                     }
@@ -153,6 +151,7 @@ class AddUserTypeForm extends AbstractType
                 'data_class' => User::class,
                 'loggedUser' => null,
                 'roles' => null,
+                'hotels' => null,
             ]
         );
     }

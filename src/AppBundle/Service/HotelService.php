@@ -46,13 +46,13 @@ class HotelService
     {
         $userRole = $owner->getRoles()[0];
 
-        if (! $userRole === 'ROLE_OWNER') {
+        if (! ($userRole === 'ROLE_OWNER' || $userRole == 'ROLE_MANAGER')) {
             throw new InappropriateUserRoleException();
         }
 
         $hotels = $this->em->getRepository(Hotel::class)->findBy(
             [
-                'owner_id' => $owner->getUserId(),
+                'owner' => $owner->getUserId(),
             ]
         );
 
