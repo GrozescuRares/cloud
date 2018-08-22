@@ -11,6 +11,7 @@ namespace AppBundle\Service;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Exception\InappropriateUserRoleException;
+use AppBundle\Exception\NoRoleException;
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailInterface;
@@ -43,9 +44,6 @@ class UserService
     {
         $this->em = $em;
         $this->encoder = $encoder;
-        $this->clientRole = $em->getRepository(Role::class)->findOneBy([
-            'description' => 'ROLE_CLIENT',
-        ]);
         $this->fileUploader = $fileUploaderService;
         $this->mailHelper = $mailHelper;
         $this->tokenLifetime = $tokenLifetime;
@@ -68,13 +66,15 @@ class UserService
                 $user->getPlainPassword()
             );
         $user->setPassword($password);
-        $user->setRole($this->clientRole);
+        $user->setRole($this->em->getRepository(Role::class)->findOneBy([
+            'description' => 'ROLE_CLIENT',
+        ]));
         $user->setIsActivated(false);
         $user->setActivationToken(md5($user->getUsername()).md5($user->getEmail()));
         $user->setExpirationDate($this->generateActivationTime());
 
         $file = $user->getImage();
-        if ($file) {
+        if (!empty($file)) {
             $fileName = $this->fileUploader->upload($file);
             $user->setProfilePicture($fileName);
         }
@@ -152,6 +152,10 @@ class UserService
      */
     public function getUserCreationalRoles(User $user)
     {
+        if (empty($user->getRoles())) {
+            throw new NoRoleException();
+        }
+
         $userRole = $user->getRoles()[0];
         $roles = $this->em->getRepository(Role::class)->findAll();
         $result = [];
@@ -180,6 +184,10 @@ class UserService
      */
     public function addUser(User $user, User $loggedUser)
     {
+        if (empty($loggedUser->getRoles())) {
+            throw new NoRoleException();
+        }
+
         $password = $this
             ->encoder
             ->encodePassword(

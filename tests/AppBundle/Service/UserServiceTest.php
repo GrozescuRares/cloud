@@ -11,6 +11,7 @@ namespace Tests\AppBundle\Service;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Exception\NoRoleException;
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailHelper;
@@ -42,6 +43,8 @@ class UserServiceTest extends TestCase
     protected $mailMock;
     /** @var UserRepository| \PHPUnit_Framework_MockObject_MockObject */
     protected $userRepositoryMock;
+    /** @var RoleRepository| \PHPUnit_Framework_MockObject_MockObject */
+    protected $roleRepositoryMock;
     /** @var UserService */
     protected $userService;
 
@@ -52,29 +55,15 @@ class UserServiceTest extends TestCase
     {
         $this->emMock = $this->createMock(EntityManager::class);
         $this->clientRoleMock = $this->createMock(Role::class);
-        $roleRepositoryMock = $this->createMock(RoleRepository::class);
-
-        $roleRepositoryMock->expects($this->once())
-            ->method('findOneBy')
-            ->with(
-                [
-                    'description' => 'ROLE_CLIENT',
-                ]
-            )
-            ->willReturn($this->clientRoleMock);
-
-        $this->userRepositoryMock = $this->createMock(UserRepository::class);
-
-        $this->emMock->expects($this->at(0))
-            ->method('getRepository')
-            ->willReturn($roleRepositoryMock);
-        $this->emMock->expects($this->at(1))
-            ->method('getRepository')
-            ->willReturn($this->userRepositoryMock);
-
+        $this->roleRepositoryMock = $this->createMock(RoleRepository::class);
         $this->userPasswordEncoderMock = $this->createMock(UserPasswordEncoder::class);
         $this->fileUploaderMock = $this->createMock(FileUploaderService::class);
         $this->mailMock = $this->createMock(MailHelper::class);
+        $this->userRepositoryMock = $this->createMock(UserRepository::class);
+
+        $this->emMock->expects($this->any())
+            ->method('getRepository')
+            ->will($this->returnCallback([$this, 'entityManagerCallback']));
 
         $this->userService = new UserService(
             $this->emMock,
@@ -83,6 +72,24 @@ class UserServiceTest extends TestCase
             $this->mailMock,
             '+1 times'
         );
+    }
+
+    /**
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function entityManagerCallback()
+    {
+        $args = func_get_args();
+        $className = reset($args);
+
+        $repositories = $this->repositoryMapping();
+        if (empty($repositories[$className])) {
+            throw new \Exception();
+        }
+
+        return $repositories[$className];
     }
 
     /**
@@ -100,9 +107,19 @@ class UserServiceTest extends TestCase
 
         $uploadeFileMock = $this->createMock(UploadedFile::class);
 
+        $this->roleRepositoryMock->expects($this->once())
+            ->method('findOneBy')
+            ->with(
+                [
+                    'description' => 'ROLE_CLIENT',
+                ]
+            )
+            ->willReturn($this->clientRoleMock);
+
         $this->fileUploaderMock->expects($this->once())
             ->method('upload')
             ->willReturn("fileName");
+
         $this->emMock->expects($this->once())
             ->method('persist');
         $this->emMock->expects($this->once())
@@ -141,14 +158,26 @@ class UserServiceTest extends TestCase
 
         $this->expectException(OptimisticLockException::class);
 
+        $this->roleRepositoryMock->expects($this->once())
+            ->method('findOneBy')
+            ->with(
+                [
+                    'description' => 'ROLE_CLIENT',
+                ]
+            )
+            ->willReturn($this->clientRoleMock);
+
+
         $this->userPasswordEncoderMock->expects($this->once())
             ->method('encodePassword')
             ->willReturn("hashedUserPassword");
+
         $this->emMock->expects($this->once())
             ->method('persist');
         $this->emMock->expects($this->once())
             ->method('flush')
             ->willThrowException($optimisticLockExceptionMock);
+
         $this->mailMock->expects($this->never())
             ->method('sendEmail');
 
@@ -167,15 +196,27 @@ class UserServiceTest extends TestCase
      */
     public function testNoProfileImageRegisterUser()
     {
+        $this->roleRepositoryMock->expects($this->once())
+            ->method('findOneBy')
+            ->with(
+                [
+                    'description' => 'ROLE_CLIENT',
+                ]
+            )
+            ->willReturn($this->clientRoleMock);
+
         $this->userPasswordEncoderMock->expects($this->once())
             ->method('encodePassword')
             ->willReturn("hashedUserPassword");
+
         $this->fileUploaderMock->expects($this->never())
             ->method('upload');
+
         $this->emMock->expects($this->once())
             ->method('persist');
         $this->emMock->expects($this->once())
             ->method('flush');
+
         $this->mailMock->expects($this->once())
             ->method('sendEmail')
             ->willReturn(1);
@@ -208,6 +249,7 @@ class UserServiceTest extends TestCase
         $user->expects($this->once())
             ->method('getExpirationDate')
             ->willReturn($this->generateActivationTime());
+
         $this->userRepositoryMock->expects($this->once())
             ->method('findOneBy')
             ->with(
@@ -217,6 +259,7 @@ class UserServiceTest extends TestCase
                 ]
             )
             ->willReturn($user);
+
         $this->emMock->expects($this->once())
             ->method('persist');
         $this->emMock->expects($this->once())
@@ -306,7 +349,7 @@ class UserServiceTest extends TestCase
             ->method('setIsActivated')
             ->with(true);
 
-        $loggedUserMock->expects($this->once())
+        $loggedUserMock->expects($this->exactly(2))
             ->method('getRoles')
             ->willReturn(['ROLE_OWNER']);
 
@@ -337,7 +380,7 @@ class UserServiceTest extends TestCase
             ->method('setHotel')
             ->with($hotelMock);
 
-        $loggedUserMock->expects($this->once())
+        $loggedUserMock->expects($this->exactly(2))
             ->method('getRoles')
             ->willReturn(['ROLE_MANAGER']);
         $loggedUserMock->expects($this->once())
@@ -350,6 +393,120 @@ class UserServiceTest extends TestCase
             ->method('flush');
 
         $this->userService->addUser($userMock, $loggedUserMock);
+    }
+
+    /**
+     * Tests addUser when loggedUser has no role
+     */
+    public function testAddUserWhenLoggedUserHasNoRole()
+    {
+        $this->expectException(NoRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn(null);
+
+        $this->userService->getUserCreationalRoles($loggedUserMock);
+    }
+
+    /**
+     * tests getUserCrationalRoles when user has role owner
+     */
+    public function testGetUserCreationalRolesWhenUserHasRoleOwner()
+    {
+        $userMock = $this->createMock(User::class);
+        $roleManagerMock = $this->createMock(Role::class);
+        $roleEmployeeMock = $this->createMock(Role::class);
+        $roleOwnerMock = $this->createMock(Role::class);
+        $roleClientMock = $this->createMock(Role::class);
+
+        $roleManagerMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn('ROLE_MANAGER');
+
+        $roleEmployeeMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn('ROLE_EMPLOYEE');
+
+        $roleOwnerMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn('ROLE_OWNER');
+
+        $roleClientMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn('ROLE_CLIENT');
+
+        $userMock->expects($this->exactly(2))
+            ->method('getRoles')
+            ->willReturn(['ROLE_OWNER']);
+
+        $this->roleRepositoryMock->expects($this->once())
+            ->method('findAll')
+            ->willReturn([$roleManagerMock, $roleEmployeeMock, $roleClientMock, $roleOwnerMock]);
+
+        $this->assertEquals(
+            ['ROLE_MANAGER' => $roleManagerMock, 'ROLE_EMPLOYEE' => $roleEmployeeMock],
+            $this->userService->getUserCreationalRoles($userMock)
+        );
+    }
+
+    /**
+     * tests getUserCrationalRoles when user has role manager
+     */
+    public function testGetUserCreationalRolesWhenUserHasRoleManager()
+    {
+        $userMock = $this->createMock(User::class);
+        $roleManagerMock = $this->createMock(Role::class);
+        $roleEmployeeMock = $this->createMock(Role::class);
+        $roleOwnerMock = $this->createMock(Role::class);
+        $roleClientMock = $this->createMock(Role::class);
+
+        $roleManagerMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn('ROLE_MANAGER');
+
+        $roleEmployeeMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn('ROLE_EMPLOYEE');
+
+        $roleOwnerMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn('ROLE_OWNER');
+
+        $roleClientMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn('ROLE_CLIENT');
+
+        $userMock->expects($this->exactly(2))
+            ->method('getRoles')
+            ->willReturn(['ROLE_MANAGER']);
+
+        $this->roleRepositoryMock->expects($this->once())
+            ->method('findAll')
+            ->willReturn([$roleManagerMock, $roleEmployeeMock, $roleClientMock, $roleOwnerMock]);
+
+        $this->assertEquals(
+            ['ROLE_EMPLOYEE' => $roleEmployeeMock],
+            $this->userService->getUserCreationalRoles($userMock)
+        );
+    }
+
+    /**
+     * Tests getUserCrationalRoles when user has no role
+     */
+    public function testGetCreationalRolesWhenUserHasNoRole()
+    {
+        $this->expectException(NoRoleException::class);
+
+        $userMock = $this->createMock(User::class);
+
+        $userMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn(null);
+
+        $this->userService->getUserCreationalRoles($userMock);
     }
 
     /**
@@ -372,5 +529,16 @@ class UserServiceTest extends TestCase
         $dateTime->modify('-1 minutes');
 
         return $dateTime;
+    }
+
+    /**
+     * @return array
+     */
+    private function repositoryMapping()
+    {
+        return [
+            Role::class => $this->roleRepositoryMock,
+            User::class => $this->userRepositoryMock,
+        ];
     }
 }
