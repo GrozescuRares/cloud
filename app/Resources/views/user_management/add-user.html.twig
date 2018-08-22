@@ -10,7 +10,7 @@
                         <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
                             <h1 class="text-center">{{ 'page.user-management.add-user.title'| trans }}</h1>
                         </div>
-                        <form class="user-form">
+                        <form class="user-form" action="{{ path('add-user') }}" method="post">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <div class="styled-input">

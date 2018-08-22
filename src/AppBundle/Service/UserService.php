@@ -137,7 +137,7 @@ class UserService
     /**
      * Returns an array of roles that contains every roles except
      * $user's role, ROLE_CLIENT, and the roles that are higher in hierarchy.
-     * The elements of the array will look like 'role_description' => 'role_description'
+     * The elements of the array will look like 'role_description' => role entity
      *
      *  Example: 1. For a user with ROLE_OWNER, the function will return
      *              an array containing all the roles except ROLE_OWNER
@@ -170,7 +170,7 @@ class UserService
             $roleDescription = $role->getDescription();
 
             if (! ($roleDescription === 'ROLE_CLIENT' || $roleDescription === $userRole)) {
-                $result[$roleDescription] = $roleDescription;
+                $result[$roleDescription] = $role;
             }
         }
 

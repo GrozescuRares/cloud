@@ -34,7 +34,7 @@ class HotelService
 
     /**
      * Returns an array of hotels that have the owner_id equal
-     * with $owner's id. The elements will look like 'hotel_name' => 'hotel_id'
+     * with $owner's id. The elements will look like 'hotel_name' => hotel entity
      *
      * @param User $owner
      *
@@ -60,7 +60,7 @@ class HotelService
 
         /** @var Hotel $hotel */
         foreach ($hotels as $hotel) {
-            $result[$hotel->getName()] = $hotel->getHotelId();
+            $result[$hotel->getName()] = $hotel;
         }
 
         return $result;

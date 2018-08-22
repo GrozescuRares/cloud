@@ -45,6 +45,7 @@ class UserManagementController extends Controller
 
         $form->handleRequest($request);
 
+        var_dump($user);
         if (!($form->isSubmitted() && $form->isValid())) {
             return $this->render(
                 'user_management/add-user.html.twig',
