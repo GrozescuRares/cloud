@@ -71,3 +71,11 @@ services:
     AppBundle\Helper\MailHelper: '@app.mail_helper.helper'
 
     AppBundle\Helper\MailInterface: '@AppBundle\Helper\MailHelper'
+
+    app.hotel.service:
+        class: AppBundle\Service\HotelService
+        arguments:
+            - '@doctrine.orm.entity_manager'
+        public: true
+
+    AppBundle\Service\HotelService: '@app.hotel.service'
