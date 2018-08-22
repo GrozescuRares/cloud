@@ -14,6 +14,10 @@ form:
     male: 'Male'
     female: 'Female'
     submit: 'Submit'
+    role: 'Role'
+    date_of_birth: 'Date of birth'
+    gender: 'Gender'
+    hotel: 'Hotel'
 
 page:
   activation-account:
@@ -46,6 +50,11 @@ page:
   register:
     title: 'Client Registration'
     back: 'Back'
+
+  user-management:
+    add-user:
+      title: 'Add user'
+      back: 'Back'
 
 emails:
   to_activate: 'To activate the account, go to:'
