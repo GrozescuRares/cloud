@@ -135,13 +135,9 @@ class UserService
     }
 
     /**
-     * Pre: This function will be called only for users that have
-     *      ROLE_OWNER or ROLE_MANAGER.
-     *
-     * Post:
-     *
-     *  Returns an array of roles that contains every roles except
-     *  $user's role, ROLE_CLIENT, and the roles that are higher in hierarchy.
+     * Returns an array of roles that contains every roles except
+     * $user's role, ROLE_CLIENT, and the roles that are higher in hierarchy.
+     * The elements of the array will look like 'role_description' => 'role_description'
      *
      *  Example: 1. For a user with ROLE_OWNER, the function will return
      *              an array containing all the roles except ROLE_OWNER
@@ -152,7 +148,9 @@ class UserService
      *
      * @param User $user
      *
-     * @throws InappropriateUserRoleException
+     * @throws InappropriateUserRoleException if it's called with an $user that
+     *                                        doesn't have role ROLE_OWNER or
+     *                                        ROLE_MANAGER
      *
      * @return array
      */
