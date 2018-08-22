@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
 use AppBundle\Form\AddUserTypeForm;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,6 +26,8 @@ class UserManagementController extends Controller
      * @Route("/user-management/add-user", name="add-user")
      *
      * @param Request $request
+     *
+     * @throws OptimisticLockException
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -45,7 +48,6 @@ class UserManagementController extends Controller
 
         $form->handleRequest($request);
 
-        var_dump($user);
         if (!($form->isSubmitted() && $form->isValid())) {
             return $this->render(
                 'user_management/add-user.html.twig',
@@ -55,13 +57,9 @@ class UserManagementController extends Controller
             );
         }
 
+        $userService->addUser($user, $loggedUser);
         $this->addFlash('success', 'Add user form successfully submitted. Thank you !');
 
-        return $this->render(
-            'user_management/add-user.html.twig',
-            [
-                'add_user_form' => $form->createView(),
-            ]
-        );
+        return $this->redirectToRoute('add-user');
     }
 }

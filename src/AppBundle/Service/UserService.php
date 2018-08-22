@@ -182,6 +182,31 @@ class UserService
     }
 
     /**
+     * @param User $user
+     * @param User $loggedUser
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function addUser(User $user, User $loggedUser)
+    {
+        $password = $this
+            ->encoder
+            ->encodePassword(
+                $user,
+                $user->getPlainPassword()
+            );
+        $user->setPassword($password);
+        $user->setIsActivated(true);
+
+        if ($loggedUser->getRoles()[0] === 'ROLE_MANAGER') {
+            $user->setHotel($loggedUser->getHotel());
+        }
+
+        $this->em->persist($user);
+        $this->em->flush();
+    }
+
+    /**
      * @return \DateTime
      */
     private function generateActivationTime()
