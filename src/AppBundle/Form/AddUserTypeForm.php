@@ -128,10 +128,7 @@ class AddUserTypeForm extends AbstractType
                 'role',
                 ChoiceType::class,
                 [
-                    'choices' => [
-                        'role1' => 'role1',
-                        'role2' => 'role2',
-                    ],
+                    'choices' => $options['roles'],
                 ]
             )
             ->add(
@@ -155,6 +152,7 @@ class AddUserTypeForm extends AbstractType
             [
                 'data_class' => User::class,
                 'loggedUser' => null,
+                'roles' => null,
             ]
         );
     }

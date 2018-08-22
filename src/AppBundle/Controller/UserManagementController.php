@@ -32,9 +32,13 @@ class UserManagementController extends Controller
     {
         $user = new User();
         $loggedUser = $this->getUser();
+        $userService = $this->get('app.user.service');
+
+        $roles = $userService->getUserCreationalRoles($loggedUser);
 
         $form = $this->createForm(AddUserTypeForm::class, $user, [
             'loggedUser' => $loggedUser,
+            'roles'      => $roles,
         ]);
 
         $form->handleRequest($request);

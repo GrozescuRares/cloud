@@ -10,6 +10,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailInterface;
@@ -131,6 +132,55 @@ class UserService
         $user->setIsActivated(true);
         $this->em->persist($user);
         $this->em->flush();
+    }
+
+    /**
+     * Pre: This function will be called only for users that have
+     *      ROLE_OWNER or ROLE_MANAGER.
+     *
+     * Post:
+     *
+     *  Returns an array of roles that contains every roles except
+     *  $user's role, ROLE_CLIENT, and the roles that are higher in hierarchy.
+     *
+     *  Example: 1. For a user with ROLE_OWNER, the function will return
+     *              an array containing all the roles except ROLE_OWNER
+     *              and ROLE_CLIENT.
+     *           2. For a user with ROLE_MANAGER the function will return
+     *              an array containing all the roles except ROLE_OWNER,
+     *              ROLE_MANAGER and ROLE_CLIENT.
+     *
+     * @param User $user
+     *
+     * @throws InappropriateUserRoleException
+     *
+     * @return array
+     */
+    public function getUserCreationalRoles(User $user)
+    {
+        $userRole = $user->getRoles()[0];
+
+        if (! ($userRole === 'ROLE_OWNER' || $userRole === 'ROLE_MANAGER' )) {
+            throw new InappropriateUserRoleException();
+        }
+
+        $roles = $this->em->getRepository(Role::class)->findAll();
+        $result = [];
+
+        /** @var Role $role */
+        foreach ($roles as $role) {
+            $roleDescription = $role->getDescription();
+
+            if (! ($roleDescription === 'ROLE_CLIENT' || $roleDescription === $userRole)) {
+                $result[$roleDescription] = $roleDescription;
+            }
+        }
+
+        if ($userRole === 'ROLE_MANAGER') {
+            unset($result['ROLE_OWNER']);
+        }
+
+        return $result;
     }
 
     /**
