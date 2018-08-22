@@ -40,9 +40,7 @@ class SecurityControllerTest extends WebTestCase
         $form = $this->generateLoginForm($form, 'client', '12345');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
-        );
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
     }
 
     /**
@@ -57,9 +55,7 @@ class SecurityControllerTest extends WebTestCase
         $form = $this->generateLoginForm($form, 'noOne', '12345');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('login'))
-        );
+        $this->assertRegExp('/\/login$/', $client->getResponse()->headers->get('location'));
 
         $crawler = $client->followRedirect();
 
@@ -78,9 +74,7 @@ class SecurityControllerTest extends WebTestCase
         $form = $this->generateLoginForm($form, 'testInactive', '12345');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('login'))
-        );
+        $this->assertRegExp('/\/login$/', $client->getResponse()->headers->get('location'));
 
         $crawler = $client->followRedirect();
 
@@ -99,9 +93,7 @@ class SecurityControllerTest extends WebTestCase
         $form = $this->generateLoginForm($form, 'client', '12345');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
-        );
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
         $client->request('GET', $client->getContainer()->get('router')->generate('login'));
@@ -123,9 +115,7 @@ class SecurityControllerTest extends WebTestCase
         $form = $this->generateLoginForm($form, 'client', '12345');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
-        );
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
 
@@ -147,9 +137,7 @@ class SecurityControllerTest extends WebTestCase
         $form = $this->generateLoginForm($form, 'client', '12345');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
-        );
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
 
