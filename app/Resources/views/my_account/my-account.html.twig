@@ -13,12 +13,12 @@
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class='user-info'>
                                 <div class='user-info-image'>
-                                    <img src='{% if app.user.profilePicture %} {{ asset('uploads/profile/' ~ app.user.profilePicture) }} {% else %} {{ asset('img/user.png') }} {% endif %}'
+                                    <img src='{% if user.profilePicture %} {{ asset('uploads/profile/' ~ user.profilePicture) }} {% else %} {{ asset('img/user.png') }} {% endif %}'
                                          alt='user info'/>
                                 </div>
-                                <p class='user-info-fName'>{{ app.user.firstName }}</p>
-                                <p class='user-info-lName'>{{ app.user.lastName }}</p>
-                                <p class='user-info-role'>{{ app.user.role }}</p>
+                                <p class='user-info-fName'>{{ user.firstName }}</p>
+                                <p class='user-info-lName'>{{ user.lastName }}</p>
+                                <p class='user-info-role'>{{ user.role }}</p>
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -27,7 +27,7 @@
                                     <div class="styled-input">
                                         <label>{{ 'page.my-account.labels.email'| trans }}</label>
                                         <div class="rel">
-                                            {{ app.user.email }}
+                                            {{ user.email }}
                                         </div>
                                     </div>
                                 </div>
@@ -35,8 +35,8 @@
                                     <div class="styled-input">
                                         <label>{{ 'page.my-account.labels.address'| trans }}</label>
                                         <div class="rel">
-                                            {% if app.user.address %}
-                                                {{ app.user.address }}
+                                            {% if user.address %}
+                                                {{ user.address }}
                                             {% else %}
                                                 No address configured
                                             {% endif %}
@@ -47,7 +47,7 @@
                                     <div class="styled-input">
                                         <label>{{ 'page.my-account.labels.date_of_birth'| trans }}</label>
                                         <div class="rel">
-                                            {{ app.user.dateOfBirth }}
+                                            {{ user.dateOfBirth }}
                                         </div>
                                     </div>
 
@@ -57,7 +57,7 @@
                                     <div class="styled-input">
                                         <label>{{ 'page.my-account.labels.gender'| trans }}</label>
                                         <div class="rel">
-                                            {{ app.user.gender }}
+                                            {{ user.gender }}
                                         </div>
                                     </div>
 
@@ -66,8 +66,8 @@
                                     <div class="styled-input">
                                         <label>{{ 'page.my-account.labels.bio'| trans }}</label>
                                         <div class="rel">
-                                            {% if app.user.bio %}
-                                                {{ app.user.bio }}
+                                            {% if user.bio %}
+                                                {{ user.bio }}
                                             {% else %}
                                                 No bio configured
                                             {% endif %}

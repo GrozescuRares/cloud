@@ -26,7 +26,9 @@ class MyAccountController extends Controller
      */
     public function myAccountAction()
     {
-        return $this->render('my_account/my-account.html.twig');
+        return $this->render('my_account/my-account.html.twig', [
+            'user' => $this->getUser(),
+        ]);
     }
 
     /**
@@ -52,6 +54,7 @@ class MyAccountController extends Controller
                 'my_account/edit-my-account.html.twig',
                 [
                     'edit_form' => $form->createView(),
+                    'user' => $user,
                 ]
             );
         }
@@ -65,6 +68,7 @@ class MyAccountController extends Controller
             'my_account/edit-my-account.html.twig',
             [
                 'edit_form' => $form->createView(),
+                'user' => $user,
             ]
         );
     }
