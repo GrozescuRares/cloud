@@ -64,9 +64,7 @@ class RegistrationAndActivationTest extends WebTestCase
         $form = $this->generateLoginForm($form, $username, 'password');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
-        );
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
     }
 
 
@@ -106,9 +104,7 @@ class RegistrationAndActivationTest extends WebTestCase
         $form = $this->generateLoginForm($form, $username, 'password');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('login'))
-        );
+        $this->assertRegExp('/\/login$/', $client->getResponse()->headers->get('location'));
 
         /*
          * Activation
@@ -132,9 +128,7 @@ class RegistrationAndActivationTest extends WebTestCase
         $form = $this->generateLoginForm($form, $username, 'password');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
-        );
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
     }
 
     /**
@@ -195,9 +189,7 @@ class RegistrationAndActivationTest extends WebTestCase
         $form = $this->generateLoginForm($form, $username, 'password');
         $client->submit($form);
 
-        $this->assertTrue(
-            $client->getResponse()->isRedirect('http://localhost'.$client->getContainer()->get('router')->generate('dashboard'))
-        );
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
     }
 
     /**

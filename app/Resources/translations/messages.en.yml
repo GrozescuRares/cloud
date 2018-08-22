@@ -25,7 +25,9 @@ page:
     message: '%error%'
 
   dashboard:
-    hello: 'Hello %user% !'
+    welcome_user: 'Welcome, %user% !'
+    welcome: 'Welcome to our little application'
+    next: 'What would you like to do next? Please choose from the menu.'
 
   confirmation:
     title: 'Registration Confirmation'
@@ -59,3 +61,10 @@ flash_messages:
   message: '%message%'
   close: 'Close'
 
+navigation:
+  logo: 'Hotel Management System'
+  my_account: 'My Account'
+  hotel_management: 'Hotel Management'
+  user_management: 'User Management'
+  bookings: 'Bookings'
+  logout: 'Log Out'

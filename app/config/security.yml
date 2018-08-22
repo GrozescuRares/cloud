@@ -4,7 +4,8 @@ security:
 
     role_hierarchy:
         ROLE_OWNER: [ROLE_MANAGER, ROLE_EMPLOYEE, ROLE_CLIENT]
-        ROLE_MANAGER: [ROLE_EMPLOYEE]
+        ROLE_MANAGER: [ROLE_EMPLOYEE, ROLE_CLIENT]
+        ROLE_EMPLOYEE: [ROLE_CLIENT]
 
     encoders:
         AppBundle\Entity\User:
