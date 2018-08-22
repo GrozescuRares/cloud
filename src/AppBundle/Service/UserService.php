@@ -148,20 +148,11 @@ class UserService
      *
      * @param User $user
      *
-     * @throws InappropriateUserRoleException if it's called with an $user that
-     *                                        doesn't have role ROLE_OWNER or
-     *                                        ROLE_MANAGER
-     *
      * @return array
      */
     public function getUserCreationalRoles(User $user)
     {
         $userRole = $user->getRoles()[0];
-
-        if (! ($userRole === 'ROLE_OWNER' || $userRole === 'ROLE_MANAGER' )) {
-            throw new InappropriateUserRoleException();
-        }
-
         $roles = $this->em->getRepository(Role::class)->findAll();
         $result = [];
 

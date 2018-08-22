@@ -8,6 +8,7 @@
 
 namespace Tests\AppBundle\Service;
 
+use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Exception\TokenExpiredException;
@@ -288,6 +289,67 @@ class UserServiceTest extends TestCase
             ->method('flush');
 
         $this->userService->activateAccount('dfsdfssdf');
+    }
+
+    /**
+     * Tests successfully add user by owner
+     */
+    public function testSuccessfullyAddUserByOwner()
+    {
+        $userMock = $this->createMock(User::class);
+        $loggedUserMock = $this->createMock(User::class);
+
+        $this->userPasswordEncoderMock->expects($this->once())
+            ->method('encodePassword');
+
+        $userMock->expects($this->once())
+            ->method('setIsActivated')
+            ->with(true);
+
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn(['ROLE_OWNER']);
+
+        $this->emMock->expects($this->once())
+            ->method('persist');
+        $this->emMock->expects($this->once())
+            ->method('flush');
+
+        $this->userService->addUser($userMock, $loggedUserMock);
+    }
+
+    /**
+     * Tests successfully add user by manager
+     */
+    public function testSuccessfullyAddUserByManager()
+    {
+        $userMock = $this->createMock(User::class);
+        $loggedUserMock = $this->createMock(User::class);
+        $hotelMock = $this->createMock(Hotel::class);
+
+        $this->userPasswordEncoderMock->expects($this->once())
+            ->method('encodePassword');
+
+        $userMock->expects($this->once())
+            ->method('setIsActivated')
+            ->with(true);
+        $userMock->expects($this->once())
+            ->method('setHotel')
+            ->with($hotelMock);
+
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn(['ROLE_MANAGER']);
+        $loggedUserMock->expects($this->once())
+            ->method('getHotel')
+            ->willReturn($hotelMock);
+
+        $this->emMock->expects($this->once())
+            ->method('persist');
+        $this->emMock->expects($this->once())
+            ->method('flush');
+
+        $this->userService->addUser($userMock, $loggedUserMock);
     }
 
     /**
