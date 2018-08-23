@@ -9,6 +9,7 @@
 namespace AppBundle\Dto;
 
 use AppBundle\Entity\Role;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class UserDto
@@ -18,10 +19,15 @@ class UserDto
 {
     /**
      * @var string $username
+     *
+     * @Assert\NotBlank(groups={"register", "edit-my-account", "edit-user"}, message="constraints.username")
+     * @Assert\Length(min=5, groups={"register", "edit-my-account", "edit-user"})
      */
     public $username;
     /**
      * @var Role $role
+     *
+     * @Assert\NotBlank(groups={"register", "edit-my-account", "edit-user"}, message="constraints.role")
      */
     public $role;
 }
