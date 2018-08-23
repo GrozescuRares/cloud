@@ -14,24 +14,23 @@
                         <form>
                             <div class="col-md-12 col-xs-12 no-lr-padding">
                                 <div class="styled-input">
-                                    <label>Username</label>
+                                    {{ form_label(edit_user_form.username) }}
                                     <div class="rel">
-                                        <input type="text" name="username" placeholder="Current Username" />
+                                        {{ form_errors(edit_user_form.username) }}
+                                        {{ form_widget(edit_user_form.username) }}
                                         <span></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 col-xs-12 no-lr-padding">
                                 <div class="styled-input">
-                                    <label>Role</label>
-                                    <select class="selectpicker" name="role">
-                                        <option value="default">Please select role</option>
-                                        <option>Employee</option>
-                                        <option>Client</option>
-                                    </select>
+                                    {{ form_label(edit_user_form.role) }}
+                                    {{ form_errors(edit_user_form.role) }}
+                                    {{ form_widget(edit_user_form.role, {'attr': {'class': 'selectpicker' }}) }}
                                 </div>
                             </div>
-                            <button type="submit" class="btn submit pull-right">Submit</button>
+                            {{ form_row(edit_user_form._token) }}
+                            {{ form_widget(edit_user_form.submit) }}
                         </form>
                     </div>
                 </div>

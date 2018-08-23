@@ -8,8 +8,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Dto\UserDto;
 use AppBundle\Entity\User;
 use AppBundle\Form\AddUserTypeForm;
+use AppBundle\Form\EditUserTypeForm;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -40,12 +42,16 @@ class UserManagementController extends Controller
         $hotels = $hotelService->getHotelsByOwner($loggedUser);
         $roles = $userService->getUserCreationalRoles($loggedUser);
 
-        $form = $this->createForm(AddUserTypeForm::class, $user, [
-            'loggedUser' => $loggedUser,
-            'roles'      => $roles,
-            'hotels'     => $hotels,
-            'validation_groups' => ['register'],
-        ]);
+        $form = $this->createForm(
+            AddUserTypeForm::class,
+            $user,
+            [
+                'loggedUser' => $loggedUser,
+                'roles' => $roles,
+                'hotels' => $hotels,
+                'validation_groups' => ['register'],
+            ]
+        );
 
         $form->handleRequest($request);
 
@@ -73,6 +79,33 @@ class UserManagementController extends Controller
      */
     public function editUserRoleAction(Request $request)
     {
-        return $this->render('user_management/edit-user.html.twig');
+        $userDto = new UserDto();
+        $loggedUser = $this->getUser();
+        $userService = $this->get('app.user.service');
+        $roles = $userService->getUserCreationalRoles($loggedUser);
+
+        $form = $this->createForm(
+            EditUserTypeForm::class,
+            $userDto,
+            [
+                'validation_groups' => ['edit-user'],
+                'roles' => $roles,
+            ]
+        );
+
+        $form->handleRequest($request);
+
+        if (!($form->isSubmitted() && $form->isValid())) {
+            return $this->render(
+                'user_management/edit-user.html.twig',
+                [
+                    'edit_user_form' => $form->createView(),
+                ]
+            );
+        }
+
+        $this->addFlash('success', 'User role successfully edited.');
+
+        return $this->redirectToRoute('edit-user');
     }
 }
