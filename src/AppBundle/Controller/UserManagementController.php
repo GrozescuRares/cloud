@@ -13,8 +13,8 @@ use AppBundle\Entity\User;
 use AppBundle\Exception\SameRoleException;
 use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
-use AppBundle\Form\AddUserTypeForm;
 use AppBundle\Form\EditUserTypeForm;
+use AppBundle\Form\UserTypeForm;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -46,9 +46,10 @@ class UserManagementController extends Controller
         $roles = $userService->getUserCreationalRoles($loggedUser);
 
         $form = $this->createForm(
-            AddUserTypeForm::class,
+            UserTypeForm::class,
             $user,
             [
+                'type' => 'add-user',
                 'loggedUser' => $loggedUser,
                 'roles' => $roles,
                 'hotels' => $hotels,
