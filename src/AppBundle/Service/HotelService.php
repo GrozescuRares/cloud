@@ -11,6 +11,7 @@ namespace AppBundle\Service;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\User;
 use AppBundle\Exception\InappropriateUserRoleException;
+use AppBundle\Exception\NoRoleException;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -42,6 +43,10 @@ class HotelService
      */
     public function getHotelsByOwner(User $owner)
     {
+        if (empty($owner->getRoles())) {
+            throw new NoRoleException('This user has no roles');
+        }
+
         $hotels = $this->em->getRepository(Hotel::class)->findBy(
             [
                 'owner' => $owner->getUserId(),

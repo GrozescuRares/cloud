@@ -29,10 +29,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
  * Class UserServiceTest
  * @package Tests\AppBundle\Service
  */
-class UserServiceTest extends TestCase
+class UserServiceTest extends EntityManagerMock
 {
-    /** @var EntityManager|\PHPUnit_Framework_MockObject_MockObject */
-    protected $emMock;
     /** @var Role|\PHPUnit_Framework_MockObject_MockObject */
     protected $clientRoleMock;
     /** @var UserPasswordEncoder| \PHPUnit_Framework_MockObject_MockObject */
@@ -41,29 +39,41 @@ class UserServiceTest extends TestCase
     protected $fileUploaderMock;
     /** @var MailHelper| \PHPUnit_Framework_MockObject_MockObject */
     protected $mailMock;
-    /** @var UserRepository| \PHPUnit_Framework_MockObject_MockObject */
-    protected $userRepositoryMock;
-    /** @var RoleRepository| \PHPUnit_Framework_MockObject_MockObject */
-    protected $roleRepositoryMock;
-    /** @var UserService */
+    /** @var UserServiceTest */
     protected $userService;
+
+    const FIRST_ENTITY = Role::class;
+    const FIRST_ENTITY_REPOSITORY = RoleRepository::class;
+    const SECOND_ENTITY = User::class;
+    const SECOND_ENTITY_REPOSITORY = UserRepository::class;
+
+    /**
+     * UserServiceTest constructor.
+     * @param array  $repositories
+     * @param mixed  $name
+     * @param array  $data
+     * @param string $dataName
+     */
+    public function __construct(
+        array $repositories = [self::FIRST_ENTITY => self::FIRST_ENTITY_REPOSITORY, self::SECOND_ENTITY => self::SECOND_ENTITY_REPOSITORY],
+        $name = null,
+        array $data = [],
+        $dataName = ''
+    ) {
+        parent::__construct($repositories, $name, $data, $dataName);
+    }
 
     /**
      *
      */
     public function setUp()
     {
-        $this->emMock = $this->createMock(EntityManager::class);
+        parent::setUp();
+
         $this->clientRoleMock = $this->createMock(Role::class);
-        $this->roleRepositoryMock = $this->createMock(RoleRepository::class);
         $this->userPasswordEncoderMock = $this->createMock(UserPasswordEncoder::class);
         $this->fileUploaderMock = $this->createMock(FileUploaderService::class);
         $this->mailMock = $this->createMock(MailHelper::class);
-        $this->userRepositoryMock = $this->createMock(UserRepository::class);
-
-        $this->emMock->expects($this->any())
-            ->method('getRepository')
-            ->will($this->returnCallback([$this, 'entityManagerCallback']));
 
         $this->userService = new UserService(
             $this->emMock,
@@ -72,24 +82,6 @@ class UserServiceTest extends TestCase
             $this->mailMock,
             '+1 times'
         );
-    }
-
-    /**
-     * @return mixed
-     *
-     * @throws \Exception
-     */
-    public function entityManagerCallback()
-    {
-        $args = func_get_args();
-        $className = reset($args);
-
-        $repositories = $this->repositoryMapping();
-        if (empty($repositories[$className])) {
-            throw new \Exception();
-        }
-
-        return $repositories[$className];
     }
 
     /**
@@ -107,7 +99,7 @@ class UserServiceTest extends TestCase
 
         $uploadeFileMock = $this->createMock(UploadedFile::class);
 
-        $this->roleRepositoryMock->expects($this->once())
+        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
@@ -158,7 +150,7 @@ class UserServiceTest extends TestCase
 
         $this->expectException(OptimisticLockException::class);
 
-        $this->roleRepositoryMock->expects($this->once())
+        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
@@ -196,7 +188,7 @@ class UserServiceTest extends TestCase
      */
     public function testNoProfileImageRegisterUser()
     {
-        $this->roleRepositoryMock->expects($this->once())
+        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
@@ -250,7 +242,7 @@ class UserServiceTest extends TestCase
             ->method('getExpirationDate')
             ->willReturn($this->generateActivationTime());
 
-        $this->userRepositoryMock->expects($this->once())
+        $this->repositoriesMocks[self::SECOND_ENTITY]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
@@ -288,7 +280,7 @@ class UserServiceTest extends TestCase
             ->method('getActivationToken')
             ->willReturn('sygfudhiifsnjoisdj');
 
-        $this->userRepositoryMock->expects($this->once())
+        $this->repositoriesMocks[self::SECOND_ENTITY]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
@@ -316,7 +308,7 @@ class UserServiceTest extends TestCase
     {
         $this->expectException(UserNotFoundException::class);
 
-        $this->userRepositoryMock->expects($this->once())
+        $this->repositoriesMocks[self::SECOND_ENTITY]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
@@ -442,7 +434,7 @@ class UserServiceTest extends TestCase
             ->method('getRoles')
             ->willReturn(['ROLE_OWNER']);
 
-        $this->roleRepositoryMock->expects($this->once())
+        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
             ->method('findAll')
             ->willReturn([$roleManagerMock, $roleEmployeeMock, $roleClientMock, $roleOwnerMock]);
 
@@ -483,7 +475,7 @@ class UserServiceTest extends TestCase
             ->method('getRoles')
             ->willReturn(['ROLE_MANAGER']);
 
-        $this->roleRepositoryMock->expects($this->once())
+        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
             ->method('findAll')
             ->willReturn([$roleManagerMock, $roleEmployeeMock, $roleClientMock, $roleOwnerMock]);
 
@@ -529,16 +521,5 @@ class UserServiceTest extends TestCase
         $dateTime->modify('-1 minutes');
 
         return $dateTime;
-    }
-
-    /**
-     * @return array
-     */
-    private function repositoryMapping()
-    {
-        return [
-            Role::class => $this->roleRepositoryMock,
-            User::class => $this->userRepositoryMock,
-        ];
     }
 }
