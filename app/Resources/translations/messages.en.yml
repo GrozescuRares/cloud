@@ -75,6 +75,10 @@ page:
     new_password: 'New password'
     confirm_new_password: 'Confirm new password'
 
+  edit-user:
+    title: 'Edit user'
+    back: 'Back'
+
 emails:
   to_activate: 'To activate the account, go to:'
   here: 'here.'
