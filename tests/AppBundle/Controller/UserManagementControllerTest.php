@@ -182,6 +182,83 @@ class UserManagementControllerTest extends WebTestCase
     }
 
     /**
+     * Tests the edit-user route with no user logged
+     */
+    public function testEditUserRoute()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/user-management/edit-user');
+
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Tests that client user can not access edit-user route
+     */
+    public function testThatClientUserCanNotAccessEditUserRoute()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('submit')->form();
+        $form = $this->generateLoginForm($form, 'rares', 'handstand');
+        $client->submit($form);
+
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
+
+        $client->followRedirect();
+        $client->request('GET', '/user-management/edit-user');
+
+        $this->assertEquals(403, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Tests that employee user can not access edit-user route
+     */
+    public function testThatEmployeeUserCanNotAccessEditUserRoute()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('submit')->form();
+        $form = $this->generateLoginForm($form, 'employee', '12345');
+        $client->submit($form);
+
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
+
+        $client->followRedirect();
+        $client->request('GET', '/user-management/edit-user');
+
+        $this->assertEquals(403, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Tests page design when accessed by owner
+     */
+    public function testEditUserPageDesignWhenAccessedByOwnerOrManager()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('submit')->form();
+        $form = $this->generateLoginForm($form, 'owner', 'owner');
+        $client->submit($form);
+
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
+
+        $client->followRedirect();
+        $crawler = $client->request('GET', '/user-management/edit-user');
+
+        $this->assertContains('Edit', $crawler->filter('h1.text-center')->text());
+    }
+
+    /**
      * @param $form
      * @param $username
      * @param $password
