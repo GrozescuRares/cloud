@@ -63,4 +63,16 @@ class UserManagementController extends Controller
 
         return $this->redirectToRoute('add-user');
     }
+
+    /**
+     * @Route("/user-management/edit-user", name="edit-user")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editUserRoleAction(Request $request)
+    {
+        return $this->render('user_management/edit-user.html.twig');
+    }
 }

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="wrapper">
+                    <div class="container-small">
+                        <a href="#" class="back">Back</a>
+                        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                            <h1 class="text-center">Edit User</h1>
+                        </div>
+                        <form>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>Username</label>
+                                    <div class="rel">
+                                        <input type="text" name="username" placeholder="Current Username" />
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>Role</label>
+                                    <select class="selectpicker" name="role">
+                                        <option value="default">Please select role</option>
+                                        <option>Employee</option>
+                                        <option>Client</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn submit pull-right">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
