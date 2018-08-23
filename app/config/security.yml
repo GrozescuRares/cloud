@@ -51,4 +51,5 @@ security:
     - { path: ^/registration-confirmation, role: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/activate-account, role: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/user-management/add-user, role: ROLE_MANAGER }
+    - { path: ^/user-management/edit-user, role: ROLE_MANAGER }
     - { path: ^/, role: ROLE_CLIENT }
