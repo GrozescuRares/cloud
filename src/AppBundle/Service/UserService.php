@@ -10,7 +10,8 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
-use AppBundle\Exception\OldPasswordException;
+use AppBundle\Exception\InappropriateUserRoleException;
+use AppBundle\Exception\NoRoleException;
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailInterface;
@@ -43,9 +44,6 @@ class UserService
     {
         $this->em = $em;
         $this->encoder = $encoder;
-        $this->clientRole = $em->getRepository(Role::class)->findOneBy([
-            'description' => 'ROLE_CLIENT',
-        ]);
         $this->fileUploader = $fileUploaderService;
         $this->mailHelper = $mailHelper;
         $this->tokenLifetime = $tokenLifetime;
@@ -68,13 +66,15 @@ class UserService
                 $user->getPlainPassword()
             );
         $user->setPassword($password);
-        $user->setRole($this->clientRole);
+        $user->setRole($this->em->getRepository(Role::class)->findOneBy([
+            'description' => 'ROLE_CLIENT',
+        ]));
         $user->setIsActivated(false);
         $user->setActivationToken(md5($user->getUsername()).md5($user->getEmail()));
         $user->setExpirationDate($this->generateActivationTime());
 
         $file = $user->getImage();
-        if ($file) {
+        if (!empty($file)) {
             $fileName = $this->fileUploader->upload($file);
             $user->setProfilePicture($fileName);
         }
@@ -130,6 +130,77 @@ class UserService
         }
 
         $user->setIsActivated(true);
+        $this->em->persist($user);
+        $this->em->flush();
+    }
+
+    /**
+     * Returns an array of roles that contains every roles except
+     * $user's role, ROLE_CLIENT, and the roles that are higher in hierarchy.
+     * The elements of the array will look like 'role_description' => role entity
+     *
+     *  Example: 1. For a user with ROLE_OWNER, the function will return
+     *              an array containing all the roles except ROLE_OWNER
+     *              and ROLE_CLIENT.
+     *           2. For a user with ROLE_MANAGER the function will return
+     *              an array containing all the roles except ROLE_OWNER,
+     *              ROLE_MANAGER and ROLE_CLIENT.
+     *
+     * @param User $user
+     *
+     * @return array
+     */
+    public function getUserCreationalRoles(User $user)
+    {
+        if (empty($user->getRoles())) {
+            throw new NoRoleException();
+        }
+
+        $userRole = $user->getRoles()[0];
+        $roles = $this->em->getRepository(Role::class)->findAll();
+        $result = [];
+
+        /** @var Role $role */
+        foreach ($roles as $role) {
+            $roleDescription = $role->getDescription();
+
+            if (! ($roleDescription === 'ROLE_CLIENT' || $roleDescription === $userRole)) {
+                $result[$roleDescription] = $role;
+            }
+        }
+
+        if ($userRole === 'ROLE_MANAGER') {
+            unset($result['ROLE_OWNER']);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param User $user
+     * @param User $loggedUser
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function addUser(User $user, User $loggedUser)
+    {
+        if (empty($loggedUser->getRoles())) {
+            throw new NoRoleException();
+        }
+
+        $password = $this
+            ->encoder
+            ->encodePassword(
+                $user,
+                $user->getPlainPassword()
+            );
+        $user->setPassword($password);
+        $user->setIsActivated(true);
+
+        if ($loggedUser->getRoles()[0] === 'ROLE_MANAGER') {
+            $user->setHotel($loggedUser->getHotel());
+        }
+
         $this->em->persist($user);
         $this->em->flush();
     }
