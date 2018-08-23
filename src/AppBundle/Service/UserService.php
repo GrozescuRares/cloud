@@ -8,6 +8,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Exception\InappropriateUserRoleException;
@@ -242,4 +243,26 @@ class UserService
 
         return $dateTime;
     }
+
+    /**
+    public function getUserDto()
+    {
+        $user = $this->getUser();
+
+        return $this->convertUserToDto($user);
+    }
+
+
+
+
+    public function convertUserToDto($user)
+    {
+        $dto = new UserDto();
+        foreach ($dto as $property => $value) {
+            //property accessor
+            $dto->$property = $user->{'get'.ucfirst($property)}();
+
+        }
+
+    }*/
 }
