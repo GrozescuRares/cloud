@@ -10,6 +10,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\User;
+use AppBundle\Exception\SameRoleException;
+use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Form\AddUserTypeForm;
 use AppBundle\Form\EditUserTypeForm;
 use Doctrine\ORM\OptimisticLockException;
@@ -76,13 +78,17 @@ class UserManagementController extends Controller
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws OptimisticLockException
      */
     public function editUserRoleAction(Request $request)
     {
         $userDto = new UserDto();
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
+        $hotelService = $this->get('app.hotel.service');
         $roles = $userService->getUserCreationalRoles($loggedUser);
+        $hotels = $hotelService->getHotelsByOwner($loggedUser);
 
         $form = $this->createForm(
             EditUserTypeForm::class,
@@ -104,7 +110,14 @@ class UserManagementController extends Controller
             );
         }
 
-        $this->addFlash('success', 'User role successfully edited.');
+        try {
+            $userService->editUserRole($userDto, $loggedUser, $hotels);
+            $this->addFlash('success', 'User role successfully edited.');
+        } catch (UserNotFoundException $ex) {
+            $this->addFlash('danger', $ex->getMessage());
+        } catch (SameRoleException $ex) {
+            $this->addFlash('danger', $ex->getMessage());
+        }
 
         return $this->redirectToRoute('edit-user');
     }

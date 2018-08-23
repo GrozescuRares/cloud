@@ -9,11 +9,14 @@
 namespace AppBundle\Service;
 
 use AppBundle\Adapter\UserAdapter;
+use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UserNotFoundException;
+use AppBundle\Exception\SameRoleException;
 use AppBundle\Helper\MailInterface;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
@@ -41,8 +44,14 @@ class UserService
      * @param string              $tokenLifetime
      * @param UserAdapter         $userAdapter
      */
-    public function __construct(EntityManager $em, UserPasswordEncoder $encoder, FileUploaderService $fileUploaderService, MailInterface $mailHelper, $tokenLifetime, UserAdapter $userAdapter)
-    {
+    public function __construct(
+        EntityManager $em,
+        UserPasswordEncoder $encoder,
+        FileUploaderService $fileUploaderService,
+        MailInterface $mailHelper,
+        $tokenLifetime,
+        UserAdapter $userAdapter
+    ) {
         $this->em = $em;
         $this->encoder = $encoder;
         $this->fileUploader = $fileUploaderService;
@@ -68,9 +77,13 @@ class UserService
                 $user->getPlainPassword()
             );
         $user->setPassword($password);
-        $user->setRole($this->em->getRepository(Role::class)->findOneBy([
-            'description' => 'ROLE_CLIENT',
-        ]));
+        $user->setRole(
+            $this->em->getRepository(Role::class)->findOneBy(
+                [
+                    'description' => 'ROLE_CLIENT',
+                ]
+            )
+        );
         $user->setIsActivated(false);
         $user->setActivationToken(md5($user->getUsername()).md5($user->getEmail()));
         $user->setExpirationDate($this->generateActivationTime());
@@ -105,10 +118,12 @@ class UserService
      */
     public function activateAccount($activationToken)
     {
-        $user = $this->em->getRepository(User::class)->findOneBy([
-            'activationToken' => $activationToken,
-            'isActivated' => false,
-        ]);
+        $user = $this->em->getRepository(User::class)->findOneBy(
+            [
+                'activationToken' => $activationToken,
+                'isActivated' => false,
+            ]
+        );
 
         if (!$user instanceof User) {
             throw new UserNotFoundException('There is no user with token: '.$activationToken);
@@ -166,7 +181,7 @@ class UserService
         foreach ($roles as $role) {
             $roleDescription = $role->getDescription();
 
-            if (! ($roleDescription === 'ROLE_CLIENT' || $roleDescription === $userRole)) {
+            if (!($roleDescription === 'ROLE_CLIENT' || $roleDescription === $userRole)) {
                 $result[$roleDescription] = $role;
             }
         }
@@ -232,6 +247,110 @@ class UserService
 
         $this->em->persist($user);
         $this->em->flush();
+    }
+
+    /**
+     * This function edits userDto's role.
+     * Preconditions: $userDto is an existing user from the db
+     *
+     * @param UserDto $userDto
+     * @param User    $loggedUser
+     * @param array   $hotels
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function editUserRole(UserDto $userDto, User $loggedUser, $hotels)
+    {
+        $loggedUserRole = $loggedUser->getRoles()[0];
+
+        if (empty($loggedUserRole)) {
+            throw new NoRoleException('The loggedUser has no role.');
+        }
+
+        if (!($loggedUserRole === 'ROLE_OWNER' || $loggedUserRole === 'ROLE_MANAGER')) {
+            throw new InappropriateUserRoleException('The loggedUser must be owner or manager.');
+        }
+
+        if ($loggedUserRole === 'ROLE_MANAGER') {
+            if (!$this->checkIfUserHasManagerHotelId($loggedUser->getHotel(), $userDto->username)) {
+                throw new UserNotFoundException('This user is not part of managers hotel.');
+            }
+        }
+
+        if ($loggedUserRole === 'ROLE_OWNER') {
+            if (!$this->checkIfUserHasOneOfOwnersHotelId($hotels, $userDto->username)) {
+                throw new UserNotFoundException('This user is not part of owners hotels.');
+            }
+        }
+
+
+        $editedUser = $this->userAdapter->convertToEntity($userDto, $this->getUserFromDto($userDto));
+
+        if ($editedUser->getRole() === $userDto->role) {
+            throw new SameRoleException($userDto->username." already has ".$userDto->role->getDescription());
+        }
+
+        $this->em->persist($editedUser);
+        $this->em->flush();
+    }
+
+    /**
+     * @param $hotels
+     * @param $username
+     *
+     * @return bool
+     */
+    private function checkIfUserHasOneOfOwnersHotelId($hotels, $username)
+    {
+        foreach ($hotels as $name => $hotel) {
+            $user = $this->em->getRepository(User::class)->findOneBy(
+                [
+                    'hotel' => $hotel,
+                    'username' => $username,
+                ]
+            );
+
+            if (!empty($user)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $managerHotel
+     * @param $username
+     *
+     * @return bool
+     */
+    private function checkIfUserHasManagerHotelId($managerHotel, $username)
+    {
+        $user = $this->em->getRepository(User::class)->findOneBy(
+            [
+                'hotel' => $managerHotel,
+                'username' => $username,
+            ]
+        );
+        if (empty($user)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param UserDto $userDto
+     *
+     * @return User|null|object
+     */
+    private function getUserFromDto($userDto)
+    {
+        return $this->em->getRepository(User::class)->findOneBy(
+            [
+                'username' => $userDto->username,
+            ]
+        );
     }
 
     /**
