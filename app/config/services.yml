@@ -49,6 +49,7 @@ services:
             - '@app.file_uploader.service'
             - '@app.mail_helper.helper'
             - '%token_lifetime%'
+            - '@app.user.adapter'
         public: true
 
     AppBundle\Service\UserService: '@app.user.service'
@@ -79,3 +80,8 @@ services:
         public: true
 
     AppBundle\Service\HotelService: '@app.hotel.service'
+
+    app.user.adapter:
+        class: AppBundle\Adapter\UserAdapter
+
+    AppBundle\Adapter\UserAdapter: '@app.user.adapter'

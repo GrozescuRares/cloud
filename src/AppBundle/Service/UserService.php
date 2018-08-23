@@ -8,6 +8,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Adapter\UserAdapter;
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
@@ -27,10 +28,10 @@ class UserService
 {
     private $em;
     private $encoder;
-    private $clientRole;
     private $fileUploader;
     private $mailHelper;
     private $tokenLifetime;
+    private $userAdapter;
 
     /**
      * UserService constructor.
@@ -40,14 +41,16 @@ class UserService
      * @param FileUploaderService $fileUploaderService
      * @param MailInterface       $mailHelper
      * @param string              $tokenLifetime
+     * @param UserAdapter         $userAdapter
      */
-    public function __construct(EntityManager $em, UserPasswordEncoder $encoder, FileUploaderService $fileUploaderService, MailInterface $mailHelper, $tokenLifetime)
+    public function __construct(EntityManager $em, UserPasswordEncoder $encoder, FileUploaderService $fileUploaderService, MailInterface $mailHelper, $tokenLifetime, UserAdapter $userAdapter)
     {
         $this->em = $em;
         $this->encoder = $encoder;
         $this->fileUploader = $fileUploaderService;
         $this->mailHelper = $mailHelper;
         $this->tokenLifetime = $tokenLifetime;
+        $this->userAdapter = $userAdapter;
     }
 
     /**
