@@ -10,6 +10,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Exception\OldPasswordException;
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailInterface;
@@ -129,6 +130,33 @@ class UserService
         }
 
         $user->setIsActivated(true);
+        $this->em->persist($user);
+        $this->em->flush();
+    }
+
+    /**
+     * @param User $user
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function updateUser(User $user)
+    {
+        if (!empty($user->getPlainPassword())) {
+            $password = $this
+                ->encoder
+                ->encodePassword(
+                    $user,
+                    $user->getPlainPassword()
+                );
+            $user->setPassword($password);
+        }
+
+        $file = $user->getImage();
+        if ($file) {
+            $fileName = $this->fileUploader->upload($file);
+            $user->setProfilePicture($fileName);
+        }
+
         $this->em->persist($user);
         $this->em->flush();
     }

@@ -97,4 +97,14 @@ class Role
     {
         return $this->description;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        $role = explode('_', $this->description);
+
+        return ucfirst(strtolower($role[count($role)-1]));
+    }
 }
