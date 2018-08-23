@@ -16,6 +16,7 @@ use AppBundle\Enum\UserConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Exception\TokenExpiredException;
+use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Exception\SameRoleException;
 use AppBundle\Helper\MailInterface;
@@ -285,8 +286,12 @@ class UserService
         }
 
         $userEntity = $this->getUserFromDto($userDto);
-        if ($userEntity->getRole() === $userDto->role) {
+        $userEntityRole = $userEntity->getRole();
+        if ($userEntityRole === $userDto->role) {
             throw new SameRoleException($userDto->username." already has ".$userDto->role->getDescription());
+        }
+        if (array_search($userEntityRole->getDescription(), UserConfig::EDITABLE_ROLES) === false) {
+            throw new UneditableRoleException('Can not edit users with '.$userEntityRole->getDescription().'.');
         }
 
         $editedUser = $this->userAdapter->convertToEntity($userDto, $userEntity);

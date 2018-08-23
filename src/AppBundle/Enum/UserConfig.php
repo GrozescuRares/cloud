@@ -28,4 +28,9 @@ class UserConfig
         self::ROLE_OWNER,
         self::ROLE_MANAGER,
     ];
+
+    const EDITABLE_ROLES = [
+        self::ROLE_MANAGER,
+        self::ROLE_EMPLOYEE,
+    ];
 }

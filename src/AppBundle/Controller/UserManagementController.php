@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\User;
 use AppBundle\Exception\SameRoleException;
+use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Form\AddUserTypeForm;
 use AppBundle\Form\EditUserTypeForm;
@@ -116,6 +117,8 @@ class UserManagementController extends Controller
         } catch (UserNotFoundException $ex) {
             $this->addFlash('danger', $ex->getMessage());
         } catch (SameRoleException $ex) {
+            $this->addFlash('danger', $ex->getMessage());
+        } catch (UneditableRoleException $ex) {
             $this->addFlash('danger', $ex->getMessage());
         }
 
