@@ -14,11 +14,18 @@ class UserConfig
 
     const ROLE_MANAGER = 'ROLE_MANAGER';
     const ROLE_OWNER = 'ROLE_OWNER';
-    const ROLE_
+    const ROLE_EMPLOYEE = 'ROLE_EMPLOYEE';
+    const ROLE_CLIENT = 'ROLE_CLIENT';
 
     const ROLES = [
+        self::ROLE_OWNER,
         self::ROLE_MANAGER,
-        self::asdasd,
+        self::ROLE_EMPLOYEE,
+        self::ROLE_CLIENT,
     ];
 
+    const HIGH_ROLES = [
+        self::ROLE_OWNER,
+        self::ROLE_MANAGER,
+    ];
 }

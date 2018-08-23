@@ -8,6 +8,7 @@
 
 namespace Tests\AppBundle\Service;
 
+use AppBundle\Adapter\UserAdapter;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
@@ -37,6 +38,8 @@ class UserServiceTest extends EntityManagerMock
     protected $fileUploaderMock;
     /** @var MailHelper| \PHPUnit_Framework_MockObject_MockObject */
     protected $mailMock;
+    /** @var UserAdapter| \PHPUnit_Framework_MockObject_MockObject */
+    protected $userAdapterMock;
     /** @var UserServiceTest */
     protected $userService;
 
@@ -72,13 +75,15 @@ class UserServiceTest extends EntityManagerMock
         $this->userPasswordEncoderMock = $this->createMock(UserPasswordEncoder::class);
         $this->fileUploaderMock = $this->createMock(FileUploaderService::class);
         $this->mailMock = $this->createMock(MailHelper::class);
+        $this->userAdapterMock = $this->createMock(UserAdapter::class);
 
         $this->userService = new UserService(
             $this->emMock,
             $this->userPasswordEncoderMock,
             $this->fileUploaderMock,
             $this->mailMock,
-            '+1 times'
+            '+1 times',
+            $this->userAdapterMock
         );
     }
 

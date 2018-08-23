@@ -12,6 +12,7 @@ use AppBundle\Adapter\UserAdapter;
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Enum\UserConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Exception\TokenExpiredException;
@@ -80,7 +81,7 @@ class UserService
         $user->setRole(
             $this->em->getRepository(Role::class)->findOneBy(
                 [
-                    'description' => 'ROLE_CLIENT',
+                    'description' => UserConfig::ROLE_CLIENT,
                 ]
             )
         );
@@ -181,13 +182,13 @@ class UserService
         foreach ($roles as $role) {
             $roleDescription = $role->getDescription();
 
-            if (!($roleDescription === 'ROLE_CLIENT' || $roleDescription === $userRole)) {
+            if (!($roleDescription === UserConfig::ROLE_CLIENT || $roleDescription === $userRole)) {
                 $result[$roleDescription] = $role;
             }
         }
 
-        if ($userRole === 'ROLE_MANAGER') {
-            unset($result['ROLE_OWNER']);
+        if ($userRole === UserConfig::ROLE_MANAGER) {
+            unset($result[UserConfig::ROLE_OWNER]);
         }
 
         return $result;
@@ -214,7 +215,7 @@ class UserService
         $user->setPassword($password);
         $user->setIsActivated(true);
 
-        if ($loggedUser->getRoles()[0] === 'ROLE_MANAGER') {
+        if ($loggedUser->getRoles()[0] === UserConfig::ROLE_MANAGER) {
             $user->setHotel($loggedUser->getHotel());
         }
 
@@ -267,28 +268,28 @@ class UserService
             throw new NoRoleException('The loggedUser has no role.');
         }
 
-        if (!($loggedUserRole === 'ROLE_OWNER' || $loggedUserRole === 'ROLE_MANAGER')) {
+        if (array_search($loggedUserRole, UserConfig::HIGH_ROLES) === false) {
             throw new InappropriateUserRoleException('The loggedUser must be owner or manager.');
         }
 
-        if ($loggedUserRole === 'ROLE_MANAGER') {
+        if ($loggedUserRole === UserConfig::ROLE_MANAGER) {
             if (!$this->checkIfUserHasManagerHotelId($loggedUser->getHotel(), $userDto->username)) {
                 throw new UserNotFoundException('This user is not part of managers hotel.');
             }
         }
 
-        if ($loggedUserRole === 'ROLE_OWNER') {
+        if ($loggedUserRole === UserConfig::ROLE_OWNER) {
             if (!$this->checkIfUserHasOneOfOwnersHotelId($hotels, $userDto->username)) {
                 throw new UserNotFoundException('This user is not part of owners hotels.');
             }
         }
 
-
-        $editedUser = $this->userAdapter->convertToEntity($userDto, $this->getUserFromDto($userDto));
-
-        if ($editedUser->getRole() === $userDto->role) {
+        $userEntity = $this->getUserFromDto($userDto);
+        if ($userEntity->getRole() === $userDto->role) {
             throw new SameRoleException($userDto->username." already has ".$userDto->role->getDescription());
         }
+
+        $editedUser = $this->userAdapter->convertToEntity($userDto, $userEntity);
 
         $this->em->persist($editedUser);
         $this->em->flush();
