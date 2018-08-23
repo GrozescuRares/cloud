@@ -19,9 +19,7 @@ use AppBundle\Repository\RoleRepository;
 use AppBundle\Repository\UserRepository;
 use AppBundle\Service\FileUploaderService;
 use AppBundle\Service\UserService;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
@@ -345,12 +343,32 @@ class UserServiceTest extends EntityManagerMock
             ->method('getRoles')
             ->willReturn(['ROLE_OWNER']);
 
+        $this->userService->addUser($userMock, $loggedUserMock);
+    }
+
+    /**
+     * Tests user update with no new password
+     */
+    public function testUpdateUserWithNoNewPassword()
+    {
+        $userMock = $this->createMock(User::class);
+
+        $userMock->expects($this->once())
+            ->method('getPlainPassword')
+            ->willReturn(null);
+        $userMock->expects($this->once())
+            ->method('getImage')
+            ->willReturn(null);
+
+        $this->fileUploaderMock->expects($this->never())
+            ->method('upload');
+
         $this->emMock->expects($this->once())
             ->method('persist');
         $this->emMock->expects($this->once())
             ->method('flush');
 
-        $this->userService->addUser($userMock, $loggedUserMock);
+        $this->userService->updateUser($userMock);
     }
 
     /**
@@ -379,13 +397,34 @@ class UserServiceTest extends EntityManagerMock
             ->method('getHotel')
             ->willReturn($hotelMock);
 
+        $this->userService->addUser($userMock, $loggedUserMock);
+    }
+
+    /**
+     * Tests user update with new password
+     */
+    public function testUpdateUserWithNewPassword()
+    {
+        $userMock = $this->createMock(User::class);
+
+        $userMock->expects($this->exactly(2))
+            ->method('getPlainPassword')
+            ->willReturn('password');
+        $userMock->expects($this->once())
+            ->method('getImage')
+            ->willReturn(null);
+
+        $this->fileUploaderMock->expects($this->never())
+            ->method('upload');
+
         $this->emMock->expects($this->once())
             ->method('persist');
         $this->emMock->expects($this->once())
             ->method('flush');
 
-        $this->userService->addUser($userMock, $loggedUserMock);
+        $this->userService->updateUser($userMock);
     }
+
 
     /**
      * Tests addUser when loggedUser has no role
@@ -499,6 +538,32 @@ class UserServiceTest extends EntityManagerMock
             ->willReturn(null);
 
         $this->userService->getUserCreationalRoles($userMock);
+    }
+
+    /**
+     * Tests user update with new profile picture
+     */
+    public function testUpdateUserWithNewProfilePicture()
+    {
+        $uploadedImageMock = $this->createMock(UploadedFile::class);
+        $userMock = $this->createMock(User::class);
+
+        $userMock->expects($this->once())
+            ->method('getPlainPassword')
+            ->willReturn(null);
+        $userMock->expects($this->once())
+            ->method('getImage')
+            ->willReturn($uploadedImageMock);
+
+        $this->fileUploaderMock->expects($this->once())
+            ->method('upload');
+
+        $this->emMock->expects($this->once())
+            ->method('persist');
+        $this->emMock->expects($this->once())
+            ->method('flush');
+
+        $this->userService->updateUser($userMock);
     }
 
     /**

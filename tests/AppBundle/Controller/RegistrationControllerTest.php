@@ -91,6 +91,25 @@ class RegistrationControllerTest extends WebTestCase
     }
 
     /**
+     * Test no password
+     */
+    public function testNoPassword()
+    {
+        $client = static:: createClient();
+        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+
+        $form = $crawler->selectButton('appbundle_user[submit]')->form();
+
+        $username = 'user'.substr(md5(time()), 0, 6);
+        $email = substr(md5(time()), 0, 6).'@ceva.com';
+
+        $form = $this->generateRegistrationForm($form, $username, $email, '', '');
+        $crawler = $client->submit($form);
+
+        $this->assertContains('This value should not be blank', $crawler->filter('div.rel ul li')->text());
+    }
+
+    /**
      * Tests invalid Username
      */
     public function testInvalidUsername()

@@ -15,9 +15,11 @@ form:
     female: 'Female'
     submit: 'Submit'
     role: 'Role'
-    date_of_birth: 'Date of birth'
-    gender: 'Gender'
     hotel: 'Hotel'
+    profile_picture: 'Profile Picture'
+    bio: 'Bio'
+    date_of_birth: 'Date Of Birth'
+    gender: 'Gender'
 
 page:
   activation-account:
@@ -55,6 +57,23 @@ page:
     add-user:
       title: 'Add user'
       back: 'Back'
+
+  my-account:
+    back: 'Back'
+    title: 'My account'
+    labels:
+      email: 'E-mail'
+      address: 'Address'
+      date_of_birth: 'Date of birth'
+      gender: 'Gender'
+      bio: 'Bio'
+    edit: 'Edit'
+
+  edit-my-account:
+    back: 'Back'
+    title: 'Edit my account'
+    new_password: 'New password'
+    confirm_new_password: 'Confirm new password'
 
 emails:
   to_activate: 'To activate the account, go to:'

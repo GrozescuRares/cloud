@@ -44,6 +44,7 @@ class UserManagementController extends Controller
             'loggedUser' => $loggedUser,
             'roles'      => $roles,
             'hotels'     => $hotels,
+            'validation_groups' => ['register'],
         ]);
 
         $form->handleRequest($request);
