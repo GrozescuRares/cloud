@@ -75,7 +75,7 @@ class UserManagementControllerTest extends WebTestCase
     /**
      * Tests page design when accessed by owner
      */
-    public function testPageDesignWhenAccessedByOwner()
+    public function testAddUserPageDesignWhenAccessedByOwner()
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
@@ -97,7 +97,7 @@ class UserManagementControllerTest extends WebTestCase
     /**
      * Tests page design when accessed by manager
      */
-    public function testPageDesignWhenAccessedByManager()
+    public function testAddUserPageDesignWhenAccessedByManager()
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
@@ -188,7 +188,7 @@ class UserManagementControllerTest extends WebTestCase
     public function testEditUserRoute()
     {
         $client = static::createClient();
-        $client->request('GET', '/user-management/edit-user');
+        $client->request('GET', '/user-management/edit-user/username');
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
     }
@@ -210,7 +210,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $client->request('GET', '/user-management/edit-user');
+        $client->request('GET', '/user-management/edit-user/username');
 
         $this->assertEquals(403, $client->getResponse()->getStatusCode());
     }
@@ -232,7 +232,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $client->request('GET', '/user-management/edit-user');
+        $client->request('GET', '/user-management/edit-user/username');
 
         $this->assertEquals(403, $client->getResponse()->getStatusCode());
     }
@@ -254,7 +254,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user');
+        $crawler = $client->request('GET', '/user-management/edit-user/username');
 
         $this->assertContains('Edit', $crawler->filter('h1.text-center')->text());
     }
@@ -276,17 +276,17 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user');
+        $crawler = $client->request('GET', '/user-management/edit-user/edit-user');
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 'edit-user', 0);
+        $form = $this->generateEditUserForm($form, 0);
         $client->submit($form);
         $crawler = $client->followRedirect();
 
         $this->assertContains('User role successfully edited.', $crawler->filter('div.alert')->text());
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 'edit-user', 1);
+        $form = $this->generateEditUserForm($form, 1);
         $client->submit($form);
         $crawler = $client->followRedirect();
 
@@ -310,10 +310,10 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user');
+        $crawler = $client->request('GET', '/user-management/edit-user/edit-user');
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 'edit-user', 0);
+        $form = $this->generateEditUserForm($form, 0);
         $client->submit($form);
         $crawler = $client->followRedirect();
 
@@ -337,10 +337,10 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user');
+        $crawler = $client->request('GET', '/user-management/edit-user/rares');
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 'rares', 0);
+        $form = $this->generateEditUserForm($form, 0);
         $client->submit($form);
         $crawler = $client->followRedirect();
 
@@ -364,10 +364,10 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user');
+        $crawler = $client->request('GET', '/user-management/edit-user/rares');
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 'rares', 0);
+        $form = $this->generateEditUserForm($form, 0);
         $client->submit($form);
         $crawler = $client->followRedirect();
 
@@ -391,10 +391,10 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user');
+        $crawler = $client->request('GET', '/user-management/edit-user/client');
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 'client', 0);
+        $form = $this->generateEditUserForm($form, 0);
         $client->submit($form);
         $crawler = $client->followRedirect();
 
@@ -418,10 +418,10 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user');
+        $crawler = $client->request('GET', '/user-management/edit-user/client');
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 'client', 0);
+        $form = $this->generateEditUserForm($form, 0);
         $client->submit($form);
         $crawler = $client->followRedirect();
 
@@ -471,9 +471,8 @@ class UserManagementControllerTest extends WebTestCase
      * @param $role
      * @return mixed
      */
-    private function generateEditUserForm($form, $username, $role)
+    private function generateEditUserForm($form, $role)
     {
-        $form['appbundle_userDto[username]'] = $username;
         $form['appbundle_userDto[role]'] = $role;
 
         return $form;

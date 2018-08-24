@@ -75,17 +75,19 @@ class UserManagementController extends Controller
     }
 
     /**
-     * @Route("/user-management/edit-user", name="edit-user")
+     * @Route("/user-management/edit-user/{username}", name="edit-user")
      *
      * @param Request $request
+     * @param string  $username
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws OptimisticLockException
      */
-    public function editUserRoleAction(Request $request)
+    public function editUserRoleAction(Request $request, string $username)
     {
         $userDto = new UserDto();
+        $userDto->username = $username;
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
         $hotelService = $this->get('app.hotel.service');
@@ -108,6 +110,7 @@ class UserManagementController extends Controller
                 'user_management/edit-user.html.twig',
                 [
                     'edit_user_form' => $form->createView(),
+                    'username'       => $username,
                 ]
             );
         }
@@ -123,6 +126,6 @@ class UserManagementController extends Controller
             $this->addFlash('danger', $ex->getMessage());
         }
 
-        return $this->redirectToRoute('edit-user');
+        return $this->redirectToRoute('edit-user', ['username' => $username]);
     }
 }
