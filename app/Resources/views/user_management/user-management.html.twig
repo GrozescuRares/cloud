@@ -29,12 +29,12 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>{{ knp_pagination_sortable(pagination, 'First Name', 'user.firstName') }}<span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Last Name', 'user.lastName') }}<span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Role', 'user.role') }}<span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'E-mail', 'user.email') }}<span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Birthdate', 'user.dateOfBirth') }}<span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Registration date', 'user.expirationDate') }}<span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'First Name', 'user.firstName', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'Last Name', 'user.lastName', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'Role', 'user.role_id', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'E-mail', 'user.email', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'Birthdate', 'user.dateOfBirth', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'Registration date', 'user.expirationDate', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
                                     <th class="text-center">Edit</th>
                                     <th class="text-center">Remove</th>
                                 </tr>
@@ -42,7 +42,7 @@
                                 <tbody>
                                 {% for u in pagination %}
 
-                                    <tr>
+                                    <tr {% if loop.index is odd %}class="color"{% endif %}>
                                         <td>{{ u.firstName }}</td>
                                         <td>{{ u.lastName }}</td>
                                         <td>{{ u.role }}</td>
@@ -56,8 +56,8 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="table-items">{{ pagination.getTotalItemCount }}</div>
-                        <div class="pagination">
+                        <div class="table-items">{{ pagination.getTotalItemCount }} users</div>
+                        <div class="table-pagination">
                             {{ knp_pagination_render(pagination) }}
                         </div>
 
