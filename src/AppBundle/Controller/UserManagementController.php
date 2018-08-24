@@ -63,4 +63,14 @@ class UserManagementController extends Controller
 
         return $this->redirectToRoute('add-user');
     }
+
+    /**
+     * @Route("/user-management/", name="user-management")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function userManagementAction()
+    {
+        return $this->render('user_management/user-management.html.twig');
+    }
 }
