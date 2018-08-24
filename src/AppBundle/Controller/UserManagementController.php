@@ -69,8 +69,20 @@ class UserManagementController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function userManagementAction()
+    public function userManagementAction(Request $request)
     {
-        return $this->render('user_management/user-management.html.twig');
+        $em    = $this->get('doctrine.orm.entity_manager');
+        $dql   = "SELECT user FROM AppBundle:User user";
+        $query = $em->createQuery($dql);
+
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            5/*limit per page*/
+        );
+
+        // parameters to template
+        return $this->render('user_management/user-management.html.twig', array('pagination' => $pagination));
     }
 }
