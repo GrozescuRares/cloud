@@ -16,6 +16,7 @@ class UserConfig
     const ROLE_OWNER = 'ROLE_OWNER';
     const ROLE_EMPLOYEE = 'ROLE_EMPLOYEE';
     const ROLE_CLIENT = 'ROLE_CLIENT';
+    const TOKEN_LIFETIME = '+1 minutes';
 
     const ROLES = [
         self::ROLE_OWNER,

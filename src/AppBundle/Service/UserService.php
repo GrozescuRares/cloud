@@ -33,7 +33,6 @@ class UserService
     private $encoder;
     private $fileUploader;
     private $mailHelper;
-    private $tokenLifetime;
     private $userAdapter;
 
     /**
@@ -43,7 +42,6 @@ class UserService
      * @param UserPasswordEncoder $encoder
      * @param FileUploaderService $fileUploaderService
      * @param MailInterface       $mailHelper
-     * @param string              $tokenLifetime
      * @param UserAdapter         $userAdapter
      */
     public function __construct(
@@ -51,14 +49,12 @@ class UserService
         UserPasswordEncoder $encoder,
         FileUploaderService $fileUploaderService,
         MailInterface $mailHelper,
-        $tokenLifetime,
         UserAdapter $userAdapter
     ) {
         $this->em = $em;
         $this->encoder = $encoder;
         $this->fileUploader = $fileUploaderService;
         $this->mailHelper = $mailHelper;
-        $this->tokenLifetime = $tokenLifetime;
         $this->userAdapter = $userAdapter;
     }
 
@@ -365,7 +361,7 @@ class UserService
     private function generateActivationTime()
     {
         $dateTime = new \DateTime();
-        $dateTime->modify($this->tokenLifetime);
+        $dateTime->modify(UserConfig::TOKEN_LIFETIME);
 
         return $dateTime;
     }

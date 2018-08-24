@@ -23,8 +23,6 @@ use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailHelper;
-use AppBundle\Repository\RoleRepository;
-use AppBundle\Repository\UserRepository;
 use AppBundle\Service\FileUploaderService;
 use AppBundle\Service\UserService;
 use Doctrine\ORM\OptimisticLockException;
@@ -52,9 +50,9 @@ class UserServiceTest extends EntityManagerMock
 
     /**
      * UserServiceTest constructor.
-     * @param array $repositories
-     * @param mixed $name
-     * @param array $data
+     * @param array  $repositories
+     * @param mixed  $name
+     * @param array  $data
      * @param string $dataName
      */
     public function __construct(
@@ -87,7 +85,6 @@ class UserServiceTest extends EntityManagerMock
             $this->userPasswordEncoderMock,
             $this->fileUploaderMock,
             $this->mailMock,
-            '+1 times',
             $this->userAdapterMock
         );
     }
