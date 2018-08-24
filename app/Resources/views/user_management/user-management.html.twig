@@ -31,7 +31,7 @@
                                 <tr>
                                     <th>{{ knp_pagination_sortable(pagination, 'First Name', 'user.firstName', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
                                     <th>{{ knp_pagination_sortable(pagination, 'Last Name', 'user.lastName', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Role', 'user.role_id', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'Role', 'r.description', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
                                     <th>{{ knp_pagination_sortable(pagination, 'E-mail', 'user.email', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
                                     <th>{{ knp_pagination_sortable(pagination, 'Birthdate', 'user.dateOfBirth', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
                                     <th>{{ knp_pagination_sortable(pagination, 'Registration date', 'user.expirationDate', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
@@ -41,7 +41,6 @@
                                 </thead>
                                 <tbody>
                                 {% for u in pagination %}
-
                                     <tr {% if loop.index is odd %}class="color"{% endif %}>
                                         <td>{{ u.firstName }}</td>
                                         <td>{{ u.lastName }}</td>

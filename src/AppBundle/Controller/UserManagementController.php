@@ -9,6 +9,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Exception\InappropriateUserRoleException;
+use AppBundle\Exception\NoRoleException;
 use AppBundle\Form\AddUserTypeForm;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,22 +69,28 @@ class UserManagementController extends Controller
     /**
      * @Route("/user-management/", name="user-management")
      *
+     * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function userManagementAction(Request $request)
     {
-        $em    = $this->get('doctrine.orm.entity_manager');
-        $dql   = "SELECT user FROM AppBundle:User user";
-        $query = $em->createQuery($dql);
-
+        $userService = $this->get('app.user.service');
         $paginator  = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $query, /* query NOT result */
-            $request->query->getInt('page', 1)/*page number*/,
-            5/*limit per page*/
-        );
 
-        // parameters to template
+        try {
+            $query = $userService->getUsersFromOwnersHotelsQuery($this->getUser());
+            $pagination = $paginator->paginate(
+                $query, /* query NOT result */
+                $request->query->getInt('page', 1)/*page number*/,
+                5/*limit per page*/
+            );
+        } catch (NoRoleException $ex) {
+            $this->addFlash('danger', $ex->getMessage());
+        } catch (InappropriateUserRoleException $ex) {
+            $this->addFlash('danger', $ex->getMessage());
+        }
+
         return $this->render('user_management/user-management.html.twig', array('pagination' => $pagination));
     }
 }

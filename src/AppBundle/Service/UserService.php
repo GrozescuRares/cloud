@@ -34,14 +34,19 @@ class UserService
     /**
      * UserService constructor.
      *
-     * @param EntityManager       $em
+     * @param EntityManager $em
      * @param UserPasswordEncoder $encoder
      * @param FileUploaderService $fileUploaderService
-     * @param MailInterface       $mailHelper
-     * @param string              $tokenLifetime
+     * @param MailInterface $mailHelper
+     * @param string $tokenLifetime
      */
-    public function __construct(EntityManager $em, UserPasswordEncoder $encoder, FileUploaderService $fileUploaderService, MailInterface $mailHelper, $tokenLifetime)
-    {
+    public function __construct(
+        EntityManager $em,
+        UserPasswordEncoder $encoder,
+        FileUploaderService $fileUploaderService,
+        MailInterface $mailHelper,
+        $tokenLifetime
+    ) {
         $this->em = $em;
         $this->encoder = $encoder;
         $this->fileUploader = $fileUploaderService;
@@ -66,9 +71,13 @@ class UserService
                 $user->getPlainPassword()
             );
         $user->setPassword($password);
-        $user->setRole($this->em->getRepository(Role::class)->findOneBy([
-            'description' => 'ROLE_CLIENT',
-        ]));
+        $user->setRole(
+            $this->em->getRepository(Role::class)->findOneBy(
+                [
+                    'description' => 'ROLE_CLIENT',
+                ]
+            )
+        );
         $user->setIsActivated(false);
         $user->setActivationToken(md5($user->getUsername()).md5($user->getEmail()));
         $user->setExpirationDate($this->generateActivationTime());
@@ -103,10 +112,12 @@ class UserService
      */
     public function activateAccount($activationToken)
     {
-        $user = $this->em->getRepository(User::class)->findOneBy([
-            'activationToken' => $activationToken,
-            'isActivated' => false,
-        ]);
+        $user = $this->em->getRepository(User::class)->findOneBy(
+            [
+                'activationToken' => $activationToken,
+                'isActivated' => false,
+            ]
+        );
 
         if (!$user instanceof User) {
             throw new UserNotFoundException('There is no user with token: '.$activationToken);
@@ -164,7 +175,7 @@ class UserService
         foreach ($roles as $role) {
             $roleDescription = $role->getDescription();
 
-            if (! ($roleDescription === 'ROLE_CLIENT' || $roleDescription === $userRole)) {
+            if (!($roleDescription === 'ROLE_CLIENT' || $roleDescription === $userRole)) {
                 $result[$roleDescription] = $role;
             }
         }
@@ -231,6 +242,28 @@ class UserService
 
         $this->em->persist($user);
         $this->em->flush();
+    }
+
+    /**
+     * @param User $loggedUser
+     * @return \Doctrine\ORM\Query
+     */
+    public function getUsersFromOwnersHotelsQuery(User $loggedUser)
+    {
+        $loggedUserRole = $loggedUser->getRoles()[0];
+
+        if (empty($loggedUserRole)) {
+            throw new NoRoleException('This user has no role.');
+        }
+
+        if ($loggedUserRole !== 'ROLE_OWNER') {
+            throw new InappropriateUserRoleException('This user is not an owner.');
+        }
+
+        $dql = "SELECT user FROM AppBundle:User user JOIN AppBundle:Hotel h WITH user.hotel = h.hotelId JOIN AppBundle:Role r WITH r.roleId = user.role WHERE h.owner=:owner";
+        $query = $this->em->createQuery($dql)->setParameter('owner', $loggedUser);
+
+        return $query;
     }
 
     /**
