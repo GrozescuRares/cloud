@@ -8,6 +8,7 @@
 
 namespace Tests\AppBundle\Controller;
 
+use AppBundle\Enum\UserConfig;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -259,6 +260,175 @@ class UserManagementControllerTest extends WebTestCase
     }
 
     /**
+     * Tests edit user by owner
+     */
+    public function testEditUserRoleByOwner()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('submit')->form();
+        $form = $this->generateLoginForm($form, 'owner', 'owner');
+        $client->submit($form);
+
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
+
+        $client->followRedirect();
+        $crawler = $client->request('GET', '/user-management/edit-user');
+
+        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
+        $form = $this->generateEditUserForm($form, 'edit-user', 0);
+        $client->submit($form);
+        $crawler = $client->followRedirect();
+
+        $this->assertContains('User role successfully edited.', $crawler->filter('div.alert')->text());
+
+        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
+        $form = $this->generateEditUserForm($form, 'edit-user', 1);
+        $client->submit($form);
+        $crawler = $client->followRedirect();
+
+        $this->assertContains('User role successfully edited.', $crawler->filter('div.alert')->text());
+    }
+
+    /**
+     * Tests edit user by owner
+     */
+    public function testEditUserRoleByManager()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('submit')->form();
+        $form = $this->generateLoginForm($form, 'manager1', 'manager');
+        $client->submit($form);
+
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
+
+        $client->followRedirect();
+        $crawler = $client->request('GET', '/user-management/edit-user');
+
+        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
+        $form = $this->generateEditUserForm($form, 'edit-user', 0);
+        $client->submit($form);
+        $crawler = $client->followRedirect();
+
+        $this->assertContains('already has', $crawler->filter('div.alert')->text());
+    }
+
+    /**
+     *
+     */
+    public function testThatOwnerCanNotEditTheRoleOfAClient()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('submit')->form();
+        $form = $this->generateLoginForm($form, 'owner', 'owner');
+        $client->submit($form);
+
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
+
+        $client->followRedirect();
+        $crawler = $client->request('GET', '/user-management/edit-user');
+
+        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
+        $form = $this->generateEditUserForm($form, 'rares', 0);
+        $client->submit($form);
+        $crawler = $client->followRedirect();
+
+        $this->assertContains('Can not edit users with', $crawler->filter('div.alert')->text());
+    }
+
+    /**
+     *
+     */
+    public function testThatManagerCanNotEditTheRoleOfAClient()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('submit')->form();
+        $form = $this->generateLoginForm($form, 'manager1', 'manager');
+        $client->submit($form);
+
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
+
+        $client->followRedirect();
+        $crawler = $client->request('GET', '/user-management/edit-user');
+
+        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
+        $form = $this->generateEditUserForm($form, 'rares', 0);
+        $client->submit($form);
+        $crawler = $client->followRedirect();
+
+        $this->assertContains('Can not edit users with', $crawler->filter('div.alert')->text());
+    }
+
+    /**
+     *
+     */
+    public function testThatOwnerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('submit')->form();
+        $form = $this->generateLoginForm($form, 'owner', 'owner');
+        $client->submit($form);
+
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
+
+        $client->followRedirect();
+        $crawler = $client->request('GET', '/user-management/edit-user');
+
+        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
+        $form = $this->generateEditUserForm($form, 'client', 0);
+        $client->submit($form);
+        $crawler = $client->followRedirect();
+
+        $this->assertContains('This user is not part of owners hotels.', $crawler->filter('div.alert')->text());
+    }
+
+    /**
+     *
+     */
+    public function testThatManagerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('submit')->form();
+        $form = $this->generateLoginForm($form, 'manager1', 'manager');
+        $client->submit($form);
+
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
+
+        $client->followRedirect();
+        $crawler = $client->request('GET', '/user-management/edit-user');
+
+        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
+        $form = $this->generateEditUserForm($form, 'client', 0);
+        $client->submit($form);
+        $crawler = $client->followRedirect();
+
+        $this->assertContains('This user is not part of managers hotel.', $crawler->filter('div.alert')->text());
+    }
+
+    /**
      * @param $form
      * @param $username
      * @param $password
@@ -291,6 +461,20 @@ class UserManagementControllerTest extends WebTestCase
         $form['appbundle_user[dateOfBirth][year]'] = '1950';
         $form['appbundle_user[firstName]'] = $username."FirstName";
         $form['appbundle_user[lastName]'] = $username."LastName";
+
+        return $form;
+    }
+
+    /**
+     * @param $form
+     * @param $username
+     * @param $role
+     * @return mixed
+     */
+    private function generateEditUserForm($form, $username, $role)
+    {
+        $form['appbundle_userDto[username]'] = $username;
+        $form['appbundle_userDto[role]'] = $role;
 
         return $form;
     }
