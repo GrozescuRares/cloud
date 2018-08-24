@@ -196,6 +196,7 @@ class UserService
             );
         $user->setPassword($password);
         $user->setIsActivated(true);
+        $user->setExpirationDate($this->generateActivationTime());
 
         if ($loggedUser->getRoles()[0] === 'ROLE_MANAGER') {
             $user->setHotel($loggedUser->getHotel());
