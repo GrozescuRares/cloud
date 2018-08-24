@@ -246,9 +246,10 @@ class UserService
 
     /**
      * @param User $loggedUser
+     * @param int  $hotelId
      * @return \Doctrine\ORM\Query
      */
-    public function getUsersFromOwnersHotelsQuery(User $loggedUser)
+    public function getUsersFromOwnersHotelsQuery(User $loggedUser, int $hotelId = null)
     {
         $loggedUserRole = $loggedUser->getRoles()[0];
 
@@ -256,12 +257,19 @@ class UserService
             throw new NoRoleException('This user has no role.');
         }
 
-        if ($loggedUserRole !== 'ROLE_OWNER') {
+        if ($loggedUserRole !== 'ROLE_OWNER' && $loggedUserRole !== 'ROLE_MANAGER') {
             throw new InappropriateUserRoleException('This user is not an owner.');
         }
 
-        $dql = "SELECT user FROM AppBundle:User user JOIN AppBundle:Hotel h WITH user.hotel = h.hotelId JOIN AppBundle:Role r WITH r.roleId = user.role WHERE h.owner=:owner";
-        $query = $this->em->createQuery($dql)->setParameter('owner', $loggedUser);
+        if (empty($hotelId)) {
+            $dql = "SELECT user FROM AppBundle:User user JOIN AppBundle:Role r WITH r.roleId = user.role WHERE user.hotel=:managerHotel";
+            $query = $this->em->createQuery($dql)->setParameter('managerHotel', $loggedUser->getHotel());
+
+            return $query;
+        }
+
+        $dql = "SELECT user FROM AppBundle:User user JOIN AppBundle:Hotel h WITH user.hotel = h.hotelId JOIN AppBundle:Role r WITH r.roleId = user.role WHERE h.owner=:owner AND h.hotelId=:hotelId";
+        $query = $this->em->createQuery($dql)->setParameter('owner', $loggedUser)->setParameter('hotelId', $hotelId);
 
         return $query;
     }

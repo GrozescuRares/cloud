@@ -62,4 +62,16 @@ class HotelService
 
         return $result;
     }
+
+    /**
+     * @param int $hotelId
+     *
+     * @return Hotel|null|object
+     */
+    public function getHotelById($hotelId)
+    {
+        return $this->em->getRepository(Hotel::class)->findOneBy([
+            'hotelId' => $hotelId,
+        ]);
+    }
 }

@@ -10,16 +10,17 @@
                         <h1 class="text-center">User Management</h1>
                     </div>
                     <div class="col-md-12 col-xs-12 no-lr-padding text-center search">
-                        <span>Search by Hotel all users</span>
-                        <div class="styled-input">
-                            <select class="selectpicker">
-                                <option>Hotel 1</option>
-                                <option>Hotel 2</option>
-                                <option>Hotel 3</option>
-                                <option>Hotel 4</option>
-                            </select>
-                        </div>
-                        <span class="light">(include all users options)</span>
+                        {% if is_granted('ROLE_OWNER') %}
+                            <span>Search by Hotel all users</span>
+                            <div class="styled-input">
+                                <select class="selectpicker" id="hotels">
+                                    {% for name, hotel in hotels %}
+                                        <option value="{{ hotel.hotelId }}"> {{ name }} </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <span class="light">(include all users options)</span>
+                        {% endif %}
                         <div class="col-md-12 col-xs-12 no-lr-padding text-center">
                             <span class="light">(pagination, sorting, edit => redirect, remove = > confirmation)</span>
                         </div>
@@ -29,12 +30,18 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>{{ knp_pagination_sortable(pagination, 'First Name', 'user.firstName', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Last Name', 'user.lastName', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Role', 'r.description', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'E-mail', 'user.email', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Birthdate', 'user.dateOfBirth', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Registration date', 'user.expirationDate', {'style': 'color: #fff'}) }}<span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'First Name', 'user.firstName', {'style': 'color: #fff'}) }}
+                                        <span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'Last Name', 'user.lastName', {'style': 'color: #fff'}) }}
+                                        <span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'Role', 'r.description', {'style': 'color: #fff'}) }}
+                                        <span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'E-mail', 'user.email', {'style': 'color: #fff'}) }}
+                                        <span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'Birthdate', 'user.dateOfBirth', {'style': 'color: #fff'}) }}
+                                        <span class="sort-icon"></span></th>
+                                    <th>{{ knp_pagination_sortable(pagination, 'Registration date', 'user.expirationDate', {'style': 'color: #fff'}) }}
+                                        <span class="sort-icon"></span></th>
                                     <th class="text-center">Edit</th>
                                     <th class="text-center">Remove</th>
                                 </tr>
@@ -50,7 +57,7 @@
                                         <td>{{ u.expirationDate | date('Y-m-d') }}</td>
                                         <td class="text-center"><a href="#"><i class="fa fa-edit"></i></a></td>
                                         <td class="text-center"><input type="checkbox"></td>
-                                        </tr>
+                                    </tr>
                                 {% endfor %}
                                 </tbody>
                             </table>
@@ -68,4 +75,8 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/user_management/user-management.js') }}"></script>
 {% endblock %}
