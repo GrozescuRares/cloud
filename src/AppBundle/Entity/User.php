@@ -604,6 +604,13 @@ class User implements UserInterface, \Serializable
             $this->userId,
             $this->username,
             $this->password,
+            $this->email,
+            $this->firstName,
+            $this->lastName,
+            $this->expirationDate,
+            $this->dateOfBirth,
+            $this->role,
+            $this->hotel,
         ]);
     }
 
@@ -621,7 +628,14 @@ class User implements UserInterface, \Serializable
         list (
             $this->userId,
             $this->username,
-            $this->password
+            $this->password,
+            $this->email,
+            $this->firstName,
+            $this->lastName,
+            $this->expirationDate,
+            $this->dateOfBirth,
+            $this->role,
+            $this->hotel
             ) = unserialize($serialized);
     }
 

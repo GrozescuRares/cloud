@@ -12,11 +12,10 @@ use AppBundle\Entity\User;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Form\AddUserTypeForm;
+use AppBundle\OrderConfig;
 use Doctrine\ORM\OptimisticLockException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -83,40 +82,28 @@ class UserManagementController extends Controller
     {
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
-        $paginator = $this->get('knp_paginator');
         $hotelService = $this->get('app.hotel.service');
         $hotels = $hotelService->getHotelsByOwner($loggedUser);
 
-        if ($request->isXmlHttpRequest() || $request->query->get('showJson') == 1) {
-            $hotelId = $request->request->get('hotelId');
-            $query = $userService->getUsersFromOwnersHotelsQuery($loggedUser, $hotelId);
-            $response = $query->getResult();
-            $result = [];
-            foreach ($response as $user) {
-                $result[] = $user;
-            }
-
-            return new Response(json_encode($result));
-        }
-
         try {
             if (empty($hotels)) {
-                $query = $userService->getUsersFromOwnersHotelsQuery($loggedUser);
+                $users = $userService->getUsersFromHotels($loggedUser, 0);
+                $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
+
             } else {
-                $query = $userService->getUsersFromOwnersHotelsQuery($loggedUser, reset($hotels)->getHotelId());
+                $query = $userService->getUsersFromHotels($loggedUser, 0, reset($hotels)->getHotelId());
             }
-            $pagination = $paginator->paginate(
-                $query, /* query NOT result */
-                $request->query->getInt('page', 1)/*page number*/,
-                5/*limit per page*/
-            );
 
             return $this->render(
                 'user_management/user-management.html.twig',
                 [
-                    'pagination' => $pagination,
                     'hotels' => $hotels,
                     'user' => $loggedUser,
+                    'users' => $users,
+                    'nrPages' => $nrPages,
+                    'currentPage' => 1,
+                    'nrUsers' => count($users),
+                    'filters' => [],
                 ]
             );
         } catch (NoRoleException $ex) {
@@ -124,5 +111,70 @@ class UserManagementController extends Controller
         } catch (InappropriateUserRoleException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         }
+    }
+
+    /**
+     * @Route("/user-management/paginate-and-sort", name="paginate-and-sort")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function paginateAndSortAction(Request $request)
+    {
+        $loggedUser = $this->getUser();
+        $userService = $this->get('app.user.service');
+
+
+        if ($request->isXmlHttpRequest()) {
+            $type = $request->query->get('type');
+
+            if ($type === 'managerPagination') {
+                $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
+                $pageNumber = $request->query->get('pageNumber');
+                $users = $userService->getUsersFromHotels($loggedUser, $pageNumber * 5 - 5);
+
+                return $this->render(
+                    'user_management/table.html.twig',
+                    [
+                        'users' => $users,
+                        'nrPages' => $nrPages,
+                        'currentPage' => $pageNumber,
+                        'nrUsers' => count($users),
+                        'filters' => [
+                        ],
+                    ]
+                );
+            }
+
+            if ($type === 'managerSort') {
+                $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
+                $pageNumber = $request->query->get('pageNumber');
+                $column = $request->query->get('column');
+                $sort = $request->query->get('sort');
+                $users = $userService->sortUsersFromManagerHotel($loggedUser, $pageNumber * 5 - 5, $column, $sort);
+                $sort = OrderConfig::TYPE[$sort];
+
+                return $this->render(
+                    'user_management/table.html.twig',
+                    [
+                        'users' => $users,
+                        'nrPages' => $nrPages,
+                        'currentPage' => $pageNumber,
+                        'nrUsers' => count($users),
+                        'filters' => [
+                          $column =>  $sort,
+                        ],
+                    ]
+                );
+            }
+        }
+
+        return $this->render(
+            'error.html.twig',
+            [
+                'error' => 'Stay out of here.',
+            ]
+        );
     }
 }

@@ -25,56 +25,14 @@
                             <span class="light">(pagination, sorting, edit => redirect, remove = > confirmation)</span>
                         </div>
                     </div>
-                    <div class="table-paginated">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>{{ knp_pagination_sortable(pagination, 'First Name', 'user.firstName', {'style': 'color: #fff'}) }}
-                                        <span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Last Name', 'user.lastName', {'style': 'color: #fff'}) }}
-                                        <span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Role', 'r.description', {'style': 'color: #fff'}) }}
-                                        <span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'E-mail', 'user.email', {'style': 'color: #fff'}) }}
-                                        <span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Birthdate', 'user.dateOfBirth', {'style': 'color: #fff'}) }}
-                                        <span class="sort-icon"></span></th>
-                                    <th>{{ knp_pagination_sortable(pagination, 'Registration date', 'user.expirationDate', {'style': 'color: #fff'}) }}
-                                        <span class="sort-icon"></span></th>
-                                    <th class="text-center">Edit</th>
-                                    <th class="text-center">Remove</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for u in pagination %}
-                                    <tr {% if loop.index is odd %}class="color"{% endif %}>
-                                        <td>{{ u.firstName }}</td>
-                                        <td>{{ u.lastName }}</td>
-                                        <td>{{ u.role }}</td>
-                                        <td>{{ u.email }}</td>
-                                        <td>{{ u.dateOfBirth }}</td>
-                                        <td>{{ u.expirationDate | date('Y-m-d') }}</td>
-                                        <td class="text-center"><a href="#"><i class="fa fa-edit"></i></a></td>
-                                        <td class="text-center"><input type="checkbox"></td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="table-items">{{ pagination.getTotalItemCount }} users</div>
-                        <div class="table-pagination">
-                            {{ knp_pagination_render(pagination) }}
-                        </div>
-
-                        <div class="col-md-12 col-xs-12 no-lr-padding">
-                            <a href="{{ path('add-user') }}" class="btn submit pull-right">Add New User</a>
-                        </div>
+                    <div id="reload">
+                        {{ include('user_management/table.html.twig') }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 {% endblock %}
 
 {% block javascripts %}

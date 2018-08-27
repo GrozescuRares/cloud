@@ -34,11 +34,11 @@ class UserService
     /**
      * UserService constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager       $em
      * @param UserPasswordEncoder $encoder
      * @param FileUploaderService $fileUploaderService
-     * @param MailInterface $mailHelper
-     * @param string $tokenLifetime
+     * @param MailInterface       $mailHelper
+     * @param string              $tokenLifetime
      */
     public function __construct(
         EntityManager $em,
@@ -245,11 +245,13 @@ class UserService
     }
 
     /**
-     * @param User $loggedUser
-     * @param int  $hotelId
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @param mixed $hotelId
+     *
      * @return \Doctrine\ORM\Query
      */
-    public function getUsersFromOwnersHotelsQuery(User $loggedUser, int $hotelId = null)
+    public function getUsersFromHotels(User $loggedUser, $offset, $hotelId = null)
     {
         $loggedUserRole = $loggedUser->getRoles()[0];
 
@@ -262,16 +264,34 @@ class UserService
         }
 
         if (empty($hotelId)) {
-            $dql = "SELECT user FROM AppBundle:User user JOIN AppBundle:Role r WITH r.roleId = user.role WHERE user.hotel=:managerHotel";
-            $query = $this->em->createQuery($dql)->setParameter('managerHotel', $loggedUser->getHotel());
-
-            return $query;
+            return $this->em->getRepository(User::class)->getUsersFromManagerHotel($loggedUser, $offset);
         }
 
         $dql = "SELECT user FROM AppBundle:User user JOIN AppBundle:Hotel h WITH user.hotel = h.hotelId JOIN AppBundle:Role r WITH r.roleId = user.role WHERE h.owner=:owner AND h.hotelId=:hotelId";
         $query = $this->em->createQuery($dql)->setParameter('owner', $loggedUser)->setParameter('hotelId', $hotelId);
 
         return $query;
+    }
+
+    /**
+     * @param User $loggedUser
+     * @return int
+     */
+    public function getPagesNumberForManagerManagement(User $loggedUser)
+    {
+        return $this->em->getRepository(User::class)->getUsersPagesNumberFromManagerHotel($loggedUser);
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sortType
+     * @return array
+     */
+    public function sortUsersFromManagerHotel(User $loggedUser, $offset, $column, $sortType)
+    {
+        return $this->em->getRepository(User::class)->sortUsersFromManagerHotel($loggedUser, $offset, $column, $sortType);
     }
 
     /**

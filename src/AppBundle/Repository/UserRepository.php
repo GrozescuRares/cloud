@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Exception\UserNotFoundException;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
@@ -38,5 +39,58 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
         }
 
         return $user;
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     *
+     * @return array
+     */
+    public function getUsersFromManagerHotel(User $loggedUser, $offset)
+    {
+        $users = $this->createQueryBuilder('user')
+            ->where('user.hotel = :managerHotel')
+            ->setParameter('managerHotel', $loggedUser->getHotel())
+            ->setFirstResult($offset)
+            ->setMaxResults(5)
+            ->getQuery()->execute();
+
+        return $users;
+    }
+
+    /**
+     * @param User $loggedUser
+     * @return int
+     */
+    public function getUsersPagesNumberFromManagerHotel(User $loggedUser)
+    {
+        $usersCount = $this->createQueryBuilder('user')
+            ->where('user.hotel = :managerHotel')
+            ->setParameter('managerHotel', $loggedUser->getHotel())
+            ->getQuery()->execute();
+
+        return ceil(count($usersCount)/5);
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     *
+     * @return array
+     */
+    public function sortUsersFromManagerHotel(User $loggedUser, $offset, $column, $sort)
+    {
+        $users = $this->createQueryBuilder('user')
+            ->where('user.hotel = :managerHotel')
+            ->setParameter('managerHotel', $loggedUser->getHotel())
+            ->setMaxResults(5)
+            ->setFirstResult($offset)
+            ->orderBy('user.'.$column, $sort)
+            ->getQuery()->execute();
+
+        return $users;
     }
 }
