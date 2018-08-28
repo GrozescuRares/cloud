@@ -8,11 +8,16 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Dto\UserDto;
 use AppBundle\Entity\User;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
-use AppBundle\Form\AddUserTypeForm;
-use AppBundle\OrderConfig;
+use AppBundle\Enum\OrderConfig;
+use AppBundle\Exception\SameRoleException;
+use AppBundle\Exception\UneditableRoleException;
+use AppBundle\Exception\UserNotFoundException;
+use AppBundle\Form\EditUserTypeForm;
+use AppBundle\Form\UserTypeForm;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -44,9 +49,10 @@ class UserManagementController extends Controller
         $roles = $userService->getUserCreationalRoles($loggedUser);
 
         $form = $this->createForm(
-            AddUserTypeForm::class,
+            UserTypeForm::class,
             $user,
             [
+                'type' => 'add-user',
                 'loggedUser' => $loggedUser,
                 'roles' => $roles,
                 'hotels' => $hotels,
@@ -69,6 +75,61 @@ class UserManagementController extends Controller
         $this->addFlash('success', 'Add user form successfully submitted. Thank you !');
 
         return $this->redirectToRoute('add-user');
+    }
+
+    /**
+     * @Route("/user-management/edit-user/{username}", name="edit-user")
+     *
+     * @param Request $request
+     * @param string  $username
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws OptimisticLockException
+     */
+    public function editUserRoleAction(Request $request, string $username)
+    {
+        $userDto = new UserDto();
+        $userDto->username = $username;
+        $loggedUser = $this->getUser();
+        $userService = $this->get('app.user.service');
+        $hotelService = $this->get('app.hotel.service');
+        $roles = $userService->getUserCreationalRoles($loggedUser);
+        $hotels = $hotelService->getHotelsByOwner($loggedUser);
+
+        $form = $this->createForm(
+            EditUserTypeForm::class,
+            $userDto,
+            [
+                'validation_groups' => ['edit-user'],
+                'roles' => $roles,
+            ]
+        );
+
+        $form->handleRequest($request);
+
+        if (!($form->isSubmitted() && $form->isValid())) {
+            return $this->render(
+                'user_management/edit-user.html.twig',
+                [
+                    'edit_user_form' => $form->createView(),
+                    'username'       => $username,
+                ]
+            );
+        }
+
+        try {
+            $userService->editUserRole($userDto, $loggedUser, $hotels);
+            $this->addFlash('success', 'User role successfully edited.');
+        } catch (UserNotFoundException $ex) {
+            $this->addFlash('danger', $ex->getMessage());
+        } catch (SameRoleException $ex) {
+            $this->addFlash('danger', $ex->getMessage());
+        } catch (UneditableRoleException $ex) {
+            $this->addFlash('danger', $ex->getMessage());
+        }
+
+        return $this->redirectToRoute('edit-user', ['username' => $username]);
     }
 
     /**
@@ -165,6 +226,7 @@ class UserManagementController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return array
      */
     private function getPaginationParameters(Request $request)
@@ -184,6 +246,7 @@ class UserManagementController extends Controller
      * @param $pageNumber
      * @param $column
      * @param $sort
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     private function renderPaginatedTable($users, $nrPages, $pageNumber, $column, $sort)
@@ -206,6 +269,7 @@ class UserManagementController extends Controller
      * @param $column
      * @param $sort
      * @param $paginate
+     *
      * @return array
      */
     private function configPaginationFilters($column, $sort, $paginate)

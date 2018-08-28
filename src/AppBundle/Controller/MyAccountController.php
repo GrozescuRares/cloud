@@ -46,6 +46,7 @@ class MyAccountController extends Controller
 
         $form = $this->createForm(UserTypeForm::class, $user, [
             'validation_groups' => ['edit-my-account'],
+            'type' => 'my-account',
         ]);
         $form->handleRequest($request);
 

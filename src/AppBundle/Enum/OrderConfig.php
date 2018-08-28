@@ -6,7 +6,7 @@
  * Time: 17:31
  */
 
-namespace AppBundle;
+namespace AppBundle\Enum;
 
 
 class OrderConfig
