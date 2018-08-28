@@ -30,4 +30,10 @@ class UserDto
      * @Assert\NotBlank(groups={"register", "edit-my-account", "edit-user"}, message="constraints.role")
      */
     public $role;
+
+    public $firstName;
+    public $lastName;
+    public $email;
+    public $dateOfBirth;
+    public $expirationDate;
 }

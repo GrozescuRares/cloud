@@ -56,4 +56,19 @@ class UserAdapter
 
         return $user;
     }
+
+    /**
+     * @param array $users
+     *
+     * @return array
+     */
+    public function convertCollectionToDto($users)
+    {
+        $usersDto = [];
+        foreach ($users as $user) {
+            $usersDto[] = $this->convertToDto($user);
+        }
+
+        return $usersDto;
+    }
 }

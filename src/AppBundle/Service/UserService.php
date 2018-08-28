@@ -249,7 +249,7 @@ class UserService
      * @param mixed $offset
      * @param mixed $hotelId
      *
-     * @return \Doctrine\ORM\Query
+     * @return array
      */
     public function getUsersFromHotels(User $loggedUser, $offset, $hotelId = null)
     {
@@ -257,10 +257,13 @@ class UserService
         $this->checkIfUserHasHighRole($loggedUser);
 
         if (empty($hotelId)) {
-            return $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, null, null);
-        }
+            $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, null, null);
 
-        return $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, null, null, $hotelId);
+            return $this->userAdapter->convertCollectionToDto($users);
+        }
+        $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, null, null, $hotelId);
+
+        return $this->userAdapter->convertCollectionToDto($users);
     }
 
     /**
