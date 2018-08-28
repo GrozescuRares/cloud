@@ -195,7 +195,7 @@ class UserManagementController extends Controller
                     $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
 
                     list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
-                    $usersDto = $userService->paginateAndSortUsersFromManagerHotel($loggedUser, $pageNumber * 5 - 5, $column, $sortType);
+                    $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $pageNumber * 5 - 5, $column, $sortType);
 
                     return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
                 }
@@ -205,7 +205,7 @@ class UserManagementController extends Controller
                     $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
 
                     list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
-                    $usersDto = $userService->paginateAndSortUsersFromOwnerHotel($loggedUser, $pageNumber * 5 - 5, $column, $sortType, $hotelId);
+                    $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $pageNumber * 5 - 5, $column, $sortType, $hotelId);
 
                     return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
                 }

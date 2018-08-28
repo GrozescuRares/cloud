@@ -287,13 +287,15 @@ class UserService
      * @param mixed $sortType
      * @return array
      */
-    public function paginateAndSortUsersFromManagerHotel(User $loggedUser, $offset, $column, $sortType)
+    public function paginateAndSortManagersUsers(User $loggedUser, $offset, $column, $sortType)
     {
         $loggedUserRole = $loggedUser->getRoles()[0];
         $this->checkIfUserHasRole($loggedUserRole);
         $this->checkIfUserHasHighRole($loggedUserRole);
 
-        return $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, $column, $sortType);
+        $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, $column, $sortType);
+
+        return $this->userAdapter->convertCollectionToDto($users);
     }
 
     /**
@@ -320,13 +322,15 @@ class UserService
      *
      * @return array
      */
-    public function paginateAndSortUsersFromOwnerHotel(User $loggedUser, $offset, $column, $sortType, $hotelId)
+    public function paginateAndSortOwnersUsers(User $loggedUser, $offset, $column, $sortType, $hotelId)
     {
         $loggedUserRole = $loggedUser->getRoles()[0];
         $this->checkIfUserHasRole($loggedUserRole);
         $this->checkIfUserHasHighRole($loggedUserRole);
 
-        return $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, $column, $sortType, $hotelId);
+        $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, $column, $sortType, $hotelId);
+
+        return $this->userAdapter->convertCollectionToDto($users);
     }
 
     /**

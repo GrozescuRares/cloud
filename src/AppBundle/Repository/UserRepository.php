@@ -48,7 +48,9 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
     {
         $usersCount = $this->createQueryBuilder('user')
             ->where('user.hotel = :managerHotel')
+            ->andWhere('user.userId != :managerId')
             ->setParameter('managerHotel', $loggedUser->getHotel())
+            ->setParameter('managerId', $loggedUser->getUserId())
             ->getQuery()->execute();
 
         return ceil(count($usersCount) / 5);
@@ -66,7 +68,9 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
     {
         $users = $this->createQueryBuilder('user')
             ->where('user.hotel = :managerHotel')
+            ->andWhere('user.userId != :managerId')
             ->setParameter('managerHotel', $loggedUser->getHotel())
+            ->setParameter('managerId', $loggedUser->getUserId())
             ->setMaxResults(5)
             ->setFirstResult($offset);
 
