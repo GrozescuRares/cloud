@@ -167,7 +167,7 @@ class UserService
      */
     public function getUserCreationalRoles(User $user)
     {
-        $this->checkIfUserHasRole($user);
+        $this->checkIfUserHasRole($user->getRoles()[0]);
 
         $userRole = $user->getRoles()[0];
         $roles = $this->em->getRepository(Role::class)->findAll();
@@ -197,7 +197,7 @@ class UserService
      */
     public function addUser(User $user, User $loggedUser)
     {
-        $this->checkIfUserHasRole($loggedUser);
+        $this->checkIfUserHasRole($loggedUser->getRoles()[0]);
 
         $password = $this
             ->encoder
@@ -253,8 +253,9 @@ class UserService
      */
     public function getUsersFromHotels(User $loggedUser, $offset, $hotelId = null)
     {
-        $this->checkIfUserHasRole($loggedUser);
-        $this->checkIfUserHasHighRole($loggedUser);
+        $loggedUserRole = $loggedUser->getRoles()[0];
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
 
         if (empty($hotelId)) {
             $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, null, null);
@@ -272,8 +273,9 @@ class UserService
      */
     public function getPagesNumberForManagerManagement(User $loggedUser)
     {
-        $this->checkIfUserHasRole($loggedUser);
-        $this->checkIfUserHasHighRole($loggedUser);
+        $loggedUserRole = $loggedUser->getRoles()[0];
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
 
         return $this->em->getRepository(User::class)->getUsersPagesNumberFromManagerHotel($loggedUser);
     }
@@ -287,8 +289,9 @@ class UserService
      */
     public function paginateAndSortUsersFromManagerHotel(User $loggedUser, $offset, $column, $sortType)
     {
-        $this->checkIfUserHasRole($loggedUser);
-        $this->checkIfUserHasHighRole($loggedUser);
+        $loggedUserRole = $loggedUser->getRoles()[0];
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
 
         return $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, $column, $sortType);
     }
@@ -301,8 +304,9 @@ class UserService
      */
     public function getPagesNumberForOwnerManagement(User $loggedUser, $hotelId)
     {
-        $this->checkIfUserHasRole($loggedUser);
-        $this->checkIfUserHasHighRole($loggedUser);
+        $loggedUserRole = $loggedUser->getRoles()[0];
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
 
         return $this->em->getRepository(User::class)->getUsersPagesNumberFromOwnerHotel($loggedUser, $hotelId);
     }
@@ -318,8 +322,9 @@ class UserService
      */
     public function paginateAndSortUsersFromOwnerHotel(User $loggedUser, $offset, $column, $sortType, $hotelId)
     {
-        $this->checkIfUserHasRole($loggedUser);
-        $this->checkIfUserHasHighRole($loggedUser);
+        $loggedUserRole = $loggedUser->getRoles()[0];
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
 
         return $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, $column, $sortType, $hotelId);
     }
@@ -337,14 +342,8 @@ class UserService
     public function editUserRole(UserDto $userDto, User $loggedUser, $hotels)
     {
         $loggedUserRole = $loggedUser->getRoles()[0];
-
-        if (empty($loggedUserRole)) {
-            throw new NoRoleException('The loggedUser has no role.');
-        }
-
-        if (array_search($loggedUserRole, UserConfig::HIGH_ROLES) === false) {
-            throw new InappropriateUserRoleException('The loggedUser must be owner or manager.');
-        }
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
 
         if ($loggedUserRole === UserConfig::ROLE_MANAGER) {
             if (!$this->checkIfUserHasManagerHotelId($loggedUser->getHotel(), $userDto->username)) {
@@ -444,22 +443,21 @@ class UserService
     }
 
     /**
-     * @param User $loggedUser
+     * @param mixed $loggedUser
      */
-    private function checkIfUserHasRole(User $loggedUser)
+    private function checkIfUserHasRole($loggedUserRole)
     {
-        if (empty($loggedUser->getRoles())) {
+        if (empty($loggedUserRole)) {
             throw new NoRoleException('This user has no role.');
         }
     }
 
     /**
-     * @param User $loggedUser
+     * @param mixed $loggedUser
      */
-    private function checkIfUserHasHighRole(User $loggedUser)
+    private function checkIfUserHasHighRole($loggedUserRole)
     {
-        $loggedUserRole = $loggedUser->getRoles()[0];
-        if ($loggedUserRole !== 'ROLE_OWNER' && $loggedUserRole !== 'ROLE_MANAGER') {
+        if (array_search($loggedUserRole, UserConfig::HIGH_ROLES) === false) {
             throw new InappropriateUserRoleException('This user is not an owner.');
         }
     }

@@ -51,7 +51,9 @@ class UserAdapter
         }
 
         foreach ($userDto as $property => $value) {
-            $this->propertyAccessor->setValue($user, $property, $value);
+            if (!empty($value)) {
+                $this->propertyAccessor->setValue($user, $property, $value);
+            }
         }
 
         return $user;
