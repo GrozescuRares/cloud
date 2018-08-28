@@ -9,20 +9,22 @@
                     <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
                         <h1 class="text-center">{{ 'page.user-management.user-management.title'| trans }}</h1>
                     </div>
-                    <div class="col-md-12 col-xs-12 no-lr-padding text-center search">
-                        {% if is_granted('ROLE_OWNER') %}
+                    {% if is_granted('ROLE_OWNER') %}
+                        <div class="col-md-12 col-xs-12 no-lr-padding text-center search">
+
                             <span>{{ 'page.user-management.user-management.search'| trans }}</span>
                             <div class="styled-input">
                                 <select class="selectpicker" id="hotels">
                                     {% for name, hotel in hotels %}
-                                        <option data-action="{{ path('paginate-and-sort') }}" data-role="owner" data-page="{{ currentPage }}" value="{{ hotel.hotelId }}"> {{ name }} </option>
+                                        <option data-action="{{ path('paginate-and-sort') }}" data-role="owner"
+                                                data-page="{{ currentPage }}"
+                                                value="{{ hotel.hotelId }}"> {{ name }} </option>
                                     {% endfor %}
                                 </select>
                             </div>
-                        {% endif %}
-                        <div class="col-md-12 col-xs-12 no-lr-padding text-center">
+
                         </div>
-                    </div>
+                    {% endif %}
                     <div id="reload">
                         {{ include('user_management/table.html.twig') }}
                     </div>
