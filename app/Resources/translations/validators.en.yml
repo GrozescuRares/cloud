@@ -7,3 +7,4 @@ constraints:
   gender: 'Please choose between Male or Female.'
   image: 'That is not an allowed format.'
   password: 'This value should not be blank.'
+  role: 'Please choose a role.'

@@ -9,6 +9,9 @@
 namespace Tests\AppBundle\Service;
 
 use AppBundle\Entity\Hotel;
+use AppBundle\Enum\EntityConfig;
+use AppBundle\Enum\RepositoryConfig;
+use AppBundle\Enum\UserConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Repository\HotelRepository;
@@ -21,9 +24,6 @@ use AppBundle\Entity\User;
  */
 class HotelServiceTest extends EntityManagerMock
 {
-    const FIRST_ENTITY = Hotel::class;
-    const FIRST_ENTITY_REPOSITORY = HotelRepository::class;
-
     /** @var HotelServiceTest | \PHPUnit_Framework_MockObject_MockObject */
     protected $hotelService;
 
@@ -35,7 +35,7 @@ class HotelServiceTest extends EntityManagerMock
      * @param string $dataName
      */
     public function __construct(
-        array $repositories = [self::FIRST_ENTITY => self::FIRST_ENTITY_REPOSITORY],
+        array $repositories = [EntityConfig::HOTEL => RepositoryConfig::HOTEL_REPOSITORY],
         $name = null,
         array $data = [],
         $dataName = ''
@@ -64,7 +64,7 @@ class HotelServiceTest extends EntityManagerMock
 
         $ownerMock->expects($this->once())
             ->method('getRoles')
-            ->willReturn(['ROLE_OWNER']);
+            ->willReturn([UserConfig::ROLE_OWNER]);
         $ownerMock->expects($this->once())
             ->method('getUserId')
             ->willReturn(100);
@@ -77,7 +77,7 @@ class HotelServiceTest extends EntityManagerMock
             ->method('getName')
             ->willReturn('Ramada');
 
-        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
+        $this->repositoriesMocks[EntityConfig::HOTEL]->expects($this->once())
             ->method('findBy')
             ->with(
                 [
@@ -101,12 +101,12 @@ class HotelServiceTest extends EntityManagerMock
 
         $ownerMock->expects($this->once())
             ->method('getRoles')
-            ->willReturn(['ROLE_OWNER']);
+            ->willReturn([UserConfig::ROLE_OWNER]);
         $ownerMock->expects($this->once())
             ->method('getUserId')
             ->willReturn(100);
 
-        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
+        $this->repositoriesMocks[EntityConfig::HOTEL]->expects($this->once())
             ->method('findBy')
             ->with(
                 [

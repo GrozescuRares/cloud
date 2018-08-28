@@ -8,15 +8,21 @@
 
 namespace Tests\AppBundle\Service;
 
+use AppBundle\Adapter\UserAdapter;
+use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Enum\EntityConfig;
+use AppBundle\Enum\RepositoryConfig;
+use AppBundle\Enum\UserConfig;
+use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
+use AppBundle\Exception\SameRoleException;
 use AppBundle\Exception\TokenExpiredException;
+use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailHelper;
-use AppBundle\Repository\RoleRepository;
-use AppBundle\Repository\UserRepository;
 use AppBundle\Service\FileUploaderService;
 use AppBundle\Service\UserService;
 use Doctrine\ORM\OptimisticLockException;
@@ -37,13 +43,10 @@ class UserServiceTest extends EntityManagerMock
     protected $fileUploaderMock;
     /** @var MailHelper| \PHPUnit_Framework_MockObject_MockObject */
     protected $mailMock;
-    /** @var UserServiceTest */
+    /** @var UserAdapter| \PHPUnit_Framework_MockObject_MockObject */
+    protected $userAdapterMock;
+    /** @var UserService */
     protected $userService;
-
-    const FIRST_ENTITY = Role::class;
-    const FIRST_ENTITY_REPOSITORY = RoleRepository::class;
-    const SECOND_ENTITY = User::class;
-    const SECOND_ENTITY_REPOSITORY = UserRepository::class;
 
     /**
      * UserServiceTest constructor.
@@ -53,7 +56,10 @@ class UserServiceTest extends EntityManagerMock
      * @param string $dataName
      */
     public function __construct(
-        array $repositories = [self::FIRST_ENTITY => self::FIRST_ENTITY_REPOSITORY, self::SECOND_ENTITY => self::SECOND_ENTITY_REPOSITORY],
+        array $repositories = [
+            EntityConfig::ROLE => RepositoryConfig::ROLE_REPOSITORY,
+            EntityConfig::USER => RepositoryConfig::USER_REPOSITORY,
+        ],
         $name = null,
         array $data = [],
         $dataName = ''
@@ -72,13 +78,14 @@ class UserServiceTest extends EntityManagerMock
         $this->userPasswordEncoderMock = $this->createMock(UserPasswordEncoder::class);
         $this->fileUploaderMock = $this->createMock(FileUploaderService::class);
         $this->mailMock = $this->createMock(MailHelper::class);
+        $this->userAdapterMock = $this->createMock(UserAdapter::class);
 
         $this->userService = new UserService(
             $this->emMock,
             $this->userPasswordEncoderMock,
             $this->fileUploaderMock,
             $this->mailMock,
-            '+1 times'
+            $this->userAdapterMock
         );
     }
 
@@ -97,11 +104,11 @@ class UserServiceTest extends EntityManagerMock
 
         $uploadeFileMock = $this->createMock(UploadedFile::class);
 
-        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
+        $this->repositoriesMocks[EntityConfig::ROLE]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
-                    'description' => 'ROLE_CLIENT',
+                    'description' => UserConfig::ROLE_CLIENT,
                 ]
             )
             ->willReturn($this->clientRoleMock);
@@ -148,11 +155,11 @@ class UserServiceTest extends EntityManagerMock
 
         $this->expectException(OptimisticLockException::class);
 
-        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
+        $this->repositoriesMocks[EntityConfig::ROLE]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
-                    'description' => 'ROLE_CLIENT',
+                    'description' => UserConfig::ROLE_CLIENT,
                 ]
             )
             ->willReturn($this->clientRoleMock);
@@ -186,11 +193,11 @@ class UserServiceTest extends EntityManagerMock
      */
     public function testNoProfileImageRegisterUser()
     {
-        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
+        $this->repositoriesMocks[EntityConfig::ROLE]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
-                    'description' => 'ROLE_CLIENT',
+                    'description' => UserConfig::ROLE_CLIENT,
                 ]
             )
             ->willReturn($this->clientRoleMock);
@@ -240,7 +247,7 @@ class UserServiceTest extends EntityManagerMock
             ->method('getExpirationDate')
             ->willReturn($this->generateActivationTime());
 
-        $this->repositoriesMocks[self::SECOND_ENTITY]->expects($this->once())
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
@@ -278,7 +285,7 @@ class UserServiceTest extends EntityManagerMock
             ->method('getActivationToken')
             ->willReturn('sygfudhiifsnjoisdj');
 
-        $this->repositoriesMocks[self::SECOND_ENTITY]->expects($this->once())
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
@@ -306,7 +313,7 @@ class UserServiceTest extends EntityManagerMock
     {
         $this->expectException(UserNotFoundException::class);
 
-        $this->repositoriesMocks[self::SECOND_ENTITY]->expects($this->once())
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
             ->method('findOneBy')
             ->with(
                 [
@@ -341,7 +348,7 @@ class UserServiceTest extends EntityManagerMock
 
         $loggedUserMock->expects($this->exactly(2))
             ->method('getRoles')
-            ->willReturn(['ROLE_OWNER']);
+            ->willReturn([UserConfig::ROLE_OWNER]);
 
         $this->userService->addUser($userMock, $loggedUserMock);
     }
@@ -392,7 +399,7 @@ class UserServiceTest extends EntityManagerMock
 
         $loggedUserMock->expects($this->exactly(2))
             ->method('getRoles')
-            ->willReturn(['ROLE_MANAGER']);
+            ->willReturn([UserConfig::ROLE_MANAGER]);
         $loggedUserMock->expects($this->once())
             ->method('getHotel')
             ->willReturn($hotelMock);
@@ -455,30 +462,30 @@ class UserServiceTest extends EntityManagerMock
 
         $roleManagerMock->expects($this->once())
             ->method('getDescription')
-            ->willReturn('ROLE_MANAGER');
+            ->willReturn(UserConfig::ROLE_MANAGER);
 
         $roleEmployeeMock->expects($this->once())
             ->method('getDescription')
-            ->willReturn('ROLE_EMPLOYEE');
+            ->willReturn(UserConfig::ROLE_EMPLOYEE);
 
         $roleOwnerMock->expects($this->once())
             ->method('getDescription')
-            ->willReturn('ROLE_OWNER');
+            ->willReturn(UserConfig::ROLE_OWNER);
 
         $roleClientMock->expects($this->once())
             ->method('getDescription')
-            ->willReturn('ROLE_CLIENT');
+            ->willReturn(UserConfig::ROLE_CLIENT);
 
         $userMock->expects($this->exactly(2))
             ->method('getRoles')
-            ->willReturn(['ROLE_OWNER']);
+            ->willReturn([UserConfig::ROLE_OWNER]);
 
-        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
+        $this->repositoriesMocks[EntityConfig::ROLE]->expects($this->once())
             ->method('findAll')
             ->willReturn([$roleManagerMock, $roleEmployeeMock, $roleClientMock, $roleOwnerMock]);
 
         $this->assertEquals(
-            ['ROLE_MANAGER' => $roleManagerMock, 'ROLE_EMPLOYEE' => $roleEmployeeMock],
+            [UserConfig::ROLE_MANAGER => $roleManagerMock, UserConfig::ROLE_EMPLOYEE => $roleEmployeeMock],
             $this->userService->getUserCreationalRoles($userMock)
         );
     }
@@ -496,30 +503,30 @@ class UserServiceTest extends EntityManagerMock
 
         $roleManagerMock->expects($this->once())
             ->method('getDescription')
-            ->willReturn('ROLE_MANAGER');
+            ->willReturn(UserConfig::ROLE_MANAGER);
 
         $roleEmployeeMock->expects($this->once())
             ->method('getDescription')
-            ->willReturn('ROLE_EMPLOYEE');
+            ->willReturn(UserConfig::ROLE_EMPLOYEE);
 
         $roleOwnerMock->expects($this->once())
             ->method('getDescription')
-            ->willReturn('ROLE_OWNER');
+            ->willReturn(UserConfig::ROLE_OWNER);
 
         $roleClientMock->expects($this->once())
             ->method('getDescription')
-            ->willReturn('ROLE_CLIENT');
+            ->willReturn(UserConfig::ROLE_CLIENT);
 
         $userMock->expects($this->exactly(2))
             ->method('getRoles')
-            ->willReturn(['ROLE_MANAGER']);
+            ->willReturn([UserConfig::ROLE_MANAGER]);
 
-        $this->repositoriesMocks[self::FIRST_ENTITY]->expects($this->once())
+        $this->repositoriesMocks[EntityConfig::ROLE]->expects($this->once())
             ->method('findAll')
             ->willReturn([$roleManagerMock, $roleEmployeeMock, $roleClientMock, $roleOwnerMock]);
 
         $this->assertEquals(
-            ['ROLE_EMPLOYEE' => $roleEmployeeMock],
+            [UserConfig::ROLE_EMPLOYEE => $roleEmployeeMock],
             $this->userService->getUserCreationalRoles($userMock)
         );
     }
@@ -564,6 +571,490 @@ class UserServiceTest extends EntityManagerMock
             ->method('flush');
 
         $this->userService->updateUser($userMock);
+    }
+
+    /**
+     *
+     */
+    public function testSuccessfullyEditUserRoleByOwner()
+    {
+        $loggedUserMock = $this->createMock(User::class);
+        $hotelMock1 = $this->createMock(Hotel::class);
+        $roleMock = $this->createMock(Role::class);
+        $roleUserEntityMock = $this->createMock(Role::class);
+        $userMock2 = $this->createMock(User::class);
+        $userEntityMock = $this->createMock(User::class);
+
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_OWNER]);
+
+        $userEntityMock->expects($this->once())
+            ->method('getRole')
+            ->willReturn($roleUserEntityMock);
+
+        $roleUserEntityMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn(UserConfig::ROLE_EMPLOYEE);
+
+        $userDtoMock = $this->createMock(UserDto::class);
+        $userDtoMock->username = 'username';
+        $userDtoMock->role = $roleMock;
+
+        /** check is $userDtoMock has hotel id of owner */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(0))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'hotel' => $hotelMock1,
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userMock2);
+        /** get user entity from dto */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(1))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userEntityMock);
+
+        $this->userAdapterMock->expects($this->once())
+            ->method('convertToEntity');
+
+        $this->emMock->expects($this->once())
+            ->method('persist');
+        $this->emMock->expects($this->once())
+            ->method('persist');
+
+        $this->userService->editUserRole($userDtoMock, $loggedUserMock, [$hotelMock1]);
+    }
+
+    /**
+     *
+     */
+    public function testSuccessfullyEditUserRoleByManager()
+    {
+        $loggedUserMock = $this->createMock(User::class);
+        $hotelMock1 = $this->createMock(Hotel::class);
+        $roleMock = $this->createMock(Role::class);
+        $roleUserEntityMock = $this->createMock(Role::class);
+        $userMock2 = $this->createMock(User::class);
+        $userEntityMock = $this->createMock(User::class);
+
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_MANAGER]);
+        $loggedUserMock->expects($this->once())
+            ->method('getHotel')
+            ->willReturn($hotelMock1);
+
+        $userEntityMock->expects($this->once())
+            ->method('getRole')
+            ->willReturn($roleUserEntityMock);
+
+        $roleUserEntityMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn(UserConfig::ROLE_EMPLOYEE);
+
+        $userDtoMock = $this->createMock(UserDto::class);
+        $userDtoMock->username = 'username';
+        $userDtoMock->role = $roleMock;
+
+        /** check is $userDtoMock has hotel id of owner */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(0))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'hotel' => $hotelMock1,
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userMock2);
+        /** get user entity from dto */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(1))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userEntityMock);
+
+        $this->userAdapterMock->expects($this->once())
+            ->method('convertToEntity');
+
+        $this->emMock->expects($this->once())
+            ->method('persist');
+        $this->emMock->expects($this->once())
+            ->method('persist');
+
+        $this->userService->editUserRole($userDtoMock, $loggedUserMock, []);
+    }
+
+    /**
+     *
+     */
+    public function testEditUserRoleWithLoggedUserThatHasNoRole()
+    {
+        $this->expectException(NoRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn(null);
+
+        $this->userService->editUserRole($this->createMock(UserDto::class), $loggedUserMock, []);
+    }
+
+    /**
+     *
+     */
+    public function testEditUserRoleOfUserThatIsNotPartOfTheManagersHotel()
+    {
+        $this->expectException(UserNotFoundException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $hotelMock1 = $this->createMock(Hotel::class);
+        $roleMock = $this->createMock(Role::class);
+
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_MANAGER]);
+        $loggedUserMock->expects($this->once())
+            ->method('getHotel')
+            ->willReturn($hotelMock1);
+
+        $userDtoMock = $this->createMock(UserDto::class);
+        $userDtoMock->username = 'username';
+        $userDtoMock->role = $roleMock;
+
+        /** check is $userDtoMock has hotel id of owner */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
+            ->method('findOneBy')
+            ->with(
+                [
+                    'hotel' => $hotelMock1,
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn(null);
+
+        $this->userAdapterMock->expects($this->never())
+            ->method('convertToEntity');
+
+        $this->emMock->expects($this->never())
+            ->method('persist');
+        $this->emMock->expects($this->never())
+            ->method('persist');
+
+        $this->userService->editUserRole($userDtoMock, $loggedUserMock, []);
+    }
+
+    /**
+     *
+     */
+    public function testEditUserRoleOfUserThatIsNotPartOfTheOwnersHotels()
+    {
+        $this->expectException(UserNotFoundException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $hotelMock1 = $this->createMock(Hotel::class);
+        $roleMock = $this->createMock(Role::class);
+
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_OWNER]);
+
+        $userDtoMock = $this->createMock(UserDto::class);
+        $userDtoMock->username = 'username';
+        $userDtoMock->role = $roleMock;
+
+        /** check is $userDtoMock has hotel id of owner */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
+            ->method('findOneBy')
+            ->with(
+                [
+                    'hotel' => $hotelMock1,
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn(null);
+
+        $this->userAdapterMock->expects($this->never())
+            ->method('convertToEntity');
+
+        $this->emMock->expects($this->never())
+            ->method('persist');
+        $this->emMock->expects($this->never())
+            ->method('persist');
+
+        $this->userService->editUserRole($userDtoMock, $loggedUserMock, [$hotelMock1]);
+    }
+
+    /**
+     *
+     */
+    public function testEditUserRoleWithLoggedUserThatIsNotOwnerOrUser()
+    {
+        $this->expectException(InappropriateUserRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_EMPLOYEE]);
+
+        $this->userService->editUserRole($this->createMock(UserDto::class), $loggedUserMock, []);
+    }
+
+    /**
+     *
+     */
+    public function testOwnerEditsUserRoleWithTheRoleThatTheUserAlreadyHas()
+    {
+        $this->expectException(SameRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $hotelMock1 = $this->createMock(Hotel::class);
+        $roleUserEntityMock = $this->createMock(Role::class);
+        $userMock2 = $this->createMock(User::class);
+        $userEntityMock = $this->createMock(User::class);
+
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_OWNER]);
+
+        $userEntityMock->expects($this->once())
+            ->method('getRole')
+            ->willReturn($roleUserEntityMock);
+
+        $roleUserEntityMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn(UserConfig::ROLE_EMPLOYEE);
+
+        $userDtoMock = $this->createMock(UserDto::class);
+        $userDtoMock->username = 'username';
+        $userDtoMock->role = $roleUserEntityMock;
+
+        /** check is $userDtoMock has hotel id of owner */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(0))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'hotel' => $hotelMock1,
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userMock2);
+        /** get user entity from dto */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(1))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userEntityMock);
+
+        $this->userAdapterMock->expects($this->never())
+            ->method('convertToEntity');
+
+        $this->emMock->expects($this->never())
+            ->method('persist');
+        $this->emMock->expects($this->never())
+            ->method('persist');
+
+        $this->userService->editUserRole($userDtoMock, $loggedUserMock, [$hotelMock1]);
+    }
+
+    /**
+     *
+     */
+    public function testManagerEditsUserRoleWithTheRoleThatTheUserAlreadyHas()
+    {
+        $this->expectException(SameRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $hotelMock1 = $this->createMock(Hotel::class);
+        $roleUserEntityMock = $this->createMock(Role::class);
+        $userMock2 = $this->createMock(User::class);
+        $userEntityMock = $this->createMock(User::class);
+
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_MANAGER]);
+        $loggedUserMock->expects($this->once())
+            ->method('getHotel')
+            ->willReturn($hotelMock1);
+
+        $userEntityMock->expects($this->once())
+            ->method('getRole')
+            ->willReturn($roleUserEntityMock);
+
+        $roleUserEntityMock->expects($this->once())
+            ->method('getDescription')
+            ->willReturn(UserConfig::ROLE_EMPLOYEE);
+
+        $userDtoMock = $this->createMock(UserDto::class);
+        $userDtoMock->username = 'username';
+        $userDtoMock->role = $roleUserEntityMock;
+
+        /** check is $userDtoMock has hotel id of owner */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(0))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'hotel' => $hotelMock1,
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userMock2);
+        /** get user entity from dto */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(1))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userEntityMock);
+
+        $this->userAdapterMock->expects($this->never())
+            ->method('convertToEntity');
+
+        $this->emMock->expects($this->never())
+            ->method('persist');
+        $this->emMock->expects($this->never())
+            ->method('persist');
+
+        $this->userService->editUserRole($userDtoMock, $loggedUserMock, []);
+    }
+
+    /**
+     *
+     */
+    public function testOwnerEditsUserRoleOfUserWithRoleClient()
+    {
+        $this->expectException(UneditableRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $hotelMock1 = $this->createMock(Hotel::class);
+        $roleMock = $this->createMock(Role::class);
+        $roleUserEntityMock = $this->createMock(Role::class);
+        $userMock2 = $this->createMock(User::class);
+        $userEntityMock = $this->createMock(User::class);
+
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_OWNER]);
+
+        $userEntityMock->expects($this->once())
+            ->method('getRole')
+            ->willReturn($roleUserEntityMock);
+
+        $roleUserEntityMock->expects($this->exactly(2))
+            ->method('getDescription')
+            ->willReturn(UserConfig::ROLE_CLIENT);
+
+        $userDtoMock = $this->createMock(UserDto::class);
+        $userDtoMock->username = 'username';
+        $userDtoMock->role = $roleMock;
+
+        /** check is $userDtoMock has hotel id of owner */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(0))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'hotel' => $hotelMock1,
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userMock2);
+        /** get user entity from dto */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(1))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userEntityMock);
+
+        $this->userAdapterMock->expects($this->never())
+            ->method('convertToEntity');
+
+        $this->emMock->expects($this->never())
+            ->method('persist');
+        $this->emMock->expects($this->never())
+            ->method('persist');
+
+        $this->userService->editUserRole($userDtoMock, $loggedUserMock, [$hotelMock1]);
+    }
+
+    /**
+     *
+     */
+    public function testManagerEditsUserRoleOfUserWithRoleClient()
+    {
+        $this->expectException(UneditableRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $hotelMock1 = $this->createMock(Hotel::class);
+        $roleMock = $this->createMock(Role::class);
+        $roleUserEntityMock = $this->createMock(Role::class);
+        $userMock2 = $this->createMock(User::class);
+        $userEntityMock = $this->createMock(User::class);
+
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_MANAGER]);
+        $loggedUserMock->expects($this->once())
+            ->method('getHotel')
+            ->willReturn($hotelMock1);
+
+        $userEntityMock->expects($this->once())
+            ->method('getRole')
+            ->willReturn($roleUserEntityMock);
+
+        $roleUserEntityMock->expects($this->exactly(2))
+            ->method('getDescription')
+            ->willReturn(UserConfig::ROLE_CLIENT);
+
+        $userDtoMock = $this->createMock(UserDto::class);
+        $userDtoMock->username = 'username';
+        $userDtoMock->role = $roleMock;
+
+        /** check is $userDtoMock has hotel id of owner */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(0))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'hotel' => $hotelMock1,
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userMock2);
+        /** get user entity from dto */
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->at(1))
+            ->method('findOneBy')
+            ->with(
+                [
+                    'username' => $userDtoMock->username,
+                ]
+            )
+            ->willReturn($userEntityMock);
+
+        $this->userAdapterMock->expects($this->never())
+            ->method('convertToEntity');
+
+        $this->emMock->expects($this->never())
+            ->method('persist');
+        $this->emMock->expects($this->never())
+            ->method('persist');
+
+        $this->userService->editUserRole($userDtoMock, $loggedUserMock, []);
     }
 
     /**

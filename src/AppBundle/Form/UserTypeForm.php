@@ -9,6 +9,7 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\User;
+use AppBundle\Enum\UserConfig;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -38,23 +39,44 @@ class UserTypeForm extends AbstractType
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
-                $user = $event->getData();
                 $form = $event->getForm();
-
-                // checks if the Product object is "new"
-                // If no data is passed to the form, the data is "null".
-                // This should be considered a new "Product"
-                if (!$user || null === $user->getUserId()) {
-                    $form->add(
-                        'username',
-                        TextType::class,
-                        [
-                            'label' => 'form.label.username',
-                        ]
-                    );
+                $loggedUser = $event->getForm()->getConfig()->getOptions()['loggedUser'];
+                if (!empty($loggedUser)) {
+                    if ($loggedUser->getRoles() === [UserConfig::ROLE_OWNER]) {
+                        $hotels = $event->getForm()->getConfig()->getOptions()['hotels'];
+                        $form->add(
+                            'hotel',
+                            ChoiceType::class,
+                            [
+                                'choices' => $hotels,
+                            ]
+                        );
+                    }
                 }
             }
-        )
+        );
+
+        if (!empty($options['roles']) && !empty($options['type']) && $options['type'] === 'add-user') {
+            $builder->add(
+                'role',
+                ChoiceType::class,
+                [
+                    'choices' => $options['roles'],
+                ]
+            );
+        }
+
+        if (!empty($options['type']) && $options['type'] !== 'my-account') {
+            $builder->
+            add(
+                'username',
+                TextType::class,
+                [
+                    'label' => 'form.label.username',
+                ]
+            );
+        }
+        $builder
             ->add(
                 'firstName',
                 TextType::class,
@@ -162,6 +184,10 @@ class UserTypeForm extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => User::class,
+                'type'       => null,
+                'loggedUser' => null,
+                'roles'      => null,
+                'hotels'     => null,
             ]
         );
     }
