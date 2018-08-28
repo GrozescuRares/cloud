@@ -5,13 +5,13 @@
         <div class="container-fluid">
             <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                 <div class="wrapper">
-                    <a href="#" class="back">Back</a>
+                    <a href="#" class="back">{{ 'page.user-management.user-management.back'| trans }}</a>
                     <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
-                        <h1 class="text-center">User Management</h1>
+                        <h1 class="text-center">{{ 'page.user-management.user-management.title'| trans }}</h1>
                     </div>
                     <div class="col-md-12 col-xs-12 no-lr-padding text-center search">
                         {% if is_granted('ROLE_OWNER') %}
-                            <span>Search by Hotel all users</span>
+                            <span>{{ 'page.user-management.user-management.search'| trans }}</span>
                             <div class="styled-input">
                                 <select class="selectpicker" id="hotels">
                                     {% for name, hotel in hotels %}
@@ -19,10 +19,8 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <span class="light">(include all users options)</span>
                         {% endif %}
                         <div class="col-md-12 col-xs-12 no-lr-padding text-center">
-                            <span class="light">(pagination, sorting, edit => redirect, remove = > confirmation)</span>
                         </div>
                     </div>
                     <div id="reload">
