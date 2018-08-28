@@ -91,7 +91,9 @@ class UserManagementController extends Controller
                 $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
 
             } else {
-                $query = $userService->getUsersFromHotels($loggedUser, 0, reset($hotels)->getHotelId());
+                $hotelId = reset($hotels)->getHotelId();
+                $users = $userService->getUsersFromHotels($loggedUser, 0, $hotelId);
+                $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
             }
 
             return $this->render(
@@ -125,48 +127,27 @@ class UserManagementController extends Controller
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
 
-
         if ($request->isXmlHttpRequest()) {
             $type = $request->query->get('type');
 
-            if ($type === 'managerPagination') {
+            if ($type === 'manager') {
+                list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
                 $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
-                $pageNumber = $request->query->get('pageNumber');
-                $users = $userService->getUsersFromHotels($loggedUser, $pageNumber * 5 - 5);
 
-                return $this->render(
-                    'user_management/table.html.twig',
-                    [
-                        'users' => $users,
-                        'nrPages' => $nrPages,
-                        'currentPage' => $pageNumber,
-                        'nrUsers' => count($users),
-                        'filters' => [
-                        ],
-                    ]
-                );
+                list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
+                $users = $userService->paginateAndSortUsersFromManagerHotel($loggedUser, $pageNumber * 5 - 5, $column, $sortType);
+
+                return $this->renderPaginatedTable($users, $nrPages, $pageNumber, $column, $sort);
             }
 
-            if ($type === 'managerSort') {
-                $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
-                $pageNumber = $request->query->get('pageNumber');
-                $column = $request->query->get('column');
-                $sort = $request->query->get('sort');
-                $users = $userService->sortUsersFromManagerHotel($loggedUser, $pageNumber * 5 - 5, $column, $sort);
-                $sort = OrderConfig::TYPE[$sort];
+            if ($type === 'owner') {
+                list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+                $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
 
-                return $this->render(
-                    'user_management/table.html.twig',
-                    [
-                        'users' => $users,
-                        'nrPages' => $nrPages,
-                        'currentPage' => $pageNumber,
-                        'nrUsers' => count($users),
-                        'filters' => [
-                          $column =>  $sort,
-                        ],
-                    ]
-                );
+                list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
+                $users = $userService->paginateAndSortUsersFromOwnerHotel($loggedUser, $pageNumber * 5 - 5, $column, $sortType, $hotelId);
+
+                return $this->renderPaginatedTable($users, $nrPages, $pageNumber, $column, $sort);
             }
         }
 
@@ -176,5 +157,64 @@ class UserManagementController extends Controller
                 'error' => 'Stay out of here.',
             ]
         );
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    private function getPaginationParameters(Request $request)
+    {
+        $hotelId = $request->query->get('hotelId');
+        $pageNumber = $request->query->get('pageNumber');
+        $column = $request->query->get('column');
+        $sort = $request->query->get('sort');
+        $paginate = $request->query->get('paginate');
+
+        return array($hotelId, $pageNumber, $column, $sort, $paginate);
+    }
+
+    /**
+     * @param $users
+     * @param $nrPages
+     * @param $pageNumber
+     * @param $column
+     * @param $sort
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    private function renderPaginatedTable($users, $nrPages, $pageNumber, $column, $sort)
+    {
+        return $this->render(
+            'user_management/table.html.twig',
+            [
+                'users' => $users,
+                'nrPages' => $nrPages,
+                'currentPage' => $pageNumber,
+                'nrUsers' => count($users),
+                'filters' => [
+                    $column => $sort,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * @param $column
+     * @param $sort
+     * @param $paginate
+     * @return array
+     */
+    private function configPaginationFilters($column, $sort, $paginate)
+    {
+        if (!empty($column) && !empty($sort) && !empty($paginate)) {
+            $sortType = OrderConfig::TYPE[$sort];
+        } else {
+            $sortType = $sort;
+            if (!empty($column) && !empty($sort)) {
+                $sort = OrderConfig::TYPE[$sort];
+            }
+        }
+
+        return array($sortType, $sort);
     }
 }

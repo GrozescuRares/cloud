@@ -1,41 +1,28 @@
 $(document).ready(function () {
 
-    $('#hotels').change(function () {
-        let hotelId = $('#hotels').val();
-        $.ajax({
-            url: window.href,
-            type: 'POST',
-            dataType: 'json',
-            data: {'hotelId': hotelId},
-            async: true,
-
-            success: function (data, status) {
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                alert('Ajax request failed.');
-            }
-        });
-
+    $(document).on('change', '#hotels', {}, function (event) {
+        loadOwnerHotelUsers(event, $('select option:selected'));
     });
 
     $(document).on('click', '.pagination li a', {}, function (event) {
-        paginate(event, this);
+        paginateAndSort(event, this);
     });
 
     $(document).on('click', 'th.columns', {}, function (event) {
-        sort(event, this);
+        paginateAndSort(event, this);
     });
 });
 
-function paginate(event, element)
-{
-    event.preventDefault();
-
+function loadOwnerHotelUsers(event, element) {
     $.ajax({
-        url: $(element).attr('href'),
+        url: $(element).attr('data-action'),
         type: 'GET',
         dataType: 'html',
-        data: {'type': $(element).attr('data-role'), 'pageNumber': $(element).attr('data-page')},
+        data: {
+            'type': $(element).attr('data-role'),
+            'pageNumber': $(element).attr('data-page'),
+            'hotelId': $(element).val()
+        },
         async: true,
 
         success: function (data, status) {
@@ -47,19 +34,23 @@ function paginate(event, element)
     });
 }
 
-function sort(event, element)
-{
+function paginateAndSort(event, element) {
     event.preventDefault();
-    let sortType = $(element).attr('data-sort');
+    let hotelId = $('#hotels').val();
 
     $.ajax({
         url: $(element).attr('data-action'),
         type: 'GET',
         dataType: 'html',
-        data: {'type': $(element).attr('data-role'), 'pageNumber': $(element).attr('data-page'), 'column': $(element).attr('data-column'), 'sort': $(element).attr('data-sort')},
-
+        data: {
+            'type': $(element).attr('data-role'),
+            'pageNumber': $(element).attr('data-page'),
+            'column': $(element).attr('data-column'),
+            'sort': $(element).attr('data-sort'),
+            'hotelId': hotelId,
+            'paginate': $(element).attr('data-paginate')
+        },
         success: function (data, status) {
-
             $('#reload').html(data);
         },
         error: function (xhr, textStatus, errorThrown) {

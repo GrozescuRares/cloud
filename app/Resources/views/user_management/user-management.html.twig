@@ -15,7 +15,7 @@
                             <div class="styled-input">
                                 <select class="selectpicker" id="hotels">
                                     {% for name, hotel in hotels %}
-                                        <option value="{{ hotel.hotelId }}"> {{ name }} </option>
+                                        <option data-action="{{ path('paginate-and-sort') }}" data-role="owner" data-page="{{ currentPage }}" value="{{ hotel.hotelId }}"> {{ name }} </option>
                                     {% endfor %}
                                 </select>
                             </div>

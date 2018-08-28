@@ -264,13 +264,10 @@ class UserService
         }
 
         if (empty($hotelId)) {
-            return $this->em->getRepository(User::class)->getUsersFromManagerHotel($loggedUser, $offset);
+            return $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, null, null);
         }
 
-        $dql = "SELECT user FROM AppBundle:User user JOIN AppBundle:Hotel h WITH user.hotel = h.hotelId JOIN AppBundle:Role r WITH r.roleId = user.role WHERE h.owner=:owner AND h.hotelId=:hotelId";
-        $query = $this->em->createQuery($dql)->setParameter('owner', $loggedUser)->setParameter('hotelId', $hotelId);
-
-        return $query;
+        return $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, null, null, $hotelId);
     }
 
     /**
@@ -289,9 +286,34 @@ class UserService
      * @param mixed $sortType
      * @return array
      */
-    public function sortUsersFromManagerHotel(User $loggedUser, $offset, $column, $sortType)
+    public function paginateAndSortUsersFromManagerHotel(User $loggedUser, $offset, $column, $sortType)
     {
-        return $this->em->getRepository(User::class)->sortUsersFromManagerHotel($loggedUser, $offset, $column, $sortType);
+        return $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, $column, $sortType);
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $hotelId
+     *
+     * @return int
+     */
+    public function getPagesNumberForOwnerManagement(User $loggedUser, $hotelId)
+    {
+        return $this->em->getRepository(User::class)->getUsersPagesNumberFromOwnerHotel($loggedUser, $hotelId);
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sortType
+     * @param mixed $hotelId
+     *
+     * @return array
+     */
+    public function paginateAndSortUsersFromOwnerHotel(User $loggedUser, $offset, $column, $sortType, $hotelId)
+    {
+        return $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, $column, $sortType, $hotelId);
     }
 
     /**

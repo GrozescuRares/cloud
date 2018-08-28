@@ -3,12 +3,36 @@
         <table class="table">
             <thead>
             <tr>
-                <th class="columns" data-action="{{ path('paginate-and-sort') }}" data-sort="{% if filters is empty or filters.firstName is not defined %}ASC{% else %}{{ filters.firstName }}{% endif %}" data-column="firstName" data-role="{% if is_granted('ROLE_MANAGER') %}managerSort{% endif %}" data-page="{{ currentPage}}">First Name<span class="sort-icon"></span></th>
-                <th class="columns" data-action="{{ path('paginate-and-sort') }}" data-sort="{% if filters is empty or filters.lastName is not defined %}ASC{% else %}{{ filters.lastName }}{% endif %}" data-column="lastName" data-role="{% if is_granted('ROLE_MANAGER') %}managerSort{% endif %}" data-page="{{ currentPage}}">Last Name<span class="sort-icon"></span></th>
-                <th class="columns" data-action="{{ path('paginate-and-sort') }}" data-sort="{% if filters is empty or filters.role is not defined %}ASC{% else %}{{ filters.role }}{% endif %}" data-column="role" data-role="{% if is_granted('ROLE_MANAGER') %}managerSort{% endif %}" data-page="{{ currentPage}}">Role<span class="sort-icon"></span></th>
-                <th class="columns" data-action="{{ path('paginate-and-sort') }}" data-sort="{% if filters is empty or filters.email is not defined %}ASC{% else %}{{ filters.email }}{% endif %}" data-column="email" data-role="{% if is_granted('ROLE_MANAGER') %}managerSort{% endif %}" data-page="{{ currentPage}}">E-mail<span class="sort-icon"></span></th>
-                <th class="columns" data-action="{{ path('paginate-and-sort') }}" data-sort="{% if filters is empty or filters.dateOfBirth is not defined %}ASC{% else %}{{ filters.dateOfBirth }}{% endif %}" data-column="dateOfBirth" data-role="{% if is_granted('ROLE_MANAGER') %}managerSort{% endif %}" data-page="{{ currentPage}}">Birthdate<span class="sort-icon"></span></th>
-                <th class="columns" data-action="{{ path('paginate-and-sort') }}" data-sort="{% if filters is empty or filters.expirationDate is not defined %}ASC{% else %}{{ filters.expirationDate }}{% endif %}" data-column="expirationDate" data-role="{% if is_granted('ROLE_MANAGER') %}managerSort{% endif %}" data-page="{{ currentPage}}">Registration date<span class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                    data-sort="{% if filters is empty or filters.firstName is not defined %}ASC{% else %}{{ filters.firstName }}{% endif %}"
+                    data-column="firstName"
+                    data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                    data-page="{{ currentPage }}">First Name<span class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                    data-sort="{% if filters is empty or filters.lastName is not defined %}ASC{% else %}{{ filters.lastName }}{% endif %}"
+                    data-column="lastName"
+                    data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                    data-page="{{ currentPage }}">Last Name<span class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                    data-sort="{% if filters is empty or filters.role is not defined %}ASC{% else %}{{ filters.role }}{% endif %}"
+                    data-column="role"
+                    data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                    data-page="{{ currentPage }}">Role<span class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                    data-sort="{% if filters is empty or filters.email is not defined %}ASC{% else %}{{ filters.email }}{% endif %}"
+                    data-column="email"
+                    data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                    data-page="{{ currentPage }}">E-mail<span class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                    data-sort="{% if filters is empty or filters.dateOfBirth is not defined %}ASC{% else %}{{ filters.dateOfBirth }}{% endif %}"
+                    data-column="dateOfBirth"
+                    data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                    data-page="{{ currentPage }}">Birthdate<span class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                    data-sort="{% if filters is empty or filters.expirationDate is not defined %}ASC{% else %}{{ filters.expirationDate }}{% endif %}"
+                    data-column="expirationDate"
+                    data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                    data-page="{{ currentPage }}">Registration date<span class="sort-icon"></span></th>
                 <th>Edit</th>
                 <th>Remove</th>
             </tr>
@@ -35,17 +59,38 @@
         <ul class="pagination">
             {% if currentPage != 1 %}
                 <li class="prev">
-                    <a href="{{ path('paginate-and-sort') }}" data-role="{% if is_granted('ROLE_MANAGER') %}managerPagination{% endif %}" data-page="{{ currentPage -1 }}" aria-label="Previous">
+                    <a data-action="{{ path('paginate-and-sort') }}"
+                       data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                       data-page="{{ currentPage -1 }}"
+                       data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
+                       data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
+                       data-paginate="true"
+                       aria-label="Previous">
                         <span aria-hidden="true">&laquo; Previous</span>
                     </a>
                 </li>
             {% endif %}
-            {% for page in 1..nrPages %}
-                <li {% if currentPage == page %} class="active" {% endif %}><a href="{{ path('paginate-and-sort') }}" data-role="{% if is_granted('ROLE_MANAGER') %}managerPagination{% endif %}" data-page="{{ page }}">{{ page }}</a></li>
-            {% endfor %}
+            {% if nrPages > 1 %}
+                {% for page in 1..nrPages %}
+                    <li {% if currentPage == page %} class="active" {% endif %}><a
+                                data-action="{{ path('paginate-and-sort') }}"
+                                data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                                data-page="{{ page }}"
+                                data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
+                                data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
+                                data-paginate="true">{{ page }}</a>
+                    </li>
+                {% endfor %}
+            {% endif %}
             {% if currentPage != nrPages %}
                 <li class="next">
-                    <a href="{{ path('paginate-and-sort') }}" data-role="{% if is_granted('ROLE_MANAGER') %}managerPagination{% endif %}" data-page="{{ currentPage + 1 }}" aria-label="Next">
+                    <a data-action="{{ path('paginate-and-sort') }}"
+                       data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                       data-page="{{ currentPage + 1 }}"
+                       data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
+                       data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
+                       data-paginate="true"
+                       aria-label="Next">
                         <span aria-hidden="true">Next &raquo;</span>
                     </a>
                 </li>
