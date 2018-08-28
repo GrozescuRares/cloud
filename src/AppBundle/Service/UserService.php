@@ -26,7 +26,6 @@ class UserService
 {
     private $em;
     private $encoder;
-    private $clientRole;
     private $fileUploader;
     private $mailHelper;
     private $tokenLifetime;
@@ -163,9 +162,7 @@ class UserService
      */
     public function getUserCreationalRoles(User $user)
     {
-        if (empty($user->getRoles())) {
-            throw new NoRoleException();
-        }
+        $this->checkIfUserHasRole($user);
 
         $userRole = $user->getRoles()[0];
         $roles = $this->em->getRepository(Role::class)->findAll();
@@ -195,9 +192,7 @@ class UserService
      */
     public function addUser(User $user, User $loggedUser)
     {
-        if (empty($loggedUser->getRoles())) {
-            throw new NoRoleException();
-        }
+        $this->checkIfUserHasRole($loggedUser);
 
         $password = $this
             ->encoder
@@ -253,15 +248,8 @@ class UserService
      */
     public function getUsersFromHotels(User $loggedUser, $offset, $hotelId = null)
     {
-        $loggedUserRole = $loggedUser->getRoles()[0];
-
-        if (empty($loggedUserRole)) {
-            throw new NoRoleException('This user has no role.');
-        }
-
-        if ($loggedUserRole !== 'ROLE_OWNER' && $loggedUserRole !== 'ROLE_MANAGER') {
-            throw new InappropriateUserRoleException('This user is not an owner.');
-        }
+        $this->checkIfUserHasRole($loggedUser);
+        $this->checkIfUserHasHighRole($loggedUser);
 
         if (empty($hotelId)) {
             return $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, null, null);
@@ -276,6 +264,9 @@ class UserService
      */
     public function getPagesNumberForManagerManagement(User $loggedUser)
     {
+        $this->checkIfUserHasRole($loggedUser);
+        $this->checkIfUserHasHighRole($loggedUser);
+
         return $this->em->getRepository(User::class)->getUsersPagesNumberFromManagerHotel($loggedUser);
     }
 
@@ -288,6 +279,9 @@ class UserService
      */
     public function paginateAndSortUsersFromManagerHotel(User $loggedUser, $offset, $column, $sortType)
     {
+        $this->checkIfUserHasRole($loggedUser);
+        $this->checkIfUserHasHighRole($loggedUser);
+
         return $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, $column, $sortType);
     }
 
@@ -299,6 +293,9 @@ class UserService
      */
     public function getPagesNumberForOwnerManagement(User $loggedUser, $hotelId)
     {
+        $this->checkIfUserHasRole($loggedUser);
+        $this->checkIfUserHasHighRole($loggedUser);
+
         return $this->em->getRepository(User::class)->getUsersPagesNumberFromOwnerHotel($loggedUser, $hotelId);
     }
 
@@ -313,6 +310,9 @@ class UserService
      */
     public function paginateAndSortUsersFromOwnerHotel(User $loggedUser, $offset, $column, $sortType, $hotelId)
     {
+        $this->checkIfUserHasRole($loggedUser);
+        $this->checkIfUserHasHighRole($loggedUser);
+
         return $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, $column, $sortType, $hotelId);
     }
 
@@ -325,5 +325,26 @@ class UserService
         $dateTime->modify($this->tokenLifetime);
 
         return $dateTime;
+    }
+
+    /**
+     * @param User $loggedUser
+     */
+    private function checkIfUserHasRole(User $loggedUser)
+    {
+        if (empty($loggedUser->getRoles())) {
+            throw new NoRoleException('This user has no role.');
+        }
+    }
+
+    /**
+     * @param User $loggedUser
+     */
+    private function checkIfUserHasHighRole(User $loggedUser)
+    {
+        $loggedUserRole = $loggedUser->getRoles()[0];
+        if ($loggedUserRole !== 'ROLE_OWNER' && $loggedUserRole !== 'ROLE_MANAGER') {
+            throw new InappropriateUserRoleException('This user is not an owner.');
+        }
     }
 }
