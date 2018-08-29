@@ -20,16 +20,15 @@ class RoomConfig
     const QUADRUPLE_ROOM = 4;
     const QUINTUPLE_ROOM = 5;
     const HEXTUPLE_ROOM = 6;
-    const ROOM_CAPACITY = 'Room capacity';
 
     const ROOM_CAPACITIES = [
-        self::SINGLE_ROOM => self::SINGLE_ROOM,
-        self::DOUBLE_ROOM => self::DOUBLE_ROOM,
-        self::TRIPLE_ROOM => self::TRIPLE_ROOM,
-        self::QUADRUPLE_ROOM => self::QUADRUPLE_ROOM,
-        self::QUINTUPLE_ROOM => self::QUINTUPLE_ROOM,
-        self::HEXTUPLE_ROOM => self::HEXTUPLE_ROOM,
-        self::ROOM_CAPACITY => null,
+        'capacity.one' => self::SINGLE_ROOM,
+        'capacity.two' => self::DOUBLE_ROOM,
+        'capacity.three' => self::TRIPLE_ROOM,
+        'capacity.four' => self::QUADRUPLE_ROOM,
+        'capacity.five' => self::QUINTUPLE_ROOM,
+        'capacity.six' => self::HEXTUPLE_ROOM,
+        'capacity.title' => null,
     ];
 
     const YES = 'Yes';

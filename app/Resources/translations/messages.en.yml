@@ -112,3 +112,12 @@ navigation:
   user_management: 'User Management'
   bookings: 'Bookings'
   logout: 'Log Out'
+
+capacity:
+  one: '1'
+  two: '2'
+  three: '3'
+  four: '4'
+  five: '5'
+  six: '6'
+  title: 'Room capacity'
