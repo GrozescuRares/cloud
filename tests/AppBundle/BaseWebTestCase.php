@@ -70,4 +70,27 @@ class BaseWebTestCase extends WebTestCase
 
         return $form;
     }
+
+    /**
+     * @param mixed $route
+     * @return array
+     */
+    public function accessRoute($route)
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('submit')->form();
+        $form = $this->generateLoginForm($form, 'owner', 'owner');
+        $client->submit($form);
+
+        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
+
+        $client->followRedirect();
+        $crawler = $client->request('GET', $route);
+
+        return [$client, $crawler];
+    }
 }

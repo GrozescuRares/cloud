@@ -8,7 +8,7 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use AppBundle\Enum\RoutesConfig;
 use Tests\AppBundle\BaseWebTestCase;
 
 /**
@@ -23,7 +23,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
     public function testAddRoomRoute()
     {
         $client = static::createClient();
-        $client->request('GET', '/hotel-management/add-room');
+        $client->request('GET', RoutesConfig::ADD_ROOM);
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
     }
@@ -33,7 +33,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testThatClientUserCanNotAccessAddRoomRoute()
     {
-        $this->userCanNotAccessRoute('/hotel-management/add-room', 'rares', 'handstand');
+        $this->userCanNotAccessRoute(RoutesConfig::ADD_ROOM, 'rares', 'handstand');
     }
 
     /**
@@ -41,7 +41,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testThatEmployeeUserCanNotAccessAddRoomRoute()
     {
-        $this->userCanNotAccessRoute('/hotel-management/add-room', 'employee', '12345');
+        $this->userCanNotAccessRoute(RoutesConfig::ADD_ROOM, 'employee', '12345');
     }
 
     /**
@@ -49,7 +49,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testThatManagerUserCanNotAccessAddRoomRoute()
     {
-        $this->userCanNotAccessRoute('/hotel-management/add-room', 'manager1', 'manager');
+        $this->userCanNotAccessRoute(RoutesConfig::ADD_ROOM, 'manager1', 'manager');
     }
 
     /**
@@ -57,19 +57,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testSuccessfullyAddRoomByOwner()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'owner', 'owner');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/hotel-management/add-room');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM);
 
         $form = $crawler->selectButton('appbundle_roomDto[save]')->form();
         $form = $this->generateForm($form, 'appbundle_roomDto', [
@@ -90,19 +78,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testAddRoomWithInvalidPrice()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'owner', 'owner');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/hotel-management/add-room');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM);
 
         $form = $crawler->selectButton('appbundle_roomDto[save]')->form();
         $form = $this->generateForm($form, 'appbundle_roomDto', [
@@ -122,19 +98,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testAddRoomWithNoHotelSelected()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'owner', 'owner');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/hotel-management/add-room');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM);
 
         $form = $crawler->selectButton('appbundle_roomDto[save]')->form();
         $form = $this->generateForm($form, 'appbundle_roomDto', [
@@ -153,19 +117,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testAddRoomWithNoCapacitySelected()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'owner', 'owner');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/hotel-management/add-room');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM);
 
         $form = $crawler->selectButton('appbundle_roomDto[save]')->form();
         $form = $this->generateForm($form, 'appbundle_roomDto', [
@@ -178,5 +130,4 @@ class HotelManagementControllerTest extends BaseWebTestCase
 
         $this->assertContains('Please choose capacity.', $crawler->filter('div.styled-input ul li')->text());
     }
-
 }
