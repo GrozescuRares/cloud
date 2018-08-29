@@ -52,8 +52,6 @@ class RoomService
         $room = $this->roomAdapter->convertToEntity($roomDto);
         $hotel = $this->getHotelFromDto($roomDto->hotel);
         $room->setHotel($hotel);
-        $room->setSmoking(RoomConfig::CHOICE[$roomDto->smoking]);
-        $room->setPet(RoomConfig::CHOICE[$roomDto->pet]);
 
         $this->em->persist($room);
         $this->em->flush();
@@ -64,7 +62,7 @@ class RoomService
      *
      * @return Hotel|null|object
      */
-    public function getHotelFromDto(HotelDto $hotelDto)
+    private function getHotelFromDto(HotelDto $hotelDto)
     {
         return $this->em->getRepository(Hotel::class)->findOneBy([
             'name' => $hotelDto->name,

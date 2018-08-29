@@ -16,7 +16,6 @@ use AppBundle\Enum\RepositoryConfig;
 use AppBundle\Enum\UserConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
-use AppBundle\Repository\HotelRepository;
 use AppBundle\Service\HotelService;
 use AppBundle\Entity\User;
 

@@ -27,17 +27,7 @@ class RoomDto
      * @Assert\Regex("/^\d*[1-9]\d*$/", message="constraints.price")
      */
     public $price;
-
-    /**
-     * @Assert\NotBlank()
-     * @Assert\Choice({"Yes", "No"}, strict=true)
-     */
     public $smoking;
-
-    /**
-     * @Assert\NotBlank()
-     * @Assert\Choice({"Yes", "No"}, strict=true)
-     */
     public $pet;
 
     /**
