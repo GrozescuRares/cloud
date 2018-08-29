@@ -56,7 +56,7 @@ class RoomAdapter
         }
 
         foreach ($roomDto as $property => $value) {
-            if (!empty($value) || $value === false || !is_object($value)) {
+            if ((!empty($value) || $value === false) && !is_object($value)) {
                 $this->propertyAccessor->setValue($room, $property, $value);
             }
         }

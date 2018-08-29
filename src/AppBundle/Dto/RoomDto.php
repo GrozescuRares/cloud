@@ -27,7 +27,14 @@ class RoomDto
      * @Assert\Regex("/^\d*[1-9]\d*$/", message="constraints.price")
      */
     public $price;
+
+    /**
+     * @Assert\Type("bool")
+     */
     public $smoking;
+    /**
+     * @Assert\Type("bool")
+     */
     public $pet;
 
     /**
