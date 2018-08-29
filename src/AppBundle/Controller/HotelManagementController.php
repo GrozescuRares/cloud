@@ -27,6 +27,7 @@ class HotelManagementController extends Controller
      * @param Request $request
      *
      * @return Response
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function addRoomAction(Request $request)
     {
@@ -47,12 +48,15 @@ class HotelManagementController extends Controller
 
         if (!($form->isSubmitted() && $form->isValid())) {
             return $this->render(
-                'hotel-management/add-user.html.twig',
+                'hotel-management/add-room.html.twig',
                 [
                     'add_room_form' => $form->createView(),
                 ]
             );
         }
+
+        $hotelManager->addNewRoom($roomDto);
+        $this->addFlash('success', 'The room was successfully added.');
 
         return $this->redirectToRoute('add-room');
     }

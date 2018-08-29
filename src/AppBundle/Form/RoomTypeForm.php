@@ -53,10 +53,10 @@ class RoomTypeForm extends AbstractType
                 ChoiceType::class,
                 [
                     'choices' => [
-                        'form.label.yes' => true,
-                        'form.label.no' => false,
+                        'form.label.yes' => 'Yes',
+                        'form.label.no' => 'No',
                     ],
-                    'data' => true,
+                    'data' => 'Yes',
                     'expanded' => true,
                     'multiple' => false,
                     'attr' => [
@@ -69,10 +69,10 @@ class RoomTypeForm extends AbstractType
                 ChoiceType::class,
                 [
                     'choices' => [
-                        'form.label.yes' => true,
-                        'form.label.no' => false,
+                        'form.label.yes' => 'Yes',
+                        'form.label.no' => 'No',
                     ],
-                    'data' => true,
+                    'data' => 'Yes',
                     'expanded' => true,
                     'multiple' => false,
                     'attr' => [

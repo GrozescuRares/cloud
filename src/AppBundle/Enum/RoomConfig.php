@@ -31,4 +31,12 @@ class RoomConfig
         self::HEXTUPLE_ROOM => self::HEXTUPLE_ROOM,
         self::ROOM_CAPACITY => null,
     ];
+
+    const YES = 'Yes';
+    const NO = 'No';
+
+    const CHOICE =[
+      self::YES => true,
+      self::NO  => false,
+    ];
 }

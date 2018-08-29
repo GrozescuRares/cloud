@@ -30,13 +30,13 @@ class RoomDto
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Choice({true, false}, strict=true)
+     * @Assert\Choice({"Yes", "No"}, strict=true)
      */
     public $smoking;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Choice({true, false}, strict=true)
+     * @Assert\Choice({"Yes", "No"}, strict=true)
      */
     public $pet;
 

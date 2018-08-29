@@ -100,4 +100,15 @@ services:
         class: AppBundle\Manager\HotelManagementManager
         arguments:
             - '@app.hotel.service'
+            - '@app.room.service'
         public: true
+
+    app.room.service:
+        class: AppBundle\Service\RoomService
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@app.room.adapter'
+            - '@app.hotel.adapter'
+        public: true
+
+    AppBundle\Service\RoomService: '@app.room.service'
