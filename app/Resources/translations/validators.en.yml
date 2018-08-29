@@ -8,3 +8,5 @@ constraints:
   image: 'That is not an allowed format.'
   password: 'This value should not be blank.'
   role: 'Please choose a role.'
+  type:
+    integer: 'This value must be integer.'

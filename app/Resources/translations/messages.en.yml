@@ -20,6 +20,8 @@ form:
     bio: 'Bio'
     date_of_birth: 'Date Of Birth'
     gender: 'Gender'
+    yes: 'Yes'
+    no: 'No'
 
 page:
   activation-account:
