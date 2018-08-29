@@ -56,6 +56,33 @@ class Hotel
     private $owner;
 
     /**
+     * @var Hotel $hotel
+     *
+     * @ORM\OneToMany(targetEntity="Room", mappedBy="hotel")
+     */
+    private $rooms;
+
+    /**
+     * @return Hotel
+     */
+    public function getRooms()
+    {
+        return $this->rooms;
+    }
+
+    /**
+     * @param Hotel $rooms
+     *
+     * @return Hotel
+     */
+    public function setRooms($rooms)
+    {
+        $this->rooms = $rooms;
+
+        return $this;
+    }
+
+    /**
      * @return User
      */
     public function getOwner()

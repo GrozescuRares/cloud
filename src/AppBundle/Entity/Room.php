@@ -49,6 +49,33 @@ class Room
      */
     private $pet;
 
+    /**
+     * @var Hotel $hotel
+     *
+     * @ORM\ManyToOne(targetEntity="Hotel", inversedBy="rooms")
+     * @ORM\JoinColumn(name="hotel_id", referencedColumnName="hotelId", nullable=true)
+     */
+    private $hotel;
+
+    /**
+     * @return Hotel
+     */
+    public function getHotel()
+    {
+        return $this->hotel;
+    }
+
+    /**
+     * @param Hotel $hotel
+     *
+     * @return Room
+     */
+    public function setHotel($hotel)
+    {
+        $this->hotel = $hotel;
+
+        return $this;
+    }
 
     /**
      * Get id
