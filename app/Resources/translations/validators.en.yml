@@ -8,5 +8,7 @@ constraints:
   image: 'That is not an allowed format.'
   password: 'This value should not be blank.'
   role: 'Please choose a role.'
-  type:
-    integer: 'This value must be integer.'
+  price: 'This is not a valid value for price.'
+  choose-capacity: "Please choose capacity."
+  choose-hotel: "Please choose a hotel."
+  blank-price: 'The price field should not be blank.'

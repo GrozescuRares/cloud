@@ -22,6 +22,7 @@ form:
     gender: 'Gender'
     yes: 'Yes'
     no: 'No'
+    save: 'Save'
 
 page:
   activation-account:

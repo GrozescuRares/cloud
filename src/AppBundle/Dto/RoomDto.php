@@ -17,35 +17,32 @@ use Symfony\Component\Validator\Constraints as Assert;
 class RoomDto
 {
     /**
-     * @Assert\NotBlank()
-     * @Assert\NotEqualTo("default")
+     * @Assert\NotBlank(message="constraints.choose-capacity")
+     * @Assert\NotEqualTo("default", message="constraints.choose-capacity")
      */
     public $capacity;
 
     /**
-     * @Assert\NotBlank()
-     * @Assert\Type(
-     *     type="integer",
-     *     message="constraints.type.integer"
-     * )
+     * @Assert\NotBlank(message="constraints.blank-price")
+     * @Assert\Regex("/^\d*[1-9]\d*$/", message="constraints.price")
      */
     public $price;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Choice({"Yes", "No"})
+     * @Assert\Choice({true, false}, strict=true)
      */
     public $smoking;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Choice({"Yes", "No"})
+     * @Assert\Choice({true, false}, strict=true)
      */
     public $pet;
 
     /**
-     * @Assert\NotBlank()
-     * @Assert\NotEqualTo("default")
+     * @Assert\NotBlank(message="constraints.choose-hotel")
+     * @Assert\NotEqualTo("default", message="constraints.choose-hotel")
      */
     public $hotel;
 }

@@ -22,6 +22,8 @@ class CollectionModifier
      */
     public static function addKeyValueToCollection(array $arr, $key, $value)
     {
-        return $arr[$key] = $value;
+        $arr[$key] = $value;
+
+        return $arr;
     }
 }

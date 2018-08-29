@@ -10,37 +10,27 @@
                         <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
                             <h1 class="text-center">Add New Room <span>(Owner)</span></h1>
                         </div>
-                        <form>
+                        <form action="{{ path('add-room') }}" method="post">
                             <div class="col-md-12 col-xs-12 no-lr-padding">
                                 <div class="styled-input">
                                     <label>Hotel</label>
-                                    <select class="selectpicker" name="hotel">
-                                        <option value="default">Please choose Hotel</option>
-                                        <option>Hotel 1</option>
-                                        <option>Hotel 2</option>
-                                        <option>Hotel 3</option>
-                                    </select>
+                                    {{ form_errors(add_room_form.hotel) }}
+                                    {{ form_widget(add_room_form.hotel, {'attr': {'class': 'selectpicker' }}) }}
                                 </div>
                             </div>
                             <div class="col-md-12 col-xs-12 no-lr-padding">
                                 <div class="styled-input">
                                     <label>People</label>
-                                    <select class="selectpicker" name="roomCapacity">
-                                        <option value="default">Room Capacity</option>
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                        <option>6</option>
-                                    </select>
+                                    {{ form_errors(add_room_form.capacity) }}
+                                    {{ form_widget(add_room_form.capacity, {'attr': {'class': 'selectpicker' }}) }}
                                 </div>
                             </div>
                             <div class="col-md-12 col-xs-12 no-lr-padding">
                                 <div class="styled-input">
                                     <label>Price / night</label>
                                     <div class="rel">
-                                        <input type="text" name="price"/>
+                                        {{ form_errors(add_room_form.price) }}
+                                        {{ form_widget(add_room_form.price) }}
                                         <span></span>
                                     </div>
                                 </div>
@@ -49,18 +39,34 @@
                                 <label class="custom-label large">Smoking</label>
                                 <div class="custom-form">
                                     <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
-                                        <input type="radio" id="smokingChoice1"
-                                               name="smoking" value="email">
-                                        <label for="smokingChoice1">Yes</label>
+                                        {{ form_widget(add_room_form.smoking.children[0]) }}
+                                        {{ form_label(add_room_form.smoking.children[0]) }}
+
                                     </div>
                                     <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
-                                        <input type="radio" id="smokingChoice2"
-                                               name="smoking" value="phone">
-                                        <label for="smokingChoice2">No</label>
+                                        {{ form_widget(add_room_form.smoking.children[1]) }}
+                                        {{ form_label(add_room_form.smoking.children[1]) }}
+
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn submit pull-right">Save</button>
+                            <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
+                                <label class="custom-label large">Pet</label>
+                                <div class="custom-form">
+                                    <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                        {{ form_widget(add_room_form.pet.children[0]) }}
+                                        {{ form_label(add_room_form.pet.children[0]) }}
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                        {{ form_widget(add_room_form.pet.children[1]) }}
+                                        {{ form_label(add_room_form.pet.children[1]) }}
+
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form_row(add_room_form._token) }}
+                            {{ form_widget(add_room_form.save) }}
                         </form>
                     </div>
                 </div>

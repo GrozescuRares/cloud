@@ -30,6 +30,6 @@ class HotelManagementManager
      */
     public function getOwnerHotelsForChoiceType(User $owner)
     {
-        return CollectionModifier::addKeyValueToCollection($this->hotelService->getOwnerHotelsDto($owner), 'Please choose Hotel', 'default');
+        return CollectionModifier::addKeyValueToCollection($this->hotelService->getOwnerHotelsDto($owner), 'Please choose Hotel', null);
     }
 }

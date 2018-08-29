@@ -23,12 +23,12 @@ class RoomConfig
     const ROOM_CAPACITY = 'Room capacity';
 
     const ROOM_CAPACITIES = [
-        self::ROOM_CAPACITY => 'default',
         self::SINGLE_ROOM => self::SINGLE_ROOM,
         self::DOUBLE_ROOM => self::DOUBLE_ROOM,
         self::TRIPLE_ROOM => self::TRIPLE_ROOM,
         self::QUADRUPLE_ROOM => self::QUADRUPLE_ROOM,
         self::QUINTUPLE_ROOM => self::QUINTUPLE_ROOM,
         self::HEXTUPLE_ROOM => self::HEXTUPLE_ROOM,
+        self::ROOM_CAPACITY => null,
     ];
 }
