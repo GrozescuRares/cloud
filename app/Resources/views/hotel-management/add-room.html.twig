@@ -6,28 +6,28 @@
             <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                 <div class="wrapper">
                     <div class="container-small">
-                        <a href="#" class="back">Back</a>
+                        <a>{{ 'page.hotel-management.add-room.back'| trans }}</a>
                         <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
-                            <h1 class="text-center">Add New Room <span>(Owner)</span></h1>
+                            <h1 class="text-center">{{ 'page.hotel-management.add-room.title'| trans }}</h1>
                         </div>
                         <form action="{{ path('add-room') }}" method="post">
                             <div class="col-md-12 col-xs-12 no-lr-padding">
                                 <div class="styled-input">
-                                    <label>Hotel</label>
+                                    {{ form_label(add_room_form.hotel) }}
                                     {{ form_errors(add_room_form.hotel) }}
                                     {{ form_widget(add_room_form.hotel, {'attr': {'class': 'selectpicker' }}) }}
                                 </div>
                             </div>
                             <div class="col-md-12 col-xs-12 no-lr-padding">
                                 <div class="styled-input">
-                                    <label>People</label>
+                                    {{ form_label(add_room_form.capacity) }}
                                     {{ form_errors(add_room_form.capacity) }}
                                     {{ form_widget(add_room_form.capacity, {'attr': {'class': 'selectpicker' }}) }}
                                 </div>
                             </div>
                             <div class="col-md-12 col-xs-12 no-lr-padding">
                                 <div class="styled-input">
-                                    <label>Price / night</label>
+                                    {{ form_label(add_room_form.price) }}
                                     <div class="rel">
                                         {{ form_errors(add_room_form.price) }}
                                         {{ form_widget(add_room_form.price) }}
@@ -36,7 +36,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
-                                <label class="custom-label large">Smoking</label>
+                                {{ form_label(add_room_form.smoking) }}
                                 <div class="custom-form">
                                     <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
                                         {{ form_widget(add_room_form.smoking.children[0]) }}
@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
-                                <label class="custom-label large">Pet</label>
+                                {{ form_label(add_room_form.pet) }}
                                 <div class="custom-form">
                                     <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
                                         {{ form_widget(add_room_form.pet.children[0]) }}

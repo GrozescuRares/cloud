@@ -35,6 +35,7 @@ class RoomTypeForm extends AbstractType
                 ChoiceType::class,
                 [
                     'choices' => $options['hotels'],
+                    'label' => 'form.label.hotel',
                 ]
             )
             ->add(
@@ -42,11 +43,15 @@ class RoomTypeForm extends AbstractType
                 ChoiceType::class,
                 [
                     'choices' => RoomConfig::ROOM_CAPACITIES,
+                    'label' => 'form.label.people',
                 ]
             )
             ->add(
                 'price',
-                TextType::class
+                TextType::class,
+                [
+                    'label' => 'form.label.price',
+                ]
             )
             ->add(
                 'smoking',
@@ -61,6 +66,10 @@ class RoomTypeForm extends AbstractType
                     'multiple' => false,
                     'attr' => [
                         'class' => 'col-md-3 col-sm-3 col-xs-6 no-lr-padding',
+                    ],
+                    'label' => 'form.label.smoking',
+                    'label_attr' => [
+                        'class' => 'custom-label large',
                     ],
                 ]
             )
@@ -77,6 +86,10 @@ class RoomTypeForm extends AbstractType
                     'multiple' => false,
                     'attr' => [
                         'class' => 'col-md-3 col-sm-3 col-xs-6 no-lr-padding',
+                    ],
+                    'label' => 'form.label.pet',
+                    'label_attr' => [
+                        'class' => 'custom-label large',
                     ],
                 ]
             )

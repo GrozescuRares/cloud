@@ -23,6 +23,10 @@ form:
     yes: 'Yes'
     no: 'No'
     save: 'Save'
+    people: 'People'
+    price: 'Price \ night'
+    smoking: 'Smoking'
+    pet: 'Pet'
 
 page:
   activation-account:
@@ -58,7 +62,12 @@ page:
 
   user-management:
     add-user:
-      title: 'Add user'
+      title: 'Add User'
+      back: 'Back'
+
+  hotel-management:
+    add-room:
+      title: 'Add New Room'
       back: 'Back'
 
   my-account:
