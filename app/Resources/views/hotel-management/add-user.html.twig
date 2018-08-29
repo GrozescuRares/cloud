@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="wrapper">
+                    <div class="container-small">
+                        <a href="#" class="back">Back</a>
+                        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                            <h1 class="text-center">Add New Room <span>(Owner)</span></h1>
+                        </div>
+                        <form>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>Hotel</label>
+                                    <select class="selectpicker" name="hotel">
+                                        <option value="default">Please choose Hotel</option>
+                                        <option>Hotel 1</option>
+                                        <option>Hotel 2</option>
+                                        <option>Hotel 3</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>People</label>
+                                    <select class="selectpicker" name="roomCapacity">
+                                        <option value="default">Room Capacity</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                        <option>6</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>Price / night</label>
+                                    <div class="rel">
+                                        <input type="text" name="price"/>
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
+                                <label class="custom-label large">Smoking</label>
+                                <div class="custom-form">
+                                    <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                        <input type="radio" id="smokingChoice1"
+                                               name="smoking" value="email">
+                                        <label for="smokingChoice1">Yes</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                        <input type="radio" id="smokingChoice2"
+                                               name="smoking" value="phone">
+                                        <label for="smokingChoice2">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn submit pull-right">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
