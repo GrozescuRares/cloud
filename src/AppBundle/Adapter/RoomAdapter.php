@@ -38,9 +38,7 @@ class RoomAdapter
         $roomDto = new RoomDto();
 
         foreach ($roomDto as $property => $value) {
-            if (!empty($value)) {
                 $roomDto->$property = $this->propertyAccessor->getValue($room, $property);
-            }
         }
 
         return $roomDto;
@@ -51,17 +49,18 @@ class RoomAdapter
      * @param Room    $room
      * @return Room
      */
-    public function convertToEntity(RoomDto $roomDto, Room $room)
+    public function convertToEntity(RoomDto $roomDto, Room $room = null)
     {
         if (empty($room)) {
             $room = new Room();
         }
 
         foreach ($roomDto as $property => $value) {
-            $this->propertyAccessor->setValue($room, $property, $value);
+            if (!empty($value) || $value === false) {
+                $this->propertyAccessor->setValue($room, $property, $value);
+            }
         }
 
         return $room;
     }
-
 }

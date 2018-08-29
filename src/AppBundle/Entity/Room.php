@@ -154,7 +154,7 @@ class Room
      *
      * @return bool
      */
-    public function getSmoking()
+    public function isSmoking()
     {
         return $this->smoking;
     }
@@ -178,7 +178,7 @@ class Room
      *
      * @return bool
      */
-    public function getPet()
+    public function isPet()
     {
         return $this->pet;
     }
