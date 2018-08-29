@@ -9,6 +9,7 @@
 namespace AppBundle\Service;
 
 use AppBundle\Adapter\HotelAdapter;
+use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\User;
 use AppBundle\Exception\InappropriateUserRoleException;
