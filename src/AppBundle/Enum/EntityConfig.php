@@ -10,6 +10,7 @@ namespace AppBundle\Enum;
 
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Role;
+use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
 
 /**
@@ -21,4 +22,5 @@ class EntityConfig
     const USER = User::class;
     const ROLE = Role::class;
     const HOTEL = Hotel::class;
+    const ROOM = Room::class;
 }

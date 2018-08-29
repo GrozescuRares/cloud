@@ -36,6 +36,7 @@ class RoomTypeForm extends AbstractType
                 [
                     'choices' => $options['hotels'],
                     'label' => 'form.label.hotel',
+                    'choice_translation_domain' => true,
                 ]
             )
             ->add(

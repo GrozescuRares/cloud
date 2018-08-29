@@ -10,6 +10,7 @@ namespace AppBundle\Enum;
 
 use AppBundle\Repository\HotelRepository;
 use AppBundle\Repository\RoleRepository;
+use AppBundle\Repository\RoomRepository;
 use AppBundle\Repository\UserRepository;
 
 /**
@@ -21,4 +22,5 @@ class RepositoryConfig
     const USER_REPOSITORY = UserRepository::class;
     const ROLE_REPOSITORY = RoleRepository::class;
     const HOTEL_REPOSITORY = HotelRepository::class;
+    const ROOM_REPOSITORY = RoomRepository::class;
 }

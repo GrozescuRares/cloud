@@ -9,6 +9,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Dto\RoomDto;
+use AppBundle\Exception\InappropriateUserRoleException;
+use AppBundle\Exception\NoRoleException;
 use AppBundle\Form\RoomTypeForm;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -55,9 +57,15 @@ class HotelManagementController extends Controller
             );
         }
 
-        $hotelManager->addNewRoom($roomDto);
-        $this->addFlash('success', 'The room was successfully added.');
+        try {
+            $hotelManager->addNewRoom($roomDto);
+            $this->addFlash('success', 'The room was successfully added.');
 
-        return $this->redirectToRoute('add-room');
+            return $this->redirectToRoute('add-room');
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
     }
 }
