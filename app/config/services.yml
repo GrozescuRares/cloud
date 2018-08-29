@@ -84,3 +84,8 @@ services:
         class: AppBundle\Adapter\UserAdapter
 
     AppBundle\Adapter\UserAdapter: '@app.user.adapter'
+
+    app.room.adapter:
+        class: AppBundle\Adapter\RoomAdapter
+
+    AppBundle\Adapter\RoomAdapter: '@app.room.adapter'
