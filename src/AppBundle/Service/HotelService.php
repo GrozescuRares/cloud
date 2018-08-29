@@ -8,10 +8,12 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Adapter\HotelAdapter;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\User;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
+use AppBundle\Helper\ValidateUser;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -22,15 +24,19 @@ class HotelService
 {
     /** @var EntityManager */
     protected $em;
+    /** @var HotelAdapter */
+    protected $hotelAdapter;
 
     /**
      * HotelService constructor.
      *
      * @param EntityManager $em
+     * @param HotelAdapter  $hotelAdapter
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, HotelAdapter $hotelAdapter)
     {
         $this->em = $em;
+        $this->hotelAdapter = $hotelAdapter;
     }
 
     /**
@@ -62,4 +68,32 @@ class HotelService
 
         return $result;
     }
+
+    /**
+     * @param User $owner
+     *
+     * @return array
+     */
+    public function getOwnerHotelsDto(User $owner)
+    {
+        $userRole = $owner->getRoles()[0];
+        ValidateUser::checkIfUserHasRole($userRole);
+        ValidateUser::checkIfUserHasRoleOwner($userRole);
+
+        $hotels = $this->em->getRepository(Hotel::class)->findBy(
+            [
+                'owner' => $owner->getUserId(),
+            ]
+        );
+
+        $result = [];
+
+        /** @var Hotel $hotel */
+        foreach ($hotels as $hotel) {
+            $result[$hotel->getName()] = $this->hotelAdapter->convertToDto($hotel);
+        }
+
+        return $result;
+    }
+
 }

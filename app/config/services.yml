@@ -76,6 +76,7 @@ services:
         class: AppBundle\Service\HotelService
         arguments:
             - '@doctrine.orm.entity_manager'
+            - '@app.hotel.adapter'
         public: true
 
     AppBundle\Service\HotelService: '@app.hotel.service'
@@ -89,3 +90,14 @@ services:
         class: AppBundle\Adapter\RoomAdapter
 
     AppBundle\Adapter\RoomAdapter: '@app.room.adapter'
+
+    app.hotel.adapter:
+        class: AppBundle\Adapter\HotelAdapter
+
+    AppBundle\Adapter\HotelAdapter: '@app.hotel.adapter'
+
+    app.hotel-management.manager:
+        class: AppBundle\Manager\HotelManagementManager
+        arguments:
+            - '@app.hotel.service'
+        public: true
