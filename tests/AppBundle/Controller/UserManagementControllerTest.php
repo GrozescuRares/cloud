@@ -310,7 +310,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user/edit-user');
+        $crawler = $client->request('GET', '/user-management/edit-user/employee');
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
         $form = $this->generateEditUserForm($form, 0);
