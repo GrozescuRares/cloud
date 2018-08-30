@@ -51,9 +51,26 @@ class UserAdapter
         }
 
         foreach ($userDto as $property => $value) {
-            $this->propertyAccessor->setValue($user, $property, $value);
+            if (!empty($value)) {
+                $this->propertyAccessor->setValue($user, $property, $value);
+            }
         }
 
         return $user;
+    }
+
+    /**
+     * @param array $users
+     *
+     * @return array
+     */
+    public function convertCollectionToDto($users)
+    {
+        $usersDto = [];
+        foreach ($users as $user) {
+            $usersDto[] = $this->convertToDto($user);
+        }
+
+        return $usersDto;
     }
 }

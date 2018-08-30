@@ -8,13 +8,14 @@
 
 namespace Tests\AppBundle\Flow;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use AppBundle\Enum\RoutesConfig;
+use Tests\AppBundle\BaseWebTestCase;
 
 /**
  * Class RegistrationAndActivationTest
  * @package Tests\AppBundle\Flow
  */
-class RegistrationAndActivationTest extends WebTestCase
+class RegistrationAndActivationTest extends BaseWebTestCase
 {
     /**
      * Tests successfully registration-activation-login flow
@@ -26,20 +27,32 @@ class RegistrationAndActivationTest extends WebTestCase
          */
 
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+        $crawler = $client->request('GET', RoutesConfig::REGISTER);
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
-        $form = $this->generateRegistrationForm($form, $username, $email, 'password', 'password');
+        $form = $this->generateForm(
+            $form,
+            'appbundle_user',
+            [
+                '[username]' => $username,
+                '[email]' => $email,
+                '[plainPassword][first]' => 'password',
+                '[plainPassword][second]' => 'password',
+                '[dateOfBirth][day]' => '1',
+                '[dateOfBirth][month]' => '2',
+                '[dateOfBirth][year]' => '1950',
+                '[firstName]' => $username."FirstName",
+                '[lastName]' => $username."LastName",
+            ]
+        );
         $client->submit($form);
 
         $this->assertTrue(
-            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('registration-confirmation', [
-                'email' => $email,
-            ]))
+            $client->getResponse()->isRedirect(RoutesConfig::REGISTRATION_CONFIRMATION.'/'.$email)
         );
 
         /*
@@ -47,10 +60,7 @@ class RegistrationAndActivationTest extends WebTestCase
          */
 
         $client->followRedirect();
-
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('activate-account', [
-            'activationToken' => md5($username).md5($email),
-        ]));
+        $crawler = $client->request('GET', RoutesConfig::ACTIVATE_ACCOUNT.'/'.md5($username).md5($email));
 
         $this->assertContains('Your account is active now', $crawler->filter('h1')->text());
 
@@ -58,7 +68,7 @@ class RegistrationAndActivationTest extends WebTestCase
          * Log in
          */
 
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+        $crawler = $client->request('GET', RoutesConfig::LOGIN);
 
         $form = $crawler->selectButton('submit')->form();
         $form = $this->generateLoginForm($form, $username, 'password');
@@ -78,27 +88,39 @@ class RegistrationAndActivationTest extends WebTestCase
          */
 
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+        $crawler = $client->request('GET', RoutesConfig::REGISTER);
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
-        $form = $this->generateRegistrationForm($form, $username, $email, 'password', 'password');
+        $form = $this->generateForm(
+            $form,
+            'appbundle_user',
+            [
+                '[username]' => $username,
+                '[email]' => $email,
+                '[plainPassword][first]' => 'password',
+                '[plainPassword][second]' => 'password',
+                '[dateOfBirth][day]' => '1',
+                '[dateOfBirth][month]' => '2',
+                '[dateOfBirth][year]' => '1950',
+                '[firstName]' => $username."FirstName",
+                '[lastName]' => $username."LastName",
+            ]
+        );
         $client->submit($form);
 
         $this->assertTrue(
-            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('registration-confirmation', [
-                'email' => $email,
-            ]))
+            $client->getResponse()->isRedirect(RoutesConfig::REGISTRATION_CONFIRMATION.'/'.$email)
         );
 
         /*
          * Log in - fail
          */
 
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+        $crawler = $client->request('GET', RoutesConfig::LOGIN);
 
         $form = $crawler->selectButton('submit')->form();
         $form = $this->generateLoginForm($form, $username, 'password');
@@ -111,10 +133,8 @@ class RegistrationAndActivationTest extends WebTestCase
          */
 
         $client->followRedirect();
+        $crawler = $client->request('GET', RoutesConfig::ACTIVATE_ACCOUNT.'/'.md5($username).md5($email));
 
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('activate-account', [
-            'activationToken' => md5($username).md5($email),
-        ]));
 
         $this->assertContains('Your account is active now', $crawler->filter('h1')->text());
 
@@ -122,7 +142,7 @@ class RegistrationAndActivationTest extends WebTestCase
          * Log in
          */
 
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+        $crawler = $client->request('GET', RoutesConfig::LOGIN);
 
         $form = $crawler->selectButton('submit')->form();
         $form = $this->generateLoginForm($form, $username, 'password');
@@ -141,20 +161,32 @@ class RegistrationAndActivationTest extends WebTestCase
          */
 
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+        $crawler = $client->request('GET', RoutesConfig::REGISTER);
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
-        $form = $this->generateRegistrationForm($form, $username, $email, 'password', 'password');
+        $form = $this->generateForm(
+            $form,
+            'appbundle_user',
+            [
+                '[username]' => $username,
+                '[email]' => $email,
+                '[plainPassword][first]' => 'password',
+                '[plainPassword][second]' => 'password',
+                '[dateOfBirth][day]' => '1',
+                '[dateOfBirth][month]' => '2',
+                '[dateOfBirth][year]' => '1950',
+                '[firstName]' => $username."FirstName",
+                '[lastName]' => $username."LastName",
+            ]
+        );
         $client->submit($form);
 
         $this->assertTrue(
-            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('registration-confirmation', [
-                'email' => $email,
-            ]))
+            $client->getResponse()->isRedirect(RoutesConfig::REGISTRATION_CONFIRMATION.'/'.$email)
         );
 
         /*
@@ -162,10 +194,7 @@ class RegistrationAndActivationTest extends WebTestCase
          */
 
         $client->followRedirect();
-
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('activate-account', [
-            'activationToken' => md5($username).md5($email),
-        ]));
+        $crawler = $client->request('GET', RoutesConfig::ACTIVATE_ACCOUNT.'/'.md5($username).md5($email));
 
         $this->assertContains('Your account is active now', $crawler->filter('h1')->text());
 
@@ -173,9 +202,7 @@ class RegistrationAndActivationTest extends WebTestCase
          * Activation fail
          */
 
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('activate-account', [
-            'activationToken' => md5($username).md5($email),
-        ]));
+        $crawler = $client->request('GET', RoutesConfig::ACTIVATE_ACCOUNT.'/'.md5($username).md5($email));
 
         $this->assertContains('Oops', $crawler->filter('h1')->text());
 
@@ -183,49 +210,12 @@ class RegistrationAndActivationTest extends WebTestCase
          * Log in
          */
 
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+        $crawler = $client->request('GET', RoutesConfig::LOGIN);
 
         $form = $crawler->selectButton('submit')->form();
         $form = $this->generateLoginForm($form, $username, 'password');
         $client->submit($form);
 
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-    }
-
-    /**
-     * @param $form
-     * @param $username
-     * @param $email
-     * @param $firstPassword
-     * @param $secondPassword
-     * @return mixed
-     */
-    private function generateRegistrationForm($form, $username, $email, $firstPassword, $secondPassword)
-    {
-        $form['appbundle_user[username]'] = $username;
-        $form['appbundle_user[email]'] = $email;
-        $form['appbundle_user[plainPassword][first]'] = $firstPassword;
-        $form['appbundle_user[plainPassword][second]'] = $secondPassword;
-        $form['appbundle_user[dateOfBirth][day]'] = '1';
-        $form['appbundle_user[dateOfBirth][month]'] = '2';
-        $form['appbundle_user[dateOfBirth][year]'] = '1950';
-        $form['appbundle_user[firstName]'] = $username."FirstName";
-        $form['appbundle_user[lastName]'] = $username."LastName";
-
-        return $form;
-    }
-
-    /**
-     * @param $form
-     * @param $username
-     * @param $password
-     * @return mixed
-     */
-    private function generateLoginForm($form, $username, $password)
-    {
-        $form['_username'] = $username;
-        $form['_password'] = $password;
-
-        return $form;
     }
 }

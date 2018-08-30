@@ -8,13 +8,14 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use AppBundle\Enum\RoutesConfig;
+use Tests\AppBundle\BaseWebTestCase;
 
 /**
  * Class MyAccountControllerTest
  * @package Tests\AppBundle\Controller
  */
-class MyAccountControllerTest extends WebTestCase
+class MyAccountControllerTest extends BaseWebTestCase
 {
     /**
      * Tests the my-account route with no user logged
@@ -22,7 +23,7 @@ class MyAccountControllerTest extends WebTestCase
     public function testMyAccountRoute()
     {
         $client = static::createClient();
-        $client->request('GET', '/my-account');
+        $client->request('GET', RoutesConfig::MY_ACCOUNT);
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
     }
@@ -32,15 +33,7 @@ class MyAccountControllerTest extends WebTestCase
      */
     public function testAccessingMyAccountRouteAfterLogin()
     {
-        $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'client', '12345');
-        $client->submit($form);
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('my-account'));
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::MY_ACCOUNT, 'client', '12345');
 
         $this->assertContains('My account', $crawler->filter('h1.text-center')->text());
     }
@@ -51,7 +44,7 @@ class MyAccountControllerTest extends WebTestCase
     public function testEditMyAccountRoute()
     {
         $client = static::createClient();
-        $client->request('GET', '/edit-my-account');
+        $client->request('GET', RoutesConfig::EDIT_MY_ACCOUNT);
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
     }
@@ -61,48 +54,20 @@ class MyAccountControllerTest extends WebTestCase
      */
     public function testSuccessfulAccountEdit()
     {
-        $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'client', '12345');
-        $client->submit($form);
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('edit-my-account'));
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_MY_ACCOUNT, 'client', '12345');
 
         $bio = 'bio'.substr(md5(time()), 0, 6);
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
-        $form = $this->generateRegistrationForm($form, $bio);
+        $form = $this->generateForm(
+            $form,
+            'appbundle_user',
+            [
+                '[bio]' => $bio,
+            ]
+        );
         $crawler = $client->submit($form);
 
         $this->assertContains('Your data was saved', $crawler->filter('div.alert')->text());
-    }
-
-    /**
-     * @param $form
-     * @param $username
-     * @param $password
-     * @return mixed
-     */
-    private function generateLoginForm($form, $username, $password)
-    {
-        $form['_username'] = $username;
-        $form['_password'] = $password;
-
-        return $form;
-    }
-
-    /**
-     * @param $form
-     * @param string $bio
-     * @return mixed
-     */
-    private function generateRegistrationForm($form, $bio)
-    {
-        $form['appbundle_user[bio]'] = $bio;
-
-        return $form;
     }
 }

@@ -8,6 +8,7 @@
 
 namespace Tests\AppBundle\Controller;
 
+use AppBundle\Enum\RoutesConfig;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -22,7 +23,7 @@ class ActivationControllerTest extends WebTestCase
     public function testActivateAccountRoute()
     {
         $client = static::createClient();
-        $client->request('GET', '/activate-account/dskhnkfdndn');
+        $client->request('GET', RoutesConfig::ACTIVATE_ACCOUNT.'/dskhnkfdndn');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
@@ -33,9 +34,7 @@ class ActivationControllerTest extends WebTestCase
     public function testInvalidToken()
     {
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('activate-account', [
-            'activationToken' => 'dfsgdyjsghdkjbhvdfkbhfh',
-        ]));
+        $crawler = $client->request('GET', RoutesConfig::ACTIVATE_ACCOUNT.'/dsgfjdfgd');
 
         $this->assertContains('Oops', $crawler->filter('h1')->text());
     }

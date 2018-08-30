@@ -8,13 +8,14 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use AppBundle\Enum\RoutesConfig;
+use Tests\AppBundle\BaseWebTestCase;
 
 /**
  * Class SecurityControllerTest
  * @package Tests\AppBundle\Controller
  */
-class RegistrationControllerTest extends WebTestCase
+class RegistrationControllerTest extends BaseWebTestCase
 {
     /**
      * Tests the register route
@@ -22,7 +23,7 @@ class RegistrationControllerTest extends WebTestCase
     public function testRegisterRoute()
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/register');
+        $crawler = $client->request('GET', RoutesConfig::REGISTER);
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $this->assertContains('Client Registration', $crawler->filter('h1.text-center')->text());
@@ -34,20 +35,39 @@ class RegistrationControllerTest extends WebTestCase
     public function testSuccessfullyRegisterFormSubmitWithTokenActivation()
     {
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+        $crawler = $client->request('GET', RoutesConfig::REGISTER);
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
-        $form = $this->generateRegistrationForm($form, $username, $email, '12345', '12345');
 
+        $form = $this->generateForm(
+            $form,
+            'appbundle_user',
+            [
+                '[username]' => $username,
+                '[email]' => $email,
+                '[plainPassword][first]' => '12345',
+                '[plainPassword][second]' => '12345',
+                '[dateOfBirth][day]' => '1',
+                '[dateOfBirth][month]' => '2',
+                '[dateOfBirth][year]' => '1950',
+                '[firstName]' => $username."FirstName",
+                '[lastName]' => $username."LastName",
+            ]
+        );
         $client->submit($form);
 
         $this->assertTrue(
-            $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('registration-confirmation', [
-                'email' => $email,
-            ]))
+            $client->getResponse()->isRedirect(
+                $client->getContainer()->get('router')->generate(
+                    'registration-confirmation',
+                    [
+                        'email' => $email,
+                    ]
+                )
+            )
         );
     }
 
@@ -57,14 +77,27 @@ class RegistrationControllerTest extends WebTestCase
     public function testNonMatchingPasswords()
     {
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+        $crawler = $client->request('GET', RoutesConfig::REGISTER);
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
-
-        $form = $this->generateRegistrationForm($form, $username, $email, '11', '1');
+        $form = $this->generateForm(
+            $form,
+            'appbundle_user',
+            [
+                '[username]' => $username,
+                '[email]' => $email,
+                '[plainPassword][first]' => '11',
+                '[plainPassword][second]' => '1',
+                '[dateOfBirth][day]' => '1',
+                '[dateOfBirth][month]' => '2',
+                '[dateOfBirth][year]' => '1950',
+                '[firstName]' => $username."FirstName",
+                '[lastName]' => $username."LastName",
+            ]
+        );
         $crawler = $client->submit($form);
 
         $this->assertContains('This value is', $crawler->filter('div.rel ul li')->text());
@@ -77,17 +110,34 @@ class RegistrationControllerTest extends WebTestCase
     public function testInvalidPassword()
     {
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+        $crawler = $client->request('GET', RoutesConfig::REGISTER);
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
-        $form = $this->generateRegistrationForm($form, $username, $email, '1', '1');
+        $form = $this->generateForm(
+            $form,
+            'appbundle_user',
+            [
+                '[username]' => $username,
+                '[email]' => $email,
+                '[plainPassword][first]' => '1',
+                '[plainPassword][second]' => '1',
+                '[dateOfBirth][day]' => '1',
+                '[dateOfBirth][month]' => '2',
+                '[dateOfBirth][year]' => '1950',
+                '[firstName]' => $username."FirstName",
+                '[lastName]' => $username."LastName",
+            ]
+        );
         $crawler = $client->submit($form);
 
-        $this->assertContains('This value is too short. It should have 5 characters or more.', $crawler->filter('div.rel ul li')->text());
+        $this->assertContains(
+            'This value is too short. It should have 5 characters or more.',
+            $crawler->filter('div.rel ul li')->text()
+        );
     }
 
     /**
@@ -96,14 +146,28 @@ class RegistrationControllerTest extends WebTestCase
     public function testNoPassword()
     {
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+        $crawler = $client->request('GET', RoutesConfig::REGISTER);
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
-        $form = $this->generateRegistrationForm($form, $username, $email, '', '');
+        $form = $this->generateForm(
+            $form,
+            'appbundle_user',
+            [
+                '[username]' => $username,
+                '[email]' => $email,
+                '[plainPassword][first]' => '',
+                '[plainPassword][second]' => '',
+                '[dateOfBirth][day]' => '1',
+                '[dateOfBirth][month]' => '2',
+                '[dateOfBirth][year]' => '1950',
+                '[firstName]' => $username."FirstName",
+                '[lastName]' => $username."LastName",
+            ]
+        );
         $crawler = $client->submit($form);
 
         $this->assertContains('This value should not be blank', $crawler->filter('div.rel ul li')->text());
@@ -115,39 +179,33 @@ class RegistrationControllerTest extends WebTestCase
     public function testInvalidUsername()
     {
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('register'));
+        $crawler = $client->request('GET', RoutesConfig::REGISTER);
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
 
         $username = 'user';
         $email = substr(md5(time()), 0, 6).'@ceva.com';
-        $form = $this->generateRegistrationForm($form, $username, $email, '1', '1');
+        $form = $this->generateForm(
+            $form,
+            'appbundle_user',
+            [
+                '[username]' => $username,
+                '[email]' => $email,
+                '[plainPassword][first]' => '1',
+                '[plainPassword][second]' => '1',
+                '[dateOfBirth][day]' => '1',
+                '[dateOfBirth][month]' => '2',
+                '[dateOfBirth][year]' => '1950',
+                '[firstName]' => $username."FirstName",
+                '[lastName]' => $username."LastName",
+            ]
+        );
 
         $crawler = $client->submit($form);
 
-        $this->assertContains('This value is too short. It should have 5 characters or more.', $crawler->filter('div.rel ul li')->text());
-    }
-
-    /**
-     * @param $form
-     * @param $username
-     * @param $email
-     * @param $firstPassword
-     * @param $secondPassword
-     * @return mixed
-     */
-    private function generateRegistrationForm($form, $username, $email, $firstPassword, $secondPassword)
-    {
-        $form['appbundle_user[username]'] = $username;
-        $form['appbundle_user[email]'] = $email;
-        $form['appbundle_user[plainPassword][first]'] = $firstPassword;
-        $form['appbundle_user[plainPassword][second]'] = $secondPassword;
-        $form['appbundle_user[dateOfBirth][day]'] = '1';
-        $form['appbundle_user[dateOfBirth][month]'] = '2';
-        $form['appbundle_user[dateOfBirth][year]'] = '1950';
-        $form['appbundle_user[firstName]'] = $username."FirstName";
-        $form['appbundle_user[lastName]'] = $username."LastName";
-
-        return $form;
+        $this->assertContains(
+            'This value is too short. It should have 5 characters or more.',
+            $crawler->filter('div.rel ul li')->text()
+        );
     }
 }

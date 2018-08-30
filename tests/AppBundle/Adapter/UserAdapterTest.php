@@ -80,4 +80,43 @@ class UserAdapterTest extends TestCase
         $this->assertEquals('username', $user->getUsername());
         $this->assertEquals($roleMock2, $user->getRole());
     }
+
+    /**
+     *
+     */
+    public function testSuccessfullyConvertCollectionToDto()
+    {
+        $userMock1 = $this->createMock(User::class);
+        $userMock2 = $this->createMock(User::class);
+
+        $userMock1->expects($this->once())
+            ->method('getUsername')
+            ->willReturn('username');
+        $userMock1->expects($this->once())
+            ->method('getEmail')
+            ->willReturn('email');
+        $userMock1->expects($this->once())
+            ->method('getFirstName')
+            ->willReturn('firstName');
+
+        $userMock2->expects($this->once())
+            ->method('getUsername')
+            ->willReturn('username');
+        $userMock2->expects($this->once())
+            ->method('getEmail')
+            ->willReturn('email');
+        $userMock2->expects($this->once())
+            ->method('getFirstName')
+            ->willReturn('firstName');
+        $userMocks = [$userMock1, $userMock2];
+
+        $userDtoMocks = $this->userAdapter->convertCollectionToDto($userMocks);
+
+        $this->assertEquals('username', $userDtoMocks[0]->username);
+        $this->assertEquals('username', $userDtoMocks[1]->username);
+        $this->assertEquals('email', $userDtoMocks[0]->email);
+        $this->assertEquals('email', $userDtoMocks[1]->email);
+        $this->assertEquals('firstName', $userDtoMocks[0]->firstName);
+        $this->assertEquals('firstName', $userDtoMocks[1]->firstName);
+    }
 }

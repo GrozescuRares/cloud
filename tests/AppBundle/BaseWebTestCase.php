@@ -21,8 +21,9 @@ class BaseWebTestCase extends WebTestCase
      * @param mixed $route
      * @param mixed $username
      * @param mixed $password
+     * @param mixed $parameters
      */
-    public function userCanNotAccessRoute($route, $username, $password)
+    public function userCanNotAccessRoute($route, $username, $password, $parameters = [])
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
@@ -36,7 +37,7 @@ class BaseWebTestCase extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $client->request('GET', $route);
+        $client->request('GET', $route, $parameters);
 
         $this->assertEquals(403, $client->getResponse()->getStatusCode());
     }
@@ -73,9 +74,14 @@ class BaseWebTestCase extends WebTestCase
 
     /**
      * @param mixed $route
+     * @param mixed $username
+     * @param mixed $password
+     * @param mixed $parameters
+     * @param mixed $headers
+     *
      * @return array
      */
-    public function accessRoute($route)
+    public function accessRoute($route, $username, $password, $parameters = [], $headers = [])
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
@@ -83,13 +89,13 @@ class BaseWebTestCase extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'owner', 'owner');
+        $form = $this->generateLoginForm($form, $username, $password);
         $client->submit($form);
 
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $crawler = $client->request('GET', $route);
+        $crawler = $client->request('GET', $route, $parameters, [], $headers);
 
         return [$client, $crawler];
     }

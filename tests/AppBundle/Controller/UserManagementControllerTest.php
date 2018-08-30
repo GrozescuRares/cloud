@@ -8,14 +8,14 @@
 
 namespace Tests\AppBundle\Controller;
 
-use AppBundle\Enum\UserConfig;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use AppBundle\Enum\RoutesConfig;
+use Tests\AppBundle\BaseWebTestCase;
 
 /**
  * Class UserManagementControllerTest
  * @package Tests\AppBundle\Controller
  */
-class UserManagementControllerTest extends WebTestCase
+class UserManagementControllerTest extends BaseWebTestCase
 {
     /**
      * Tests the add-user route with no user logged
@@ -23,7 +23,7 @@ class UserManagementControllerTest extends WebTestCase
     public function testAddUserRoute()
     {
         $client = static::createClient();
-        $client->request('GET', '/user-management/add-user');
+        $client->request('GET', RoutesConfig::ADD_USER);
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
     }
@@ -33,21 +33,7 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testThatClientUserCanNotAccessAddUserRoute()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'rares', 'handstand');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $client->request('GET', '/user-management/add-user');
-
-        $this->assertEquals(403, $client->getResponse()->getStatusCode());
+        $this->userCanNotAccessRoute(RoutesConfig::ADD_USER, 'rares', 'handstand');
     }
 
     /**
@@ -55,21 +41,7 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testThatEmployeeUserCanNotAccessAddUserRoute()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'employee', '12345');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $client->request('GET', '/user-management/add-user');
-
-        $this->assertEquals(403, $client->getResponse()->getStatusCode());
+        $this->userCanNotAccessRoute(RoutesConfig::ADD_USER, 'employee', '12345');
     }
 
     /**
@@ -77,19 +49,7 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testAddUserPageDesignWhenAccessedByOwner()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'owner', 'owner');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/add-user');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, 'owner', 'owner');
 
         $this->assertEquals(5, $crawler->filter('div.second')->children()->count());
     }
@@ -99,19 +59,7 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testAddUserPageDesignWhenAccessedByManager()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'manager1', 'manager');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/add-user');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, 'manager1', 'manager');
 
         $this->assertEquals(4, $crawler->filter('div.second')->children()->count());
     }
@@ -121,32 +69,37 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testSuccessfullyAddUserByOwner()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'owner', 'owner');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/add-user');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, 'owner', 'owner');
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
-        $form = $this->generateAddUserForm($form, $username, $email, '12345', '12345');
+        $form = $this->generateForm(
+            $form,
+            'appbundle_user',
+            [
+                '[username]' => $username,
+                '[email]' => $email,
+                '[plainPassword][first]' => '12345',
+                '[plainPassword][second]' => '12345',
+                '[dateOfBirth][day]' => '1',
+                '[dateOfBirth][month]' => '2',
+                '[dateOfBirth][year]' => '1950',
+                '[firstName]' => $username."FirstName",
+                '[lastName]' => $username."LastName",
+            ]
+        );
         $client->submit($form);
 
         $this->assertRegExp('/\/user-management\/add-user$/', $client->getResponse()->headers->get('location'));
 
         $crawler = $client->followRedirect();
 
-        $this->assertContains('Add user form successfully submitted. Thank you !', $crawler->filter('div.alert')->text());
+        $this->assertContains(
+            'Add user form successfully submitted. Thank you !',
+            $crawler->filter('div.alert')->text()
+        );
     }
 
     /**
@@ -154,32 +107,37 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testSuccessfullyAddUserByManager()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'manager1', 'manager');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/add-user');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, 'manager1', 'manager');
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
 
         $form = $crawler->selectButton('appbundle_user[submit]')->form();
-        $form = $this->generateAddUserForm($form, $username, $email, '12345', '12345');
+        $form = $this->generateForm(
+            $form,
+            'appbundle_user',
+            [
+                '[username]' => $username,
+                '[email]' => $email,
+                '[plainPassword][first]' => '12345',
+                '[plainPassword][second]' => '12345',
+                '[dateOfBirth][day]' => '1',
+                '[dateOfBirth][month]' => '2',
+                '[dateOfBirth][year]' => '1950',
+                '[firstName]' => $username."FirstName",
+                '[lastName]' => $username."LastName",
+            ]
+        );
         $client->submit($form);
 
         $this->assertRegExp('/\/user-management\/add-user$/', $client->getResponse()->headers->get('location'));
 
         $crawler = $client->followRedirect();
 
-        $this->assertContains('Add user form successfully submitted. Thank you !', $crawler->filter('div.alert')->text());
+        $this->assertContains(
+            'Add user form successfully submitted. Thank you !',
+            $crawler->filter('div.alert')->text()
+        );
     }
 
     /**
@@ -188,7 +146,7 @@ class UserManagementControllerTest extends WebTestCase
     public function testEditUserRoute()
     {
         $client = static::createClient();
-        $client->request('GET', '/user-management/edit-user/username');
+        $client->request('GET', RoutesConfig::EDIT_USER.'/username');
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
     }
@@ -198,21 +156,7 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testThatClientUserCanNotAccessEditUserRoute()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'rares', 'handstand');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $client->request('GET', '/user-management/edit-user/username');
-
-        $this->assertEquals(403, $client->getResponse()->getStatusCode());
+        $this->userCanNotAccessRoute(RoutesConfig::EDIT_USER.'/username', 'rares', 'handstand', ['username' => 'username']);
     }
 
     /**
@@ -220,21 +164,7 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testThatEmployeeUserCanNotAccessEditUserRoute()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'employee', '12345');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $client->request('GET', '/user-management/edit-user/username');
-
-        $this->assertEquals(403, $client->getResponse()->getStatusCode());
+        $this->userCanNotAccessRoute(RoutesConfig::EDIT_USER.'/username', 'employee', '12345', ['username' => 'username']);
     }
 
     /**
@@ -242,19 +172,7 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testEditUserPageDesignWhenAccessedByOwnerOrManager()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'owner', 'owner');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user/username');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/username', 'owner', 'owner', ['username' => 'username']);
 
         $this->assertContains('Edit', $crawler->filter('h1.text-center')->text());
     }
@@ -264,29 +182,29 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testEditUserRoleByOwner()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'owner', 'owner');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user/edit-user');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/edit-user', 'owner', 'owner', ['username' => 'edit-user']);
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 0);
+        $form = $this->generateForm(
+            $form,
+            'appbundle_userDto',
+            [
+                '[role]' => 0,
+            ]
+        );
         $client->submit($form);
         $crawler = $client->followRedirect();
 
         $this->assertContains('User role successfully edited.', $crawler->filter('div.alert')->text());
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 1);
+        $form = $this->generateForm(
+            $form,
+            'appbundle_userDto',
+            [
+                '[role]' => 1,
+            ]
+        );
         $client->submit($form);
         $crawler = $client->followRedirect();
 
@@ -298,22 +216,16 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testEditUserRoleByManager()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'manager1', 'manager');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user/employee');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/employee', 'manager1', 'manager', ['username' => 'employee']);
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 0);
+        $form = $this->generateForm(
+            $form,
+            'appbundle_userDto',
+            [
+                '[role]' => 0,
+            ]
+        );
         $client->submit($form);
         $crawler = $client->followRedirect();
 
@@ -325,22 +237,16 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testThatOwnerCanNotEditTheRoleOfAClient()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'owner', 'owner');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user/rares');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/rares', 'owner', 'owner', ['username' => 'rares']);
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 0);
+        $form = $this->generateForm(
+            $form,
+            'appbundle_userDto',
+            [
+                '[role]' => 0,
+            ]
+        );
         $client->submit($form);
         $crawler = $client->followRedirect();
 
@@ -352,22 +258,16 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testThatManagerCanNotEditTheRoleOfAClient()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'manager1', 'manager');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user/rares');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/rares', 'manager1', 'manager', ['username' => 'rares']);
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 0);
+        $form = $this->generateForm(
+            $form,
+            'appbundle_userDto',
+            [
+                '[role]' => 0,
+            ]
+        );
         $client->submit($form);
         $crawler = $client->followRedirect();
 
@@ -379,22 +279,16 @@ class UserManagementControllerTest extends WebTestCase
      */
     public function testThatOwnerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'owner', 'owner');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user/client');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/client', 'owner', 'owner', ['username' => 'client']);
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 0);
+        $form = $this->generateForm(
+            $form,
+            'appbundle_userDto',
+            [
+                '[role]' => 0,
+            ]
+        );
         $client->submit($form);
         $crawler = $client->followRedirect();
 
@@ -405,6 +299,123 @@ class UserManagementControllerTest extends WebTestCase
      *
      */
     public function testThatManagerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
+    {
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/client', 'manager1', 'manager', ['username' => 'client']);
+
+        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
+        $form = $this->generateForm(
+            $form,
+            'appbundle_userDto',
+            [
+                '[role]' => 0,
+            ]
+        );
+        $client->submit($form);
+        $crawler = $client->followRedirect();
+
+        $this->assertContains('This user is not part of managers hotel.', $crawler->filter('div.alert')->text());
+    }
+
+    /**
+     *
+     */
+    public function testUserManagementRoute()
+    {
+        $client = static::createClient();
+        $client->request('GET', RoutesConfig::USER_MANAGEMENT);
+
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     *
+     */
+    public function testThatClientUserCanNotAccessUserManagementRoute()
+    {
+        $this->userCanNotAccessRoute(RoutesConfig::USER_MANAGEMENT, 'rares', 'handstand');
+    }
+
+    /**
+     *
+     */
+    public function testThatEmployeeUserCanNotAccessUserManagementRoute()
+    {
+        $this->userCanNotAccessRoute(RoutesConfig::USER_MANAGEMENT, 'employee', '12345');
+    }
+
+    /**
+     *
+     */
+    public function testUserManagementPageDesignWhenAccessedByManager()
+    {
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::USER_MANAGEMENT, 'manager1', 'manager');
+
+        $this->assertCount(0, $crawler->filter('div.search'));
+    }
+
+    /**
+     *
+     */
+    public function testUserManagementPageDesignWhenAccessedByOwner()
+    {
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::USER_MANAGEMENT, 'owner', 'owner');
+
+        $this->assertCount(1, $crawler->filter('div.search'));
+    }
+
+    /**
+     *
+     */
+    public function testUserManagementPaginateAndSortRoute()
+    {
+        $client = static::createClient();
+        $client->request('GET', RoutesConfig::PAGINATE_AND_SORT);
+
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     *
+     */
+    public function testThatClientUserCanNotAccessUserManagementPaginateAndSortRoute()
+    {
+        $this->userCanNotAccessRoute(RoutesConfig::PAGINATE_AND_SORT, 'rares', 'handstand');
+    }
+
+    /**
+     *
+     */
+    public function testThatEmployeeUserCanNotAccessUserManagementPaginateAndSortRoute()
+    {
+        $this->userCanNotAccessRoute(RoutesConfig::PAGINATE_AND_SORT, 'employee', '12345');
+    }
+
+    /**
+     *
+     */
+    public function testUserManagementPaginateAndSortRouteAccessedByOwner()
+    {
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::PAGINATE_AND_SORT, 'owner', 'owner');
+
+        $this->assertCount(1, $crawler->filter('div.error-template'));
+        $this->assertContains('Stay out', $crawler->filter('h2')->text());
+    }
+
+    /**
+     *
+     */
+    public function testUserManagementPaginateAndSortRouteAccessedByManager()
+    {
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::PAGINATE_AND_SORT, 'manager1', 'manager');
+
+        $this->assertCount(1, $crawler->filter('div.error-template'));
+        $this->assertContains('Stay out', $crawler->filter('h2')->text());
+    }
+
+    /**
+     *
+     */
+    public function testPaginateAndSortRouteAccessedWithAjaxByManager()
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
@@ -418,63 +429,24 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
 
         $client->followRedirect();
-        $crawler = $client->request('GET', '/user-management/edit-user/client');
+        $crawler = $client->request(
+            'GET',
+            '/user-management/paginate-and-sort',
+            ['type' => 'owner', 'pageNumber' => 2, 'paginate' => 'true'],
+            [],
+            ['HTTP_X-Requested-With' => 'XMLHttpRequest']
+        );
 
-        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateEditUserForm($form, 0);
-        $client->submit($form);
-        $crawler = $client->followRedirect();
-
-        $this->assertContains('This user is not part of managers hotel.', $crawler->filter('div.alert')->text());
+        $this->assertCount(1, $crawler->filter('div.table-paginated'));
     }
 
     /**
-     * @param $form
-     * @param $username
-     * @param $password
-     * @return mixed
+     *
      */
-    private function generateLoginForm($form, $username, $password)
+    public function testPaginateAndSortRouteAccessedWithAjaxByOwner()
     {
-        $form['_username'] = $username;
-        $form['_password'] = $password;
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::PAGINATE_AND_SORT, 'owner', 'owner', ['type' => 'manager', 'pageNumber' => 2, 'paginate' => 'true'], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
-        return $form;
-    }
-
-    /**
-     * @param $form
-     * @param $username
-     * @param $email
-     * @param $firstPassword
-     * @param $secondPassword
-     * @return mixed
-     */
-    private function generateAddUserForm($form, $username, $email, $firstPassword, $secondPassword)
-    {
-        $form['appbundle_user[username]'] = $username;
-        $form['appbundle_user[email]'] = $email;
-        $form['appbundle_user[plainPassword][first]'] = $firstPassword;
-        $form['appbundle_user[plainPassword][second]'] = $secondPassword;
-        $form['appbundle_user[dateOfBirth][day]'] = '1';
-        $form['appbundle_user[dateOfBirth][month]'] = '2';
-        $form['appbundle_user[dateOfBirth][year]'] = '1950';
-        $form['appbundle_user[firstName]'] = $username."FirstName";
-        $form['appbundle_user[lastName]'] = $username."LastName";
-
-        return $form;
-    }
-
-    /**
-     * @param $form
-     * @param $username
-     * @param $role
-     * @return mixed
-     */
-    private function generateEditUserForm($form, $role)
-    {
-        $form['appbundle_userDto[role]'] = $role;
-
-        return $form;
+        $this->assertCount(1, $crawler->filter('div.table-paginated'));
     }
 }

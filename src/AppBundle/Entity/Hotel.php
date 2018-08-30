@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="hotels")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\HotelRepository")
  */
-class Hotel
+class Hotel implements \Serializable
 {
     /**
      * @var int
@@ -202,5 +202,40 @@ class Hotel
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * String representation of object
+     * @link http://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     * @since 5.1.0
+     */
+    public function serialize()
+    {
+        return serialize(
+            [
+                $this->name,
+                $this->location,
+                $this->description,
+            ]
+        );
+    }
+
+    /**
+     * Constructs the object
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     * @param string $serialized <p>
+     * The string representation of the object.
+     * </p>
+     * @return void
+     * @since 5.1.0
+     */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->name,
+            $this->location,
+            $this->description
+            ) = unserialize($serialized);
     }
 }
