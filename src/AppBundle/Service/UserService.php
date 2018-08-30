@@ -267,11 +267,11 @@ class UserService
         if (empty($hotelId)) {
             $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, null, null);
 
-            return $this->userAdapter->convertCollectionToDto($users);
+            return $this->convertUsersAndUsersComponentsToDto($users);
         }
         $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, null, null, $hotelId);
 
-        return $this->userAdapter->convertCollectionToDto($users);
+        return $this->convertUsersAndUsersComponentsToDto($users);
     }
 
     /**
@@ -302,7 +302,7 @@ class UserService
 
         $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, $column, $sortType);
 
-        return $this->userAdapter->convertCollectionToDto($users);
+        return $this->convertUsersAndUsersComponentsToDto($users);
     }
 
     /**
@@ -337,12 +337,7 @@ class UserService
 
         $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, $column, $sortType, $hotelId);
 
-        $userDtos = $this->userAdapter->convertCollectionToDto($users);
-        foreach ($userDtos as $userDto) {
-            $userDto->role = $this->roleAdapter->convertToDto($userDto->role);
-        }
-
-        return $userDtos;
+        return $this->convertUsersAndUsersComponentsToDto($users);
     }
 
     /**
@@ -456,5 +451,19 @@ class UserService
         $dateTime->modify(UserConfig::TOKEN_LIFETIME);
 
         return $dateTime;
+    }
+
+    /**
+     * @param $users
+     * @return array
+     */
+    private function convertUsersAndUsersComponentsToDto($users)
+    {
+        $userDtos = $this->userAdapter->convertCollectionToDto($users);
+        foreach ($userDtos as $userDto) {
+            $userDto->role = $this->roleAdapter->convertToDto($userDto->role);
+        }
+
+        return $userDtos;
     }
 }

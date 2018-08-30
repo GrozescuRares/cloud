@@ -66,6 +66,15 @@ page:
     add-user:
       title: 'Add User'
       back: 'Back'
+    user-management:
+      items: '%users% item(s)'
+      previous: 'Previous'
+      next: 'Next'
+      page-number: '%page%'
+      add_new_user: 'Add New User'
+      back: 'Back'
+      title: 'User Management'
+      search: 'Search by hotel all users'
 
   hotel-management:
     add-room:

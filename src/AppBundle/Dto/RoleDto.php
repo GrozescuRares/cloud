@@ -15,4 +15,14 @@ namespace AppBundle\Dto;
 class RoleDto
 {
     public $description;
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        $role = explode('_', $this->description);
+
+        return ucfirst(strtolower($role[count($role) - 1]));
+    }
 }

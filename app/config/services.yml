@@ -49,6 +49,8 @@ services:
             - '@app.file_uploader.service'
             - '@app.mail_helper.helper'
             - '@app.user.adapter'
+            - '@app.role.adapter'
+
         public: true
 
     AppBundle\Service\UserService: '@app.user.service'
@@ -112,3 +114,8 @@ services:
         public: true
 
     AppBundle\Service\RoomService: '@app.room.service'
+
+    app.role.adapter:
+        class: AppBundle\Adapter\RoleAdapter
+
+    AppBundle\Adapter\RoleAdapter: '@app.room.adapter'
