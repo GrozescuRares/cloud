@@ -14,7 +14,7 @@ use AppBundle\Entity\Hotel;
 use AppBundle\Entity\User;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
-use AppBundle\Helper\ValidateUser;
+use AppBundle\Helper\ValidateUserHelper;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -78,8 +78,8 @@ class HotelService
     public function getOwnerHotelsDto(User $owner)
     {
         $userRole = $owner->getRoles()[0];
-        ValidateUser::checkIfUserHasRole($userRole);
-        ValidateUser::checkIfUserHasRoleOwner($userRole);
+        ValidateUserHelper::checkIfUserHasRole($userRole);
+        ValidateUserHelper::checkIfUserHasRoleOwner($userRole);
 
         $hotels = $this->em->getRepository(Hotel::class)->findBy(
             [

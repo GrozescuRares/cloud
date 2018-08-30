@@ -12,7 +12,7 @@ namespace AppBundle\Helper;
  * Class CollectionModifier
  * @package AppBundle\Helper
  */
-class CollectionModifier
+class CollectionModifierHelper
 {
     /**
      * @param array $arr

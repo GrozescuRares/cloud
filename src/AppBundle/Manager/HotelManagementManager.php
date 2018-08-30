@@ -4,7 +4,7 @@ namespace AppBundle\Manager;
 
 use AppBundle\Dto\RoomDto;
 use AppBundle\Entity\User;
-use AppBundle\Helper\CollectionModifier;
+use AppBundle\Helper\CollectionModifierHelper;
 use AppBundle\Service\HotelService;
 use AppBundle\Service\RoomService;
 
@@ -37,7 +37,7 @@ class HotelManagementManager
      */
     public function getOwnerHotelsForChoiceType(User $owner)
     {
-        return CollectionModifier::addKeyValueToCollection($this->hotelService->getOwnerHotelsDto($owner), 'Please choose Hotel', null);
+        return CollectionModifierHelper::addKeyValueToCollection($this->hotelService->getOwnerHotelsDto($owner), 'Please choose Hotel', null);
     }
 
     /**

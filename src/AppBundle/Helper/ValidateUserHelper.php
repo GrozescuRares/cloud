@@ -16,7 +16,7 @@ use AppBundle\Exception\NoRoleException;
  * Class ValidateUser
  * @package AppBundle\Helper
  */
-class ValidateUser
+class ValidateUserHelper
 {
     /**
      * @param mixed $userRole
