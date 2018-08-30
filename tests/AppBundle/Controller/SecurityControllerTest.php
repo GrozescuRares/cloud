@@ -19,6 +19,7 @@ class SecurityControllerTest extends BaseWebTestCase
 {
     /**
      * Tests the login route
+     * @group login
      */
     public function testLoginRoute()
     {
@@ -31,6 +32,7 @@ class SecurityControllerTest extends BaseWebTestCase
 
     /**
      * Tests successfully log in
+     * @group login
      */
     public function testSuccessfullyLogInFormSubmit()
     {
@@ -46,6 +48,7 @@ class SecurityControllerTest extends BaseWebTestCase
 
     /**
      * Tests bad credentials log in
+     * @group login
      */
     public function testBadCredentials()
     {
@@ -65,6 +68,7 @@ class SecurityControllerTest extends BaseWebTestCase
 
     /**
      * Tests log in with inactive account
+     * @group login
      */
     public function testLoginWithInactiveAccount()
     {
@@ -84,6 +88,7 @@ class SecurityControllerTest extends BaseWebTestCase
 
     /**
      * Tests that logged user can't access the login page
+     * @group security
      */
     public function testThatLoggedUserCanNotAccessLogInPage()
     {
@@ -106,6 +111,7 @@ class SecurityControllerTest extends BaseWebTestCase
 
     /**
      * Tests that logged user can't access the registration page
+     * @group security
      */
     public function testThatLoggedUserCanNotAccessRegisterPage()
     {
@@ -118,6 +124,7 @@ class SecurityControllerTest extends BaseWebTestCase
 
     /**
      * Tests that logged user can't access the activate-account page
+     * @group security
      */
     public function testThatLoggedUserCanNotAccessActivateAccountPage()
     {

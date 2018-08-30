@@ -152,15 +152,7 @@ class HotelServiceTest extends EntityManagerMock
             ->willReturn(183);
 
         $hotelMock1 = $this->createMock(Hotel::class);
-        $hotelMock1->expects($this->once())
-            ->method('getName')
-            ->willReturn('name1');
-
         $hotelMock2 = $this->createMock(Hotel::class);
-        $hotelMock2->expects($this->once())
-            ->method('getName')
-            ->willReturn('name2');
-
         $hotelMocks = [$hotelMock1, $hotelMock2];
 
         $this->repositoriesMocks[EntityConfig::HOTEL]->expects($this->once())
@@ -173,16 +165,13 @@ class HotelServiceTest extends EntityManagerMock
         $hotelDtoMock1 = $this->createMock(HotelDto::class);
         $hotelDtoMock2 = $this->createMock(HotelDto::class);
 
-        $this->hotelAdapterMock->expects($this->at(0))
-            ->method('convertToDto')
-            ->willReturn($hotelDtoMock1);
-        $this->hotelAdapterMock->expects($this->at(1))
-            ->method('convertToDto')
-            ->willReturn($hotelDtoMock2);
+        $this->hotelAdapterMock->expects($this->once())
+            ->method('convertHotelsToHotelDtos')
+            ->with($hotelMocks)
+            ->willReturn(['name1' => $hotelDtoMock1, 'name2' => $hotelDtoMock2]);
 
         $result = $this->hotelService->getOwnerHotelsDto($userMock);
 
-        $this->assertCount(2, $result);
         $this->assertEquals($hotelDtoMock1, $result['name1']);
         $this->assertEquals($hotelDtoMock2, $result['name2']);
     }

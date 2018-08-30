@@ -19,6 +19,7 @@ class RegistrationControllerTest extends BaseWebTestCase
 {
     /**
      * Tests the register route
+     * @group register
      */
     public function testRegisterRoute()
     {
@@ -31,6 +32,7 @@ class RegistrationControllerTest extends BaseWebTestCase
 
     /**
      * Tests successfully register
+     * @group register
      */
     public function testSuccessfullyRegisterFormSubmitWithTokenActivation()
     {
@@ -73,6 +75,7 @@ class RegistrationControllerTest extends BaseWebTestCase
 
     /**
      * Tests nonMatching passwords
+     * @group register
      */
     public function testNonMatchingPasswords()
     {
@@ -106,6 +109,7 @@ class RegistrationControllerTest extends BaseWebTestCase
 
     /**
      * Tests invalid passwords
+     * @group register
      */
     public function testInvalidPassword()
     {
@@ -142,6 +146,7 @@ class RegistrationControllerTest extends BaseWebTestCase
 
     /**
      * Test no password
+     * @group register
      */
     public function testNoPassword()
     {
@@ -175,6 +180,7 @@ class RegistrationControllerTest extends BaseWebTestCase
 
     /**
      * Tests invalid Username
+     * @group register
      */
     public function testInvalidUsername()
     {

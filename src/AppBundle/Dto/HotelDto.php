@@ -17,5 +17,4 @@ class HotelDto
     public $name;
     public $location;
     public $description;
-    public $owner;
 }

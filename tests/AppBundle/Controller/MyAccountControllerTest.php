@@ -19,6 +19,7 @@ class MyAccountControllerTest extends BaseWebTestCase
 {
     /**
      * Tests the my-account route with no user logged
+     * @group my-account
      */
     public function testMyAccountRoute()
     {
@@ -30,6 +31,7 @@ class MyAccountControllerTest extends BaseWebTestCase
 
     /**
      * Tests accessing my account after user login
+     * @group my-account
      */
     public function testAccessingMyAccountRouteAfterLogin()
     {
@@ -40,6 +42,7 @@ class MyAccountControllerTest extends BaseWebTestCase
 
     /**
      * Tests the edit-my-account route with no user logged
+     * @group edit-my-account
      */
     public function testEditMyAccountRoute()
     {
@@ -51,6 +54,7 @@ class MyAccountControllerTest extends BaseWebTestCase
 
     /**
      * Tests a successfully account edit
+     * @group edit-my-account
      */
     public function testSuccessfulAccountEdit()
     {

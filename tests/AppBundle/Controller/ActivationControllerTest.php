@@ -20,6 +20,7 @@ class ActivationControllerTest extends WebTestCase
 {
     /**
      * Tests the activate-account route
+     * @group activation
      */
     public function testActivateAccountRoute()
     {
@@ -31,6 +32,7 @@ class ActivationControllerTest extends WebTestCase
 
     /**
      * Tests invalid token
+     * @group activation
      */
     public function testInvalidToken()
     {

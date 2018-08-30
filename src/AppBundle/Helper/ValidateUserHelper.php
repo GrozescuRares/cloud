@@ -20,31 +20,40 @@ class ValidateUserHelper
 {
     /**
      * @param mixed $userRole
+     * @return mixed
      */
     public static function checkIfUserHasRole($userRole)
     {
         if (empty($userRole)) {
             throw new NoRoleException('This user has no role.');
         }
+
+        return $userRole[0];
     }
 
     /**
      * @param mixed $userRole
+     * @return mixed
      */
     public static function checkIfUserHasHighRole($userRole)
     {
-        if (array_search($userRole, UserConfig::HIGH_ROLES) === false) {
+        if (array_search($userRole[0], UserConfig::HIGH_ROLES) === false) {
             throw new InappropriateUserRoleException('This user has no high role.');
         }
+
+        return $userRole[0];
     }
 
     /**
      * @param mixed $userRole
+     * @return mixed
      */
     public static function checkIfUserHasRoleOwner($userRole)
     {
-        if ($userRole !== UserConfig::ROLE_OWNER) {
+        if ($userRole[0] !== UserConfig::ROLE_OWNER) {
             throw new InappropriateUserRoleException('This user is not an owner.');
         }
+
+        return $userRole[0];
     }
 }

@@ -19,6 +19,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 {
     /**
      * Tests the add-user route with no user logged
+     * @group add-user
      */
     public function testAddUserRoute()
     {
@@ -30,6 +31,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests that client user can not access add-user route
+     * @group add-user
      */
     public function testThatClientUserCanNotAccessAddUserRoute()
     {
@@ -38,6 +40,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests that employee user can not access add-user route
+     * @group add-user
      */
     public function testThatEmployeeUserCanNotAccessAddUserRoute()
     {
@@ -46,6 +49,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests page design when accessed by owner
+     * @group add-user
      */
     public function testAddUserPageDesignWhenAccessedByOwner()
     {
@@ -56,6 +60,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests page design when accessed by manager
+     * @group add-user
      */
     public function testAddUserPageDesignWhenAccessedByManager()
     {
@@ -66,6 +71,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests that owner can successfully add user
+     * @group add-user
      */
     public function testSuccessfullyAddUserByOwner()
     {
@@ -104,6 +110,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests that manager can successfully add user
+     * @group add-user
      */
     public function testSuccessfullyAddUserByManager()
     {
@@ -142,6 +149,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests the edit-user route with no user logged
+     * @group edit-user
      */
     public function testEditUserRoute()
     {
@@ -153,6 +161,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests that client user can not access edit-user route
+     * @group edit-user
      */
     public function testThatClientUserCanNotAccessEditUserRoute()
     {
@@ -161,6 +170,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests that employee user can not access edit-user route
+     * @group edit-user
      */
     public function testThatEmployeeUserCanNotAccessEditUserRoute()
     {
@@ -169,6 +179,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests page design when accessed by owner
+     * @group edit-user
      */
     public function testEditUserPageDesignWhenAccessedByOwnerOrManager()
     {
@@ -179,6 +190,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests edit user by owner
+     * @group edit-user
      */
     public function testEditUserRoleByOwner()
     {
@@ -213,6 +225,7 @@ class UserManagementControllerTest extends BaseWebTestCase
 
     /**
      * Tests edit user by owner
+     * @group edit-user
      */
     public function testEditUserRoleByManager()
     {
@@ -233,7 +246,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group edit-user
      */
     public function testThatOwnerCanNotEditTheRoleOfAClient()
     {
@@ -254,7 +267,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group edit-user
      */
     public function testThatManagerCanNotEditTheRoleOfAClient()
     {
@@ -275,7 +288,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group edit-user
      */
     public function testThatOwnerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
     {
@@ -296,7 +309,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group edit-user
      */
     public function testThatManagerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
     {
@@ -317,7 +330,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group user-management
      */
     public function testUserManagementRoute()
     {
@@ -328,7 +341,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group user-management
      */
     public function testThatClientUserCanNotAccessUserManagementRoute()
     {
@@ -336,7 +349,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group user-management
      */
     public function testThatEmployeeUserCanNotAccessUserManagementRoute()
     {
@@ -344,7 +357,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group user-management
      */
     public function testUserManagementPageDesignWhenAccessedByManager()
     {
@@ -354,7 +367,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group user-management
      */
     public function testUserManagementPageDesignWhenAccessedByOwner()
     {
@@ -364,7 +377,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group paginate-and-sort
      */
     public function testUserManagementPaginateAndSortRoute()
     {
@@ -375,7 +388,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group paginate-and-sort
      */
     public function testThatClientUserCanNotAccessUserManagementPaginateAndSortRoute()
     {
@@ -383,7 +396,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group paginate-and-sort
      */
     public function testThatEmployeeUserCanNotAccessUserManagementPaginateAndSortRoute()
     {
@@ -391,7 +404,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group paginate-and-sort
      */
     public function testUserManagementPaginateAndSortRouteAccessedByOwner()
     {
@@ -402,7 +415,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group paginate-and-sort
      */
     public function testUserManagementPaginateAndSortRouteAccessedByManager()
     {
@@ -413,7 +426,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group paginate-and-sort
      */
     public function testPaginateAndSortRouteAccessedWithAjaxByManager()
     {
@@ -441,7 +454,7 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group paginate-and-sort
      */
     public function testPaginateAndSortRouteAccessedWithAjaxByOwner()
     {

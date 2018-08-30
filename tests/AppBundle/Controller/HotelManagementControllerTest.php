@@ -18,7 +18,7 @@ use Tests\AppBundle\BaseWebTestCase;
 class HotelManagementControllerTest extends BaseWebTestCase
 {
     /**
-     *
+     * @group add-room
      */
     public function testAddRoomRoute()
     {
@@ -29,7 +29,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group add-room
      */
     public function testThatClientUserCanNotAccessAddRoomRoute()
     {
@@ -37,7 +37,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group add-room
      */
     public function testThatEmployeeUserCanNotAccessAddRoomRoute()
     {
@@ -45,7 +45,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group add-room
      */
     public function testThatManagerUserCanNotAccessAddRoomRoute()
     {
@@ -53,7 +53,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group add-room
      */
     public function testSuccessfullyAddRoomByOwner()
     {
@@ -74,7 +74,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group add-room
      */
     public function testAddRoomWithInvalidPrice()
     {
@@ -94,7 +94,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group add-room
      */
     public function testAddRoomWithNoHotelSelected()
     {
@@ -113,7 +113,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     *
+     * @group add-room
      */
     public function testAddRoomWithNoCapacitySelected()
     {

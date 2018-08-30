@@ -19,6 +19,7 @@ class DashboardControllerTest extends BaseWebTestCase
 {
     /**
      * Tests the dashboard route with no user logged
+     * @group dashboard
      */
     public function testDashboardRoute()
     {
@@ -30,6 +31,7 @@ class DashboardControllerTest extends BaseWebTestCase
 
     /**
      * Tests dashboard page design after owner log in
+     * @group dashboard
      */
     public function testDashboardPageDesignAfterOwnerLogIn()
     {
@@ -40,6 +42,7 @@ class DashboardControllerTest extends BaseWebTestCase
 
     /**
      * Tests dashboard page design after manager log in
+     * @group dashboard
      */
     public function testDashboardPageDesignAfterManagerLogIn()
     {
@@ -50,6 +53,7 @@ class DashboardControllerTest extends BaseWebTestCase
 
     /**
      * Tests dashboard page design after employee log in
+     * @group dashboard
      */
     public function testDashboardPageDesignAfterEmployeeLogIn()
     {
@@ -60,6 +64,7 @@ class DashboardControllerTest extends BaseWebTestCase
 
     /**
      * Tests dashboard page design after manager log in
+     * @group dashboard
      */
     public function testDashboardPageDesignAfterClientLogIn()
     {
