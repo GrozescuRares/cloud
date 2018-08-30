@@ -86,9 +86,7 @@ class HotelService
             ]
         );
 
-        $result = $this->hotelAdapter->convertHotelsToHotelDtos($hotels);
-
-        return $result;
+        return $this->hotelAdapter->convertHotelsToHotelDtos($hotels);
     }
 
     /**
