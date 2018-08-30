@@ -13,7 +13,7 @@ use AppBundle\Adapter\RoomAdapter;
 use AppBundle\Dto\HotelDto;
 use AppBundle\Dto\RoomDto;
 use AppBundle\Entity\Hotel;
-use AppBundle\Enum\RoomConfig;
+
 use Doctrine\ORM\EntityManager;
 
 /**

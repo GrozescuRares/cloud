@@ -25,7 +25,7 @@ use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailHelper;
 use AppBundle\Service\FileUploaderService;
 use AppBundle\Service\UserService;
-use Doctrine\ORM\Mapping\Entity;
+
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;

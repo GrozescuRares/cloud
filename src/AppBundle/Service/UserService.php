@@ -20,6 +20,7 @@ use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Exception\SameRoleException;
 use AppBundle\Helper\MailInterface;
+
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
@@ -167,7 +168,7 @@ class UserService
      */
     public function getUserCreationalRoles(User $user)
     {
-        $this->checkIfUserHasRole($user->getRoles()[0]);
+        $this->checkIfUserHasRole($user->getRoles());
 
         $userRole = $user->getRoles()[0];
         $roles = $this->em->getRepository(Role::class)->findAll();
@@ -197,7 +198,7 @@ class UserService
      */
     public function addUser(User $user, User $loggedUser)
     {
-        $this->checkIfUserHasRole($loggedUser->getRoles()[0]);
+        $this->checkIfUserHasRole($loggedUser->getRoles());
 
         $password = $this
             ->encoder
@@ -253,7 +254,7 @@ class UserService
      */
     public function getUsersFromHotels(User $loggedUser, $offset, $hotelId = null)
     {
-        $loggedUserRole = $loggedUser->getRoles()[0];
+        $loggedUserRole = $loggedUser->getRoles();
         $this->checkIfUserHasRole($loggedUserRole);
         $this->checkIfUserHasHighRole($loggedUserRole);
 
@@ -273,7 +274,7 @@ class UserService
      */
     public function getPagesNumberForManagerManagement(User $loggedUser)
     {
-        $loggedUserRole = $loggedUser->getRoles()[0];
+        $loggedUserRole = $loggedUser->getRoles();
         $this->checkIfUserHasRole($loggedUserRole);
         $this->checkIfUserHasHighRole($loggedUserRole);
 
@@ -289,7 +290,7 @@ class UserService
      */
     public function paginateAndSortManagersUsers(User $loggedUser, $offset, $column, $sortType)
     {
-        $loggedUserRole = $loggedUser->getRoles()[0];
+        $loggedUserRole = $loggedUser->getRoles();
         $this->checkIfUserHasRole($loggedUserRole);
         $this->checkIfUserHasHighRole($loggedUserRole);
 
@@ -306,7 +307,7 @@ class UserService
      */
     public function getPagesNumberForOwnerManagement(User $loggedUser, $hotelId)
     {
-        $loggedUserRole = $loggedUser->getRoles()[0];
+        $loggedUserRole = $loggedUser->getRoles();
         $this->checkIfUserHasRole($loggedUserRole);
         $this->checkIfUserHasHighRole($loggedUserRole);
 
@@ -324,7 +325,7 @@ class UserService
      */
     public function paginateAndSortOwnersUsers(User $loggedUser, $offset, $column, $sortType, $hotelId)
     {
-        $loggedUserRole = $loggedUser->getRoles()[0];
+        $loggedUserRole = $loggedUser->getRoles();
         $this->checkIfUserHasRole($loggedUserRole);
         $this->checkIfUserHasHighRole($loggedUserRole);
 
@@ -345,7 +346,7 @@ class UserService
      */
     public function editUserRole(UserDto $userDto, User $loggedUser, $hotels)
     {
-        $loggedUserRole = $loggedUser->getRoles()[0];
+        $loggedUserRole = $loggedUser->getRoles();
         $this->checkIfUserHasRole($loggedUserRole);
         $this->checkIfUserHasHighRole($loggedUserRole);
 
@@ -461,7 +462,7 @@ class UserService
      */
     private function checkIfUserHasHighRole($loggedUserRole)
     {
-        if (array_search($loggedUserRole, UserConfig::HIGH_ROLES) === false) {
+        if (array_search($loggedUserRole[0], UserConfig::HIGH_ROLES) === false) {
             throw new InappropriateUserRoleException('This user is not an owner.');
         }
     }

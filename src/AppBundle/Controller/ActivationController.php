@@ -10,7 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UserNotFoundException;
-use AppBundle\Service\UserService;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 

@@ -9,6 +9,7 @@
 namespace Tests\AppBundle\Controller;
 
 use AppBundle\Enum\RoutesConfig;
+
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**

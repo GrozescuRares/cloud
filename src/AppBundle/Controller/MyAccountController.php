@@ -8,10 +8,11 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\UserTypeForm;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use AppBundle\Form\UserTypeForm;
 
 /**
  * Class MyAccountController

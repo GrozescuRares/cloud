@@ -18,6 +18,7 @@ use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Form\EditUserTypeForm;
 use AppBundle\Form\UserTypeForm;
+
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

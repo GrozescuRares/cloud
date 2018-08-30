@@ -12,6 +12,7 @@ use AppBundle\Dto\RoomDto;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Form\RoomTypeForm;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;

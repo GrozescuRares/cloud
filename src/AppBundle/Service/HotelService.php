@@ -9,12 +9,11 @@
 namespace AppBundle\Service;
 
 use AppBundle\Adapter\HotelAdapter;
-use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\User;
-use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Helper\ValidateUserHelper;
+
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -77,7 +76,7 @@ class HotelService
      */
     public function getOwnerHotelsDto(User $owner)
     {
-        $userRole = $owner->getRoles()[0];
+        $userRole = $owner->getRoles();
         ValidateUserHelper::checkIfUserHasRole($userRole);
         ValidateUserHelper::checkIfUserHasRoleOwner($userRole);
 

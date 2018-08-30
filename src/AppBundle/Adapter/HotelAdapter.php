@@ -10,6 +10,7 @@ namespace AppBundle\Adapter;
 
 use AppBundle\Dto\HotelDto;
 use AppBundle\Entity\Hotel;
+
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**

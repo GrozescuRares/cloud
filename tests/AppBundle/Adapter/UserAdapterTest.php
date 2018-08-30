@@ -6,6 +6,7 @@ use AppBundle\Adapter\UserAdapter;
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+
 use PHPUnit\Framework\TestCase;
 
 /**

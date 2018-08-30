@@ -10,6 +10,7 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\User;
 use AppBundle\Enum\UserConfig;
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;

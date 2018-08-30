@@ -11,6 +11,7 @@ namespace Tests\AppBundle\Adapter;
 use AppBundle\Adapter\RoomAdapter;
 use AppBundle\Dto\RoomDto;
 use AppBundle\Entity\Room;
+
 use PHPUnit\Framework\TestCase;
 
 /**

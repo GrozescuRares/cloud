@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,6 +36,14 @@ class Role implements \Serializable
     private $users;
 
     /**
+     * Role constructor.
+     */
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
+
+    /**
      * @return mixed
      */
     public function getUsers()
@@ -50,6 +59,28 @@ class Role implements \Serializable
     public function setUsers($users)
     {
         $this->users = $users;
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function addUser(User $user)
+    {
+        $this->users[] = $user;
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function removeUser(User $user)
+    {
+        $this->users->removeElement($user);
 
         return $this;
     }

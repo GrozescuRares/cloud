@@ -11,6 +11,7 @@ namespace Tests\AppBundle\Adapter;
 use AppBundle\Adapter\HotelAdapter;
 use AppBundle\Dto\HotelDto;
 use AppBundle\Entity\Hotel;
+
 use PHPUnit\Framework\TestCase;
 
 /**

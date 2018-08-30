@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -174,6 +175,14 @@ class User implements UserInterface, \Serializable
     private $expirationDate;
 
     /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->ownedHotels = new ArrayCollection();
+    }
+
+    /**
      * @return mixed
      */
     public function getOwnedHotels()
@@ -189,6 +198,28 @@ class User implements UserInterface, \Serializable
     public function setOwnedHotels($ownedHotels)
     {
         $this->ownedHotels = $ownedHotels;
+
+        return $this;
+    }
+
+    /**
+     * @param Hotel $hotel
+     * @return $this
+     */
+    public function addOwnedHotel(Hotel $hotel)
+    {
+        $this->ownedHotels[] = $hotel;
+
+        return $this;
+    }
+
+    /**
+     * @param Hotel $hotel
+     * @return $this
+     */
+    public function removeOwnedHotel(Hotel $hotel)
+    {
+        $this->ownedHotels->removeElement($hotel);
 
         return $this;
     }

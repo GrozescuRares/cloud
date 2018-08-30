@@ -4,6 +4,7 @@ namespace AppBundle\Adapter;
 
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\User;
+
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
