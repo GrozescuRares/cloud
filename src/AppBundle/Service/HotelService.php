@@ -86,14 +86,7 @@ class HotelService
             ]
         );
 
-        $result = [];
-
-        /** @var Hotel $hotel */
-        foreach ($hotels as $hotel) {
-            $result[$hotel->getName()] = $this->hotelAdapter->convertToDto($hotel);
-        }
-
-        return $result;
+        return $this->hotelAdapter->convertHotelsToHotelDtos($hotels);
     }
 
     /**

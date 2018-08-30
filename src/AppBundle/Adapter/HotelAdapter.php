@@ -64,4 +64,19 @@ class HotelAdapter
 
         return $hotel;
     }
+
+    /**
+     * @param array $hotels
+     * @return array
+     */
+    public function convertHotelsToHotelDtos($hotels)
+    {
+        $hotelDtos = [];
+        /** @var Hotel $hotel */
+        foreach ($hotels as $hotel) {
+            $hotelDtos[$hotel->getName()] = $this->convertToDto($hotel);
+        }
+
+        return $hotelDtos;
+    }
 }
