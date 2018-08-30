@@ -10,6 +10,9 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\User;
+use AppBundle\Exception\InappropriateUserRoleException;
+use AppBundle\Exception\NoRoleException;
+use AppBundle\Enum\OrderConfig;
 use AppBundle\Exception\SameRoleException;
 use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
@@ -127,5 +130,159 @@ class UserManagementController extends Controller
         }
 
         return $this->redirectToRoute('edit-user', ['username' => $username]);
+    }
+
+    /**
+     * @Route("/user-management/", name="user-management")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function userManagementAction(Request $request)
+    {
+        $loggedUser = $this->getUser();
+        $userService = $this->get('app.user.service');
+        $hotelService = $this->get('app.hotel.service');
+        $hotels = $hotelService->getHotelsByOwner($loggedUser);
+
+        try {
+            if (empty($hotels)) {
+                $usersDto = $userService->getUsersFromHotels($loggedUser, 0);
+                $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
+            } else {
+                $hotelId = reset($hotels)->getHotelId();
+                $usersDto = $userService->getUsersFromHotels($loggedUser, 0, $hotelId);
+                $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
+            }
+
+            return $this->render(
+                'user_management/user-management.html.twig',
+                [
+                    'hotels' => $hotels,
+                    'user' => $loggedUser,
+                    'users' => $usersDto,
+                    'nrPages' => $nrPages,
+                    'currentPage' => 1,
+                    'nrUsers' => count($usersDto),
+                    'filters' => [],
+                ]
+            );
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/user-management/paginate-and-sort", name="paginate-and-sort")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function paginateAndSortAction(Request $request)
+    {
+        $loggedUser = $this->getUser();
+        $userService = $this->get('app.user.service');
+
+        if ($request->isXmlHttpRequest()) {
+            $type = $request->query->get('type');
+            try {
+                if ($type === 'manager') {
+                    list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+                    $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
+
+                    list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
+                    $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $pageNumber * 5 - 5, $column, $sortType);
+
+                    return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
+                }
+
+                if ($type === 'owner') {
+                    list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+                    $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
+
+                    list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
+                    $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $pageNumber * 5 - 5, $column, $sortType, $hotelId);
+
+                    return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
+                }
+            } catch (NoRoleException $ex) {
+                return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+            } catch (InappropriateUserRoleException $ex) {
+                return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+            }
+        }
+
+        return $this->render(
+            'error.html.twig',
+            [
+                'error' => 'Stay out of here.',
+            ]
+        );
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    private function getPaginationParameters(Request $request)
+    {
+        $hotelId = $request->query->get('hotelId');
+        $pageNumber = $request->query->get('pageNumber');
+        $column = $request->query->get('column');
+        $sort = $request->query->get('sort');
+        $paginate = $request->query->get('paginate');
+
+        return array($hotelId, $pageNumber, $column, $sort, $paginate);
+    }
+
+    /**
+     * @param $users
+     * @param $nrPages
+     * @param $pageNumber
+     * @param $column
+     * @param $sort
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    private function renderPaginatedTable($users, $nrPages, $pageNumber, $column, $sort)
+    {
+        return $this->render(
+            'user_management/table.html.twig',
+            [
+                'users' => $users,
+                'nrPages' => $nrPages,
+                'currentPage' => $pageNumber,
+                'nrUsers' => count($users),
+                'filters' => [
+                    $column => $sort,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * @param $column
+     * @param $sort
+     * @param $paginate
+     *
+     * @return array
+     */
+    private function configPaginationFilters($column, $sort, $paginate)
+    {
+        if (!empty($column) && !empty($sort) && !empty($paginate)) {
+            $sortType = OrderConfig::TYPE[$sort];
+        } else {
+            $sortType = $sort;
+            if (!empty($column) && !empty($sort)) {
+                $sort = OrderConfig::TYPE[$sort];
+            }
+        }
+
+        return array($sortType, $sort);
     }
 }

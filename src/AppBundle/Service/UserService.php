@@ -167,9 +167,7 @@ class UserService
      */
     public function getUserCreationalRoles(User $user)
     {
-        if (empty($user->getRoles())) {
-            throw new NoRoleException();
-        }
+        $this->checkIfUserHasRole($user->getRoles()[0]);
 
         $userRole = $user->getRoles()[0];
         $roles = $this->em->getRepository(Role::class)->findAll();
@@ -199,9 +197,7 @@ class UserService
      */
     public function addUser(User $user, User $loggedUser)
     {
-        if (empty($loggedUser->getRoles())) {
-            throw new NoRoleException();
-        }
+        $this->checkIfUserHasRole($loggedUser->getRoles()[0]);
 
         $password = $this
             ->encoder
@@ -211,6 +207,7 @@ class UserService
             );
         $user->setPassword($password);
         $user->setIsActivated(true);
+        $user->setExpirationDate($this->generateActivationTime());
 
         if ($loggedUser->getRoles()[0] === UserConfig::ROLE_MANAGER) {
             $user->setHotel($loggedUser->getHotel());
@@ -248,6 +245,95 @@ class UserService
     }
 
     /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @param mixed $hotelId
+     *
+     * @return array
+     */
+    public function getUsersFromHotels(User $loggedUser, $offset, $hotelId = null)
+    {
+        $loggedUserRole = $loggedUser->getRoles()[0];
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
+
+        if (empty($hotelId)) {
+            $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, null, null);
+
+            return $this->userAdapter->convertCollectionToDto($users);
+        }
+        $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, null, null, $hotelId);
+
+        return $this->userAdapter->convertCollectionToDto($users);
+    }
+
+    /**
+     * @param User $loggedUser
+     * @return int
+     */
+    public function getPagesNumberForManagerManagement(User $loggedUser)
+    {
+        $loggedUserRole = $loggedUser->getRoles()[0];
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
+
+        return $this->em->getRepository(User::class)->getUsersPagesNumberFromManagerHotel($loggedUser);
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sortType
+     * @return array
+     */
+    public function paginateAndSortManagersUsers(User $loggedUser, $offset, $column, $sortType)
+    {
+        $loggedUserRole = $loggedUser->getRoles()[0];
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
+
+        $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, $column, $sortType);
+
+        return $this->userAdapter->convertCollectionToDto($users);
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $hotelId
+     *
+     * @return int
+     */
+    public function getPagesNumberForOwnerManagement(User $loggedUser, $hotelId)
+    {
+        $loggedUserRole = $loggedUser->getRoles()[0];
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
+
+        return $this->em->getRepository(User::class)->getUsersPagesNumberFromOwnerHotel($loggedUser, $hotelId);
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sortType
+     * @param mixed $hotelId
+     *
+     * @return array
+     */
+    public function paginateAndSortOwnersUsers(User $loggedUser, $offset, $column, $sortType, $hotelId)
+    {
+        $loggedUserRole = $loggedUser->getRoles()[0];
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
+
+        $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, $column, $sortType, $hotelId);
+
+        return $this->userAdapter->convertCollectionToDto($users);
+    }
+
+    /**
      * This function edits userDto's role.
      * Preconditions: $userDto is an existing user from the db
      *
@@ -260,14 +346,8 @@ class UserService
     public function editUserRole(UserDto $userDto, User $loggedUser, $hotels)
     {
         $loggedUserRole = $loggedUser->getRoles()[0];
-
-        if (empty($loggedUserRole)) {
-            throw new NoRoleException('The loggedUser has no role.');
-        }
-
-        if (array_search($loggedUserRole, UserConfig::HIGH_ROLES) === false) {
-            throw new InappropriateUserRoleException('The loggedUser must be owner or manager.');
-        }
+        $this->checkIfUserHasRole($loggedUserRole);
+        $this->checkIfUserHasHighRole($loggedUserRole);
 
         if ($loggedUserRole === UserConfig::ROLE_MANAGER) {
             if (!$this->checkIfUserHasManagerHotelId($loggedUser->getHotel(), $userDto->username)) {
@@ -364,5 +444,25 @@ class UserService
         $dateTime->modify(UserConfig::TOKEN_LIFETIME);
 
         return $dateTime;
+    }
+
+    /**
+     * @param mixed $loggedUser
+     */
+    private function checkIfUserHasRole($loggedUserRole)
+    {
+        if (empty($loggedUserRole)) {
+            throw new NoRoleException('This user has no role.');
+        }
+    }
+
+    /**
+     * @param mixed $loggedUser
+     */
+    private function checkIfUserHasHighRole($loggedUserRole)
+    {
+        if (array_search($loggedUserRole, UserConfig::HIGH_ROLES) === false) {
+            throw new InappropriateUserRoleException('This user is not an owner.');
+        }
     }
 }

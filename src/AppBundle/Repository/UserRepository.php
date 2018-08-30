@@ -39,4 +39,97 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
 
         return $user;
     }
+
+    /**
+     * @param User $loggedUser
+     * @return int
+     */
+    public function getUsersPagesNumberFromManagerHotel(User $loggedUser)
+    {
+        $usersCount = $this->createQueryBuilder('user')
+            ->where('user.hotel = :managerHotel')
+            ->andWhere('user.userId != :managerId')
+            ->setParameter('managerHotel', $loggedUser->getHotel())
+            ->setParameter('managerId', $loggedUser->getUserId())
+            ->getQuery()->execute();
+
+        return ceil(count($usersCount) / 5);
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     *
+     * @return array
+     */
+    public function paginateAndSortUsersFromManagerHotel(User $loggedUser, $offset, $column, $sort)
+    {
+        $users = $this->createQueryBuilder('user')
+            ->where('user.hotel = :managerHotel')
+            ->andWhere('user.userId != :managerId')
+            ->setParameter('managerHotel', $loggedUser->getHotel())
+            ->setParameter('managerId', $loggedUser->getUserId())
+            ->setMaxResults(5)
+            ->setFirstResult($offset);
+
+        if (!empty($column) and !empty($sort)) {
+            $result = $users->orderBy('user.'.$column, $sort)
+                ->getQuery()->execute();
+
+            return $result;
+        }
+
+        return $users->getQuery()->execute();
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $hotelId
+     *
+     * @return int
+     */
+    public function getUsersPagesNumberFromOwnerHotel(User $loggedUser, $hotelId)
+    {
+        $usersCount = $this->createQueryBuilder('user')
+            ->innerJoin('user.hotel', 'hotel')
+            ->where('hotel.owner = :owner')
+            ->andWhere('hotel.hotelId = :hotelId')
+            ->setParameter('owner', $loggedUser)
+            ->setParameter('hotelId', $hotelId)
+            ->getQuery()->execute();
+
+        return ceil(count($usersCount) / 5);
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @param mixed $hotelId
+     *
+     * @return array
+     */
+    public function paginateAndSortUsersFromOwnerHotel(User $loggedUser, $offset, $column, $sort, $hotelId)
+    {
+        $users = $this->createQueryBuilder('user')
+            ->innerJoin('user.hotel', 'hotel')
+            ->where('hotel.owner = :owner')
+            ->andWhere('hotel.hotelId = :hotelId')
+            ->setParameter('owner', $loggedUser)
+            ->setParameter('hotelId', $hotelId)
+            ->setFirstResult($offset)
+            ->setMaxResults(5);
+
+        if (!empty($column) && !empty($sort)) {
+            $result = $users->orderBy('user.'.$column, $sort)
+                ->getQuery()->execute();
+
+            return $result;
+        }
+
+        return $users->getQuery()->execute();
+    }
 }

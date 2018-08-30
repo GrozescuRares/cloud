@@ -20,6 +20,8 @@ form:
     bio: 'Bio'
     date_of_birth: 'Date Of Birth'
     gender: 'Gender'
+    birth_date: 'Birth date'
+    registration_date: 'Registration date'
 
 page:
   activation-account:
@@ -57,6 +59,15 @@ page:
     add-user:
       title: 'Add user'
       back: 'Back'
+    user-management:
+      items: '%users% item(s)'
+      previous: 'Previous'
+      next: 'Next'
+      page-number: '%page%'
+      add_new_user: 'Add New User'
+      back: 'Back'
+      title: 'User Management'
+      search: 'Search by hotel all users'
 
   my-account:
     back: 'Back'

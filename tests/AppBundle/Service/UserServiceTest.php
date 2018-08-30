@@ -25,6 +25,7 @@ use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\MailHelper;
 use AppBundle\Service\FileUploaderService;
 use AppBundle\Service\UserService;
+use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
@@ -1055,6 +1056,358 @@ class UserServiceTest extends EntityManagerMock
             ->method('persist');
 
         $this->userService->editUserRole($userDtoMock, $loggedUserMock, []);
+    }
+
+    /**
+     *
+     */
+    public function testSuccessfullyGetUsersFromHotelsByOwner()
+    {
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_OWNER]);
+
+        $offset = 0;
+        $hotelId = 1;
+
+        $userMock1 = $this->createMock(User::class);
+        $userMock2 = $this->createMock(User::class);
+        $userMock3 = $this->createMock(User::class);
+        $userMock4 = $this->createMock(User::class);
+        $userMock5 = $this->createMock(User::class);
+        $usersMocks = [
+            $userMock1,
+            $userMock2,
+            $userMock3,
+            $userMock4,
+            $userMock5,
+        ];
+
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
+            ->method('paginateAndSortUsersFromOwnerHotel')
+            ->with($loggedUserMock, $offset, null, null, $hotelId)
+            ->willReturn($usersMocks);
+
+        $userDtoMock1 = $this->createMock(UserDto::class);
+        $userDtoMock2 = $this->createMock(UserDto::class);
+        $userDtoMock3 = $this->createMock(UserDto::class);
+        $userDtoMock4 = $this->createMock(UserDto::class);
+        $userDtoMock5 = $this->createMock(UserDto::class);
+        $usersDtoMocks = [$userDtoMock1, $userDtoMock2, $userDtoMock3, $userDtoMock4, $userDtoMock5];
+
+        $this->userAdapterMock->expects($this->once())
+            ->method('convertCollectionToDto')
+            ->with($usersMocks)
+            ->willReturn($usersDtoMocks);
+
+        $this->userService->getUsersFromHotels($loggedUserMock, $offset, $hotelId);
+    }
+
+    /**
+     *
+     */
+    public function testSuccessfullyGetUsersFromHotelsByManager()
+    {
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_MANAGER]);
+
+        $offset = 0;
+        $hotelId = null;
+
+        $userMock1 = $this->createMock(User::class);
+        $userMock2 = $this->createMock(User::class);
+        $userMock3 = $this->createMock(User::class);
+        $userMock4 = $this->createMock(User::class);
+        $userMock5 = $this->createMock(User::class);
+        $usersMocks = [
+            $userMock1,
+            $userMock2,
+            $userMock3,
+            $userMock4,
+            $userMock5,
+        ];
+
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
+            ->method('paginateAndSortUsersFromManagerHotel')
+            ->with($loggedUserMock, $offset, null, null)
+            ->willReturn($usersMocks);
+
+        $userDtoMock1 = $this->createMock(UserDto::class);
+        $userDtoMock2 = $this->createMock(UserDto::class);
+        $userDtoMock3 = $this->createMock(UserDto::class);
+        $userDtoMock4 = $this->createMock(UserDto::class);
+        $userDtoMock5 = $this->createMock(UserDto::class);
+        $usersDtoMocks = [$userDtoMock1, $userDtoMock2, $userDtoMock3, $userDtoMock4, $userDtoMock5];
+
+        $this->userAdapterMock->expects($this->once())
+            ->method('convertCollectionToDto')
+            ->with($usersMocks)
+            ->willReturn($usersDtoMocks);
+
+        $this->userService->getUsersFromHotels($loggedUserMock, $offset, $hotelId);
+    }
+
+    /**
+     *
+     */
+    public function testGetUsersFromHotelsByUserWithNoRole()
+    {
+        $this->expectException(NoRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn(null);
+
+        $this->userService->getUsersFromHotels($loggedUserMock, 0, null);
+    }
+
+    /**
+     *
+     */
+    public function testGetUsersFromHotelsByUserWithNoHighRole()
+    {
+        $this->expectException(InappropriateUserRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_EMPLOYEE]);
+
+        $this->userService->getUsersFromHotels($loggedUserMock, 0, null);
+    }
+
+    /**
+     *
+     */
+    public function testSuccessfullyGetPagesNumberForManagerManagement()
+    {
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_MANAGER]);
+
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
+            ->method('getUsersPagesNumberFromManagerHotel')
+            ->with($loggedUserMock)
+            ->willReturn(2);
+
+        $this->userService->getPagesNumberForManagerManagement($loggedUserMock);
+    }
+
+    /**
+     *
+     */
+    public function testGetPagesNumberForManagerManagementByUserWithNoRole()
+    {
+        $this->expectException(NoRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn(null);
+
+        $this->userService->getPagesNumberForManagerManagement($loggedUserMock);
+    }
+
+    /**
+     *
+     */
+    public function testGetPagesNumberForManagerManagementByUserWithNoHighRole()
+    {
+        $this->expectException(InappropriateUserRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_EMPLOYEE]);
+
+        $this->userService->getPagesNumberForManagerManagement($loggedUserMock);
+    }
+
+    /**
+     *
+     */
+    public function testSuccessfullyPaginateAndSortManagersUsers()
+    {
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_MANAGER]);
+
+        $userMock1 = $this->createMock(User::class);
+        $userMock2 = $this->createMock(User::class);
+        $userMock3 = $this->createMock(User::class);
+        $userMock4 = $this->createMock(User::class);
+        $userMock5 = $this->createMock(User::class);
+        $usersMocks = [$userMock1, $userMock2, $userMock3, $userMock4, $userMock5];
+
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
+            ->method('paginateAndSortUsersFromManagerHotel')
+            ->with($loggedUserMock, 0, 'firstName', 'ASC')
+            ->willReturn($usersMocks);
+
+        $userDtoMock1 = $this->createMock(UserDto::class);
+        $userDtoMock2 = $this->createMock(UserDto::class);
+        $userDtoMock3 = $this->createMock(UserDto::class);
+        $userDtoMock4 = $this->createMock(UserDto::class);
+        $userDtoMock5 = $this->createMock(UserDto::class);
+        $userDtoMocks = [$userDtoMock1, $userDtoMock2, $userDtoMock3, $userDtoMock4, $userDtoMock5];
+
+        $this->userAdapterMock->expects($this->once())
+            ->method('convertCollectionToDto')
+            ->with($usersMocks)
+            ->willReturn($userDtoMocks);
+
+        $this->userService->paginateAndSortManagersUsers($loggedUserMock, 0, 'firstName', 'ASC');
+    }
+
+    /**
+     *
+     */
+    public function paginateAndSortManagersUsersByUserWithNoRole()
+    {
+        $this->expectException(NoRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn(null);
+
+        $this->userService->paginateAndSortManagersUsers($loggedUserMock, 0, 'firstName', 'ASC');
+    }
+
+    /**
+     *
+     */
+    public function paginateAndSortManagersUsersByUserWithNoHighRole()
+    {
+        $this->expectException(InappropriateUserRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_EMPLOYEE]);
+
+        $this->userService->paginateAndSortManagersUsers($loggedUserMock, 0, 'firstName', 'ASC');
+    }
+
+    /**
+     *
+     */
+    public function testSuccessfullyPaginateAndSortOwnersUsers()
+    {
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_OWNER]);
+
+        $userMock1 = $this->createMock(User::class);
+        $userMock2 = $this->createMock(User::class);
+        $userMock3 = $this->createMock(User::class);
+        $userMock4 = $this->createMock(User::class);
+        $userMock5 = $this->createMock(User::class);
+        $usersMocks = [$userMock1, $userMock2, $userMock3, $userMock4, $userMock5];
+
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
+            ->method('paginateAndSortUsersFromOwnerHotel')
+            ->with($loggedUserMock, 0, 'firstName', 'ASC', 1)
+            ->willReturn($usersMocks);
+
+        $userDtoMock1 = $this->createMock(UserDto::class);
+        $userDtoMock2 = $this->createMock(UserDto::class);
+        $userDtoMock3 = $this->createMock(UserDto::class);
+        $userDtoMock4 = $this->createMock(UserDto::class);
+        $userDtoMock5 = $this->createMock(UserDto::class);
+        $userDtoMocks = [$userDtoMock1, $userDtoMock2, $userDtoMock3, $userDtoMock4, $userDtoMock5];
+
+        $this->userAdapterMock->expects($this->once())
+            ->method('convertCollectionToDto')
+            ->with($usersMocks)
+            ->willReturn($userDtoMocks);
+
+        $this->userService->paginateAndSortOwnersUsers($loggedUserMock, 0, 'firstName', 'ASC', 1);
+    }
+
+    /**
+     *
+     */
+    public function paginateAndSortOwnersUsersByUserWithNoRole()
+    {
+        $this->expectException(NoRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn(null);
+
+        $this->userService->paginateAndSortOwnersUsers($loggedUserMock, 0, 'firstName', 'ASC', 1);
+    }
+
+    /**
+     *
+     */
+    public function paginateAndSortOwnersUsersByUserWithNoHighRole()
+    {
+        $this->expectException(InappropriateUserRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_EMPLOYEE]);
+
+        $this->userService->paginateAndSortOwnersUsers($loggedUserMock, 0, 'firstName', 'ASC', 1);
+    }
+
+    /**
+     *
+     */
+    public function testSuccessfullyGetPagesNumberForOwnerManagement()
+    {
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_OWNER]);
+
+        $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
+            ->method('getUsersPagesNumberFromOwnerHotel')
+            ->with($loggedUserMock)
+            ->willReturn(2);
+
+        $this->userService->getPagesNumberForOwnerManagement($loggedUserMock, 1);
+    }
+
+    /**
+     *
+     */
+    public function testGetPagesNumberForOwnerManagementByUserWithNoRole()
+    {
+        $this->expectException(NoRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn(null);
+
+        $this->userService->getPagesNumberForOwnerManagement($loggedUserMock, 1);
+    }
+
+    /**
+     *
+     */
+    public function testGetPagesNumberForOwnerManagementByUserWithNoHighRole()
+    {
+        $this->expectException(InappropriateUserRoleException::class);
+
+        $loggedUserMock = $this->createMock(User::class);
+        $loggedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_EMPLOYEE]);
+
+        $this->userService->getPagesNumberForOwnerManagement($loggedUserMock, 1);
     }
 
     /**
