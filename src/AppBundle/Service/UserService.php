@@ -8,14 +8,12 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Adapter\RoleAdapter;
 use AppBundle\Adapter\UserAdapter;
+use AppBundle\Dto\RoleDto;
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Enum\UserConfig;
-use AppBundle\Exception\InappropriateUserRoleException;
-use AppBundle\Exception\NoRoleException;
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
@@ -37,7 +35,6 @@ class UserService
     private $fileUploader;
     private $mailHelper;
     private $userAdapter;
-    private $roleAdapter;
 
     /**
      * UserService constructor.
@@ -47,22 +44,19 @@ class UserService
      * @param FileUploaderService $fileUploaderService
      * @param MailInterface       $mailHelper
      * @param UserAdapter         $userAdapter
-     * @param RoleAdapter         $roleAdapter
      */
     public function __construct(
         EntityManager $em,
         UserPasswordEncoder $encoder,
         FileUploaderService $fileUploaderService,
         MailInterface $mailHelper,
-        UserAdapter $userAdapter,
-        RoleAdapter $roleAdapter
+        UserAdapter $userAdapter
     ) {
         $this->em = $em;
         $this->encoder = $encoder;
         $this->fileUploader = $fileUploaderService;
         $this->mailHelper = $mailHelper;
         $this->userAdapter = $userAdapter;
-        $this->roleAdapter = $roleAdapter;
     }
 
     /**
@@ -157,46 +151,6 @@ class UserService
     }
 
     /**
-     * Returns an array of roles that contains every roles except
-     * $user's role, ROLE_CLIENT, and the roles that are higher in hierarchy.
-     * The elements of the array will look like 'role_description' => role entity
-     *
-     *  Example: 1. For a user with ROLE_OWNER, the function will return
-     *              an array containing all the roles except ROLE_OWNER
-     *              and ROLE_CLIENT.
-     *           2. For a user with ROLE_MANAGER the function will return
-     *              an array containing all the roles except ROLE_OWNER,
-     *              ROLE_MANAGER and ROLE_CLIENT.
-     *
-     * @param User $user
-     *
-     * @return array
-     */
-    public function getUserCreationalRoles(User $user)
-    {
-        ValidateUserHelper::checkIfUserHasRole($user->getRoles());
-
-        $userRole = $user->getRoles()[0];
-        $roles = $this->em->getRepository(Role::class)->findAll();
-        $result = [];
-
-        /** @var Role $role */
-        foreach ($roles as $role) {
-            $roleDescription = $role->getDescription();
-
-            if (!($roleDescription === UserConfig::ROLE_CLIENT || $roleDescription === $userRole)) {
-                $result[$roleDescription] = $role;
-            }
-        }
-
-        if ($userRole === UserConfig::ROLE_MANAGER) {
-            unset($result[UserConfig::ROLE_OWNER]);
-        }
-
-        return $result;
-    }
-
-    /**
      * @param User $user
      * @param User $loggedUser
      *
@@ -267,11 +221,11 @@ class UserService
         if (empty($hotelId)) {
             $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, null, null);
 
-            return $this->convertUsersAndUsersComponentsToDto($users);
+            return $this->userAdapter->convertCollectionToDto($users);
         }
         $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, null, null, $hotelId);
 
-        return $this->convertUsersAndUsersComponentsToDto($users);
+        return $this->userAdapter->convertCollectionToDto($users);
     }
 
     /**
@@ -302,7 +256,7 @@ class UserService
 
         $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, $column, $sortType);
 
-        return $this->convertUsersAndUsersComponentsToDto($users);
+        return $this->userAdapter->convertCollectionToDto($users);
     }
 
     /**
@@ -337,7 +291,7 @@ class UserService
 
         $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, $column, $sortType, $hotelId);
 
-        return $this->convertUsersAndUsersComponentsToDto($users);
+        return $this->userAdapter->convertCollectionToDto($users);
     }
 
     /**
@@ -369,16 +323,16 @@ class UserService
         }
 
         $userEntity = $this->getUserFromDto($userDto);
-        $userEntityRole = $userEntity->getRole();
-        if ($userEntityRole === $userDto->role) {
-            throw new SameRoleException($userDto->username." already has ".$userDto->role->getDescription());
+        $userEntityRole = $userEntity->getRole()->getDescription();
+        if ($userEntityRole === $userDto->role->description) {
+            throw new SameRoleException($userDto->username." already has ".$userDto->role->description);
         }
-        if (array_search($userEntityRole->getDescription(), UserConfig::EDITABLE_ROLES) === false) {
-            throw new UneditableRoleException('Can not edit users with '.$userEntityRole->getDescription().'.');
+        if (array_search($userEntityRole, UserConfig::EDITABLE_ROLES) === false) {
+            throw new UneditableRoleException('Can not edit users with '.$userEntityRole.'.');
         }
 
         $editedUser = $this->userAdapter->convertToEntity($userDto, $userEntity);
-
+        $editedUser->setRole($this->getRoleFromDto($userDto->role));
         $this->em->persist($editedUser);
         $this->em->flush();
     }
@@ -453,17 +407,10 @@ class UserService
         return $dateTime;
     }
 
-    /**
-     * @param $users
-     * @return array
-     */
-    private function convertUsersAndUsersComponentsToDto($users)
+    private function getRoleFromDto(RoleDto $roleDto)
     {
-        $userDtos = $this->userAdapter->convertCollectionToDto($users);
-        foreach ($userDtos as $userDto) {
-            $userDto->role = $this->roleAdapter->convertToDto($userDto->role);
-        }
-
-        return $userDtos;
+        return $this->em->getRepository(Role::class)->findOneBy([
+            'description' => $roleDto->description,
+        ]);
     }
 }

@@ -47,8 +47,9 @@ class UserManagementController extends Controller
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
         $hotelService = $this->get('app.hotel.service');
+        $roleService = $this->get('app.role.service');
         $hotels = $hotelService->getHotelsByOwner($loggedUser);
-        $roles = $userService->getUserCreationalRoles($loggedUser);
+        $roles = $roleService->getUserCreationalRoles($loggedUser);
 
         $form = $this->createForm(
             UserTypeForm::class,
@@ -96,7 +97,8 @@ class UserManagementController extends Controller
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
         $hotelService = $this->get('app.hotel.service');
-        $roles = $userService->getUserCreationalRoles($loggedUser);
+        $roleService = $this->get('app.role.service');
+        $roles = $roleService->getUserCreationalRoles($loggedUser);
         $hotels = $hotelService->getHotelsByOwner($loggedUser);
 
         $form = $this->createForm(

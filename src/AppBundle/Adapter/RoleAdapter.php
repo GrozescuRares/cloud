@@ -39,9 +39,7 @@ class RoleAdapter
         $roleDto = new RoleDto();
 
         foreach ($roleDto as $property => $value) {
-            if (!is_object($value)) {
-                $roleDto->$property = $this->propertyAccessor->getValue($role, $property);
-            }
+            $roleDto->$property = $this->propertyAccessor->getValue($role, $property);
         }
 
         return $roleDto;

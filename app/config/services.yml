@@ -49,7 +49,6 @@ services:
             - '@app.file_uploader.service'
             - '@app.mail_helper.helper'
             - '@app.user.adapter'
-            - '@app.role.adapter'
 
         public: true
 
@@ -85,6 +84,8 @@ services:
 
     app.user.adapter:
         class: AppBundle\Adapter\UserAdapter
+        arguments:
+            - '@app.role.adapter'
 
     AppBundle\Adapter\UserAdapter: '@app.user.adapter'
 
@@ -119,3 +120,12 @@ services:
         class: AppBundle\Adapter\RoleAdapter
 
     AppBundle\Adapter\RoleAdapter: '@app.room.adapter'
+
+    app.role.service:
+        class: AppBundle\Service\RoleService
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@app.role.adapter'
+        public: true
+
+    AppBundle\Service\RoleService: '@app.role.service'
