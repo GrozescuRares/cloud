@@ -279,7 +279,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testThatOwnerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/client', 'owner', 'owner', ['username' => 'client']);
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/ramadaUser1', 'owner', 'owner');
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
         $form = $this->generateForm(
@@ -300,7 +300,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testThatManagerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/client', 'manager1', 'manager', ['username' => 'client']);
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/ramadaUser1', 'manager1', 'manager', ['username' => 'client']);
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
         $form = $this->generateForm(

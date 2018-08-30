@@ -19,6 +19,7 @@ use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Form\EditUserTypeForm;
 use AppBundle\Form\UserTypeForm;
 
+use AppBundle\Service\HotelService;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

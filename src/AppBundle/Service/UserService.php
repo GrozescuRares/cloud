@@ -348,7 +348,7 @@ class UserService
     {
         $loggedUserRole = $loggedUser->getRoles();
         $this->checkIfUserHasRole($loggedUserRole);
-        $this->checkIfUserHasHighRole($loggedUserRole);
+        $loggedUserRole = $this->checkIfUserHasHighRole($loggedUserRole);
 
         if ($loggedUserRole === UserConfig::ROLE_MANAGER) {
             if (!$this->checkIfUserHasManagerHotelId($loggedUser->getHotel(), $userDto->username)) {
@@ -449,21 +449,29 @@ class UserService
 
     /**
      * @param mixed $loggedUser
+     *
+     * @return mixed
      */
     private function checkIfUserHasRole($loggedUserRole)
     {
         if (empty($loggedUserRole)) {
             throw new NoRoleException('This user has no role.');
         }
+
+        return $loggedUserRole[0];
     }
 
     /**
-     * @param mixed $loggedUser
+     * @param $loggedUserRole
+     *
+     * @return mixed
      */
     private function checkIfUserHasHighRole($loggedUserRole)
     {
         if (array_search($loggedUserRole[0], UserConfig::HIGH_ROLES) === false) {
             throw new InappropriateUserRoleException('This user is not an owner.');
         }
+
+        return $loggedUserRole[0];
     }
 }
