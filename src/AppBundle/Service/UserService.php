@@ -8,6 +8,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Adapter\RoleAdapter;
 use AppBundle\Adapter\UserAdapter;
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Role;
@@ -36,6 +37,7 @@ class UserService
     private $fileUploader;
     private $mailHelper;
     private $userAdapter;
+    private $roleAdapter;
 
     /**
      * UserService constructor.
@@ -45,19 +47,22 @@ class UserService
      * @param FileUploaderService $fileUploaderService
      * @param MailInterface       $mailHelper
      * @param UserAdapter         $userAdapter
+     * @param RoleAdapter         $roleAdapter
      */
     public function __construct(
         EntityManager $em,
         UserPasswordEncoder $encoder,
         FileUploaderService $fileUploaderService,
         MailInterface $mailHelper,
-        UserAdapter $userAdapter
+        UserAdapter $userAdapter,
+        RoleAdapter $roleAdapter
     ) {
         $this->em = $em;
         $this->encoder = $encoder;
         $this->fileUploader = $fileUploaderService;
         $this->mailHelper = $mailHelper;
         $this->userAdapter = $userAdapter;
+        $this->roleAdapter = $roleAdapter;
     }
 
     /**
@@ -332,7 +337,12 @@ class UserService
 
         $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, $column, $sortType, $hotelId);
 
-        return $this->userAdapter->convertCollectionToDto($users);
+        $userDtos = $this->userAdapter->convertCollectionToDto($users);
+        foreach ($userDtos as $userDto) {
+            $userDto->role = $this->roleAdapter->convertToDto($userDto->role);
+        }
+
+        return $userDtos;
     }
 
     /**

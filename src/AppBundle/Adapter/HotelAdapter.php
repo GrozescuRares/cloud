@@ -39,7 +39,9 @@ class HotelAdapter
         $hotelDto = new HotelDto();
 
         foreach ($hotelDto as $property => $value) {
-            $hotelDto->$property = $this->propertyAccessor->getValue($hotel, $property);
+            if (!is_object($value)) {
+                $hotelDto->$property = $this->propertyAccessor->getValue($hotel, $property);
+            }
         }
 
         return $hotelDto;

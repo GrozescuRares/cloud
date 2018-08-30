@@ -39,7 +39,9 @@ class RoomAdapter
         $roomDto = new RoomDto();
 
         foreach ($roomDto as $property => $value) {
+            if (!is_object($value)) {
                 $roomDto->$property = $this->propertyAccessor->getValue($room, $property);
+            }
         }
 
         return $roomDto;

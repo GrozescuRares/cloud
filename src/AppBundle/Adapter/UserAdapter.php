@@ -33,7 +33,9 @@ class UserAdapter
         $userDto = new UserDto();
 
         foreach ($userDto as $property => $value) {
-            $userDto->$property = $this->propertyAccessor->getValue($user, $property);
+            if (!is_object($value)) {
+                $userDto->$property = $this->propertyAccessor->getValue($user, $property);
+            }
         }
 
         return $userDto;
