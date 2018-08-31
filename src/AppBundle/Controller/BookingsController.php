@@ -22,7 +22,7 @@ class BookingsController extends Controller
      * @Route("/bookings/create-booking", name="create-booking")
      *
      * @param Request $request
-     * 
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createBookingAction(Request $request)

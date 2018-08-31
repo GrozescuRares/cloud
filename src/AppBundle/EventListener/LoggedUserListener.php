@@ -4,6 +4,7 @@ namespace AppBundle\EventListener;
 
 use AppBundle\Entity\User;
 
+use AppBundle\Enum\UserConfig;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -39,7 +40,7 @@ class LoggedUserListener
         if ($this->isUserLogged() && $event->isMasterRequest()) {
             $currentRoute = $event->getRequest()->attributes->get('_route');
 
-            if ($this->isAuthenticatedUserOnAnonymousPage($currentRoute)) {
+            if ($this->isAuthenticatedUserOnAnonymousPage($currentRoute) || $this->isOnlyClientRoutes($currentRoute) !== false) {
                 $response = new RedirectResponse($this->router->generate('dashboard'));
                 $event->setResponse($response);
             }
@@ -70,5 +71,29 @@ class LoggedUserListener
             $currentRoute,
             ['login', 'register', 'activate-account']
         );
+    }
+
+    /**
+     * @param $currentRoute
+     * @return bool
+     */
+    private function isOnlyClientRoutes($currentRoute)
+    {
+        if (! $this->tokenStorage->getToken()) {
+            return false;
+        }
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if (!empty($user->getRoles())) {
+            $userRole = $user->getRoles()[0];
+            if ($userRole !== UserConfig::ROLE_CLIENT) {
+                return in_array(
+                    $currentRoute,
+                    ['create-booking']
+                );
+            }
+        }
+
+        return false;
     }
 }
