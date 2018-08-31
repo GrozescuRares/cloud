@@ -102,14 +102,17 @@ class HotelService
      */
     public function getAvailableHotelsDto(\DateTime $startDate, \DateTime $endDate)
     {
+        if ($startDate > $endDate) {
+            return [];
+        }
         $hotels = $this->em->getRepository(Hotel::class)->findAll();
         $reservations = $this->em->getRepository(Reservation::class)->findAll();
-        $bookedRooms = [];
         $freeHotels = [];
         /** @var Hotel $hotel */
         foreach ($hotels as $hotel) {
+            $bookedRooms = [];
             foreach ($reservations as $reservation) {
-                if ($reservation->getHotel() === $hotel && ValidateReservationHelper::checkIdDatesAreValid($startDate, $endDate, $reservation->getStartDate(), $reservation->getEndDate())) {
+                if ($reservation->getHotel() === $hotel && !ValidateReservationHelper::checkIdDatesAreValid($startDate, $endDate, $reservation->getStartDate(), $reservation->getEndDate())) {
                     $bookedRooms[$reservation->getRoom()->getRoomId()] = $reservation->getRoom();
                 }
             }

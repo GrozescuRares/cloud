@@ -2,57 +2,9 @@
 
 {% block body %}
     <div class="content general">
-        <div class="container-fluid">
-            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
-                <div class="wrapper">
-                    <div class="container-small">
-                        <a href="#" class="back">Back</a>
-                        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
-                            <h1 class="text-center">Create New Booking</h1>
-                        </div>
-                        <form>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="col-md-12 col-xs-12 no-lr-padding">
-                                    <label class='custom-label'>From when till when?</label>
-                                </div>
-                                <div class="col-md-5 col-xs-5 no-lr-padding">
-                                    <div class="date-input start">
-                                        {{ form_errors(booking_form.startDate) }}
-                                        {{ form_widget(booking_form.startDate) }}
-                                    </div>
-                                </div>
-                                <div class="col-md-2 col-xs-2 no-lr-padding datepicker-to text-center">
-                                    <span class='bold'>TO</span>
-                                </div>
-                                <div class="col-md-5 col-xs-5 no-lr-padding">
-                                    <div class="date-input start">
-                                        {{ form_errors(booking_form.endDate) }}
-                                        {{ form_widget(booking_form.endDate) }}
-                                    </div>
-                                </div>
-                            </div>
-                            {% if showHotels %}
-                                <div class="col-md-12 col-xs-12 no-lr-padding">
-                                    <div class="styled-input">
-                                        {{ form_row(booking_form.hotel) }}
-                                    </div>
-                                </div>
-                            {% endif %}
-                            {% if showRooms %}
-                                <div class="col-md-12 col-xs-12 no-lr-padding">
-                                    <div class="styled-input">
-                                        {{ form_row(booking_form.room) }}
-                                    </div>
-                                </div>
-                            {% endif %}
-                            {{ form_row(booking_form._token) }}
-                            {% if showSave %}
-                                {{ form_row(booking_form.save) }}
-                            {% endif %}
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {{ include('bookings/create-booking-content.html.twig') }}
     </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/bookings/create-booking.js') }}"></script>
 {% endblock %}

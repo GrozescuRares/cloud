@@ -42,4 +42,13 @@ class ValidateReservationHelper
 
         return true;
     }
+
+    /**
+     * @param string $date
+     * @return \DateTime
+     */
+    public static function convertToDateTime($date)
+    {
+        return new \DateTime($date);
+    }
 }
