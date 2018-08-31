@@ -39,23 +39,28 @@ class ReservationAdapter
 
     /**
      * @param Reservation $reservation
+     *
+     * @return ReservationDto
      */
     public function convertToDto(Reservation $reservation)
     {
         $reservationDto = new ReservationDto();
 
-        foreach ($reservation as $property => $value) {
+        foreach ($reservationDto as $property => $value) {
             $reservationDto->$property = $this->propertyAccessor->getValue($reservation, $property);
         }
 
-        $reservationDto->user = $this->userAdapter->convertToDto($reservationDto->user);
-        $reservationDto->room = $this->userAdapter->convertToDto($reservationDto->room);
-        $reservationDto->hotel = $this->userAdapter->convertToDto($reservationDto->hotel);
+        $reservationDto->user = $this->userAdapter->convertToDto($reservation->getUser());
+        $reservationDto->room = $this->roomAdapter->convertToDto($reservation->getRoom());
+        $reservationDto->hotel = $this->hotelAdapter->convertToDto($reservation->getHotel());
+
+        return $reservationDto;
     }
 
     /**
      * @param ReservationDto   $reservationDto
      * @param Reservation|null $reservation
+     *
      * @return Reservation
      */
     public function convertToEntity(ReservationDto $reservationDto, Reservation $reservation = null)
@@ -68,6 +73,14 @@ class ReservationAdapter
             if (!empty($value) && !is_object($value)) {
                 $this->propertyAccessor->setValue($reservation, $reservationDto, $property);
             }
+        }
+
+        if (!empty($reservationDto->startDate)) {
+            $reservation->setStartDate($reservationDto->startDate);
+        }
+
+        if (!empty($reservationDto->endDate)) {
+            $reservation->setEndDate($reservationDto->endDate);
         }
 
         return $reservation;
