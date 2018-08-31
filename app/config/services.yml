@@ -129,3 +129,12 @@ services:
         public: true
 
     AppBundle\Service\RoleService: '@app.role.service'
+
+    app.reservation.adapter:
+        class: AppBundle\Adapter\ReservationAdapter
+        arguments:
+            - '@app.user.adapter'
+            - '@app.hotel.adapter'
+            - '@app.room.adapter'
+
+    AppBundle\Adapter\ReservationAdapter: '@app.reservation.adapter'
