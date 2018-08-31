@@ -49,9 +49,7 @@ class HotelService
      */
     public function getHotelsByOwner(User $owner)
     {
-        if (empty($owner->getRoles())) {
-            throw new NoRoleException('This user has no roles');
-        }
+        ValidateUserHelper::checkIfUserIsOwnerOrManager($owner);
 
         $hotels = $this->em->getRepository(Hotel::class)->findBy(
             [
@@ -76,9 +74,7 @@ class HotelService
      */
     public function getOwnerHotelsDto(User $owner)
     {
-        $userRole = $owner->getRoles();
-        ValidateUserHelper::checkIfUserHasRole($userRole);
-        ValidateUserHelper::checkIfUserHasRoleOwner($userRole);
+        ValidateUserHelper::checkIfUserIsOwnerOrManager($owner);
 
         $hotels = $this->em->getRepository(Hotel::class)->findBy(
             [
