@@ -536,7 +536,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Test that manager can edit user roles
      */
     public function testSuccessfullyEditUserRoleByManager()
     {
@@ -614,7 +614,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Test the page when it's accessed by a user with no role
      */
     public function testEditUserRoleWithLoggedUserThatHasNoRole()
     {
@@ -629,7 +629,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Tests the case when a manager tries to edit a user that it's not part of his hotel
      */
     public function testEditUserRoleOfUserThatIsNotPartOfTheManagersHotel()
     {
@@ -673,7 +673,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Tests the case when a owner tries to edit a user that's not part of any of his hotels
      */
     public function testEditUserRoleOfUserThatIsNotPartOfTheOwnersHotels()
     {
@@ -714,7 +714,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Tests the case when a user that is not owner or managers tries to access the page
      */
     public function testEditUserRoleWithLoggedUserThatIsNotOwnerOrUser()
     {
@@ -729,7 +729,8 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Tests the case when an owner tries to edit user's role with the role
+     * that the user already has
      */
     public function testOwnerEditsUserRoleWithTheRoleThatTheUserAlreadyHas()
     {
@@ -783,7 +784,8 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Tests the case when a manager tries to edit user's role with the role
+     * that the user already has
      */
     public function testManagerEditsUserRoleWithTheRoleThatTheUserAlreadyHas()
     {
@@ -840,7 +842,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Tests the case when an owner tries to edit a client
      */
     public function testOwnerEditsUserRoleOfUserWithRoleClient()
     {
@@ -902,7 +904,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Tests the case when a manager tries to edit a client
      */
     public function testManagerEditsUserRoleOfUserWithRoleClient()
     {
@@ -967,7 +969,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testSuccessfullyGetUsersFromHotelsByOwner()
     {
@@ -1007,7 +1009,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     *  @test
      */
     public function testSuccessfullyGetUsersFromHotelsByManager()
     {
@@ -1047,7 +1049,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testGetUsersFromHotelsByUserWithNoRole()
     {
@@ -1062,7 +1064,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testGetUsersFromHotelsByUserWithNoHighRole()
     {
@@ -1077,7 +1079,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testSuccessfullyGetPagesNumberForManagerManagement()
     {
@@ -1095,7 +1097,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testGetPagesNumberForManagerManagementByUserWithNoRole()
     {
@@ -1110,7 +1112,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testGetPagesNumberForManagerManagementByUserWithNoHighRole()
     {
@@ -1125,7 +1127,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testSuccessfullyPaginateAndSortManagersUsers()
     {
@@ -1159,7 +1161,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function paginateAndSortManagersUsersByUserWithNoRole()
     {
@@ -1174,7 +1176,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function paginateAndSortManagersUsersByUserWithNoHighRole()
     {
@@ -1189,7 +1191,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testSuccessfullyPaginateAndSortOwnersUsers()
     {
@@ -1223,7 +1225,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function paginateAndSortOwnersUsersByUserWithNoRole()
     {
@@ -1238,7 +1240,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function paginateAndSortOwnersUsersByUserWithNoHighRole()
     {
@@ -1253,7 +1255,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testSuccessfullyGetPagesNumberForOwnerManagement()
     {
@@ -1271,7 +1273,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testGetPagesNumberForOwnerManagementByUserWithNoRole()
     {
@@ -1286,7 +1288,7 @@ class UserServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testGetPagesNumberForOwnerManagementByUserWithNoHighRole()
     {

@@ -47,7 +47,7 @@ class HotelServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Sets up data
      */
     public function setUp()
     {
@@ -123,7 +123,7 @@ class HotelServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testGetHotelsByOwnerWhenIsCalledWithAUserWithNoRoles()
     {
@@ -139,7 +139,7 @@ class HotelServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testSuccessfullyGetOwnerHotelsDto()
     {
@@ -177,7 +177,7 @@ class HotelServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testGetOwnerHotelsDtoByUserWithNoRoles()
     {
@@ -191,7 +191,7 @@ class HotelServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testGetOwnerHotelsDtoByUserWithNoHighRoles()
     {

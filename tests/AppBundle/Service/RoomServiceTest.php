@@ -60,7 +60,7 @@ class RoomServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testSuccessfullyAddRoom()
     {
