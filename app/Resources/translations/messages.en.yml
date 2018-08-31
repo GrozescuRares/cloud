@@ -29,6 +29,7 @@ form:
     pet: 'Pet'
     birth_date: 'Birth date'
     registration_date: 'Registration date'
+    room: 'Room'
 
 page:
   activation-account:

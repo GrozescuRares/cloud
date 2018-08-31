@@ -8,6 +8,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Dto\ReservationDto;
+use AppBundle\Form\ReservationTypeForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,6 +29,23 @@ class BookingsController extends Controller
      */
     public function createBookingAction(Request $request)
     {
-        return $this->render('bookings/create-booking.html.twig');
+        $reservationDto = new ReservationDto();
+        $form = $this->createForm(ReservationTypeForm::class, $reservationDto);
+
+        $form->handleRequest($request);
+
+        if (!($form->isSubmitted() && $form->isValid())) {
+            return $this->render(
+                'bookings/create-booking.html.twig',
+                [
+                    'booking_form' => $form->createView(),
+                    'showHotels'   => false,
+                    'showRooms'    => false,
+                    'showSave'     => false,
+                ]
+            );
+        }
+
+        return $this->redirectToRoute('create-booking');
     }
 }

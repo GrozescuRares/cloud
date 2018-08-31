@@ -12,37 +12,13 @@
                         </div>
                         <form>
                             <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label>Hotel</label>
-                                    <select class="selectpicker" name="hotel">
-                                        <option value="default">Please choose Hotel</option>
-                                        <option>Hotel 1</option>
-                                        <option>Hotel 2</option>
-                                        <option>Hotel 3</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
-                                <div class="styled-input">
-                                    <label>Room</label>
-                                    <select class="selectpicker" name="selectRoom">
-                                        <option value="default">Select Room from Hotel</option>
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                        <option>6</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xs-12 no-lr-padding">
                                 <div class="col-md-12 col-xs-12 no-lr-padding">
                                     <label class='custom-label'>From when till when?</label>
                                 </div>
                                 <div class="col-md-5 col-xs-5 no-lr-padding">
                                     <div class="date-input start">
-                                        <input type="text" name="startDate" class="form-control">
+                                        {{ form_errors(booking_form.startDate) }}
+                                        {{ form_widget(booking_form.startDate) }}
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-xs-2 no-lr-padding datepicker-to text-center">
@@ -50,11 +26,29 @@
                                 </div>
                                 <div class="col-md-5 col-xs-5 no-lr-padding">
                                     <div class="date-input start">
-                                        <input type="text" name="endDate" class="form-control">
+                                        {{ form_errors(booking_form.endDate) }}
+                                        {{ form_widget(booking_form.endDate) }}
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn submit pull-right margin-top-large">Save</button>
+                            {% if showHotels %}
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_row(booking_form.hotel) }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if showRooms %}
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_row(booking_form.room) }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {{ form_row(booking_form._token) }}
+                            {% if showSave %}
+                                {{ form_row(booking_form.save) }}
+                            {% endif %}
                         </form>
                     </div>
                 </div>

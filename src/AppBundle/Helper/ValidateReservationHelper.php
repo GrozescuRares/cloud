@@ -24,6 +24,12 @@ class ValidateReservationHelper
      */
     public static function checkIdDatesAreValid(\DateTime $startDate, \DateTime $endDate, \DateTime $reservedStartDate, \DateTime $reservedEndDate)
     {
+        if ($startDate > $endDate) {
+            return false;
+        }
+        if ($startDate === $endDate) {
+            return false;
+        }
         if ($startDate >= $reservedStartDate && $startDate <= $reservedEndDate) {
             return false;
         }
