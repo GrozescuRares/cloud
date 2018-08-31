@@ -10,8 +10,10 @@ namespace AppBundle\Service;
 
 use AppBundle\Adapter\HotelAdapter;
 use AppBundle\Entity\Hotel;
+use AppBundle\Entity\Reservation;
 use AppBundle\Entity\User;
 use AppBundle\Exception\NoRoleException;
+use AppBundle\Helper\ValidateReservationHelper;
 use AppBundle\Helper\ValidateUserHelper;
 
 use Doctrine\ORM\EntityManager;
@@ -87,6 +89,37 @@ class HotelService
         );
 
         return $this->hotelAdapter->convertHotelsToHotelDtos($hotels);
+    }
+
+    /**
+     * Return an array of hotelsDto that have free rooms
+     * in the interval [$startDate, $endDate] of time.
+     *
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     *
+     * @return array
+     */
+    public function getAvailableHotelsDto(\DateTime $startDate, \DateTime $endDate)
+    {
+        $hotels = $this->em->getRepository(Hotel::class)->findAll();
+        $reservations = $this->em->getRepository(Reservation::class)->findAll();
+        $bookedRooms = [];
+        $freeHotels = [];
+        /** @var Hotel $hotel */
+        foreach ($hotels as $hotel) {
+            foreach ($reservations as $reservation) {
+                if ($reservation->getHotel() === $hotel && ValidateReservationHelper::checkIdDatesAreValid($startDate, $endDate, $reservation->getStartDate(), $reservation->getEndDate())) {
+                    $bookedRooms[$reservation->getRoom()->getRoomId()] = $reservation->getRoom();
+                }
+            }
+
+            if (count($bookedRooms) !== count($hotel->getRooms())) {
+                $freeHotels[$hotel->getName()] = $this->hotelAdapter->convertToDto($hotel);
+            }
+        }
+
+        return $freeHotels;
     }
 
     /**
