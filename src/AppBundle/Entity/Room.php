@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -56,6 +57,59 @@ class Room
      * @ORM\JoinColumn(name="hotel_id", referencedColumnName="hotelId", nullable=true)
      */
     private $hotel;
+
+    /**
+     * @var array
+     *
+     * @ORM\OneToMany(targetEntity="Reservation", mappedBy="room")
+     */
+    private $reservations;
+
+    /**
+     * Room constructor.
+     */
+    public function __construct()
+    {
+        $this->reservations = new ArrayCollection();
+    }
+
+    /**
+     * @return array
+     */
+    public function getReservations()
+    {
+        return $this->reservations;
+    }
+
+    /**
+     * @param array $reservations
+     */
+    public function setReservations($reservations)
+    {
+        $this->reservations = $reservations;
+    }
+
+    /**
+     * @param Reservation $reservation
+     * @return $this
+     */
+    public function addReservation(Reservation $reservation)
+    {
+        $this->reservations[] = $reservation;
+
+        return $this;
+    }
+
+    /**
+     * @param Reservation $reservation
+     * @return $this
+     */
+    public function removeReservation(Reservation $reservation)
+    {
+        $this->reservations->removeElement($reservation);
+
+        return $this;
+    }
 
     /**
      * @return Hotel
