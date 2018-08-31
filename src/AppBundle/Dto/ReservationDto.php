@@ -15,7 +15,7 @@ namespace AppBundle\Dto;
 class ReservationDto
 {
     public $user;
-    public $owner;
+    public $hotel;
     public $room;
     public $startDate;
     public $endDate;
