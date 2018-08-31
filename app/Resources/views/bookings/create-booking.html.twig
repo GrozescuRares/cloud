@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="wrapper">
+                    <div class="container-small">
+                        <a href="#" class="back">Back</a>
+                        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                            <h1 class="text-center">Create New Booking</h1>
+                        </div>
+                        <form>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>Hotel</label>
+                                    <select class="selectpicker" name="hotel">
+                                        <option value="default">Please choose Hotel</option>
+                                        <option>Hotel 1</option>
+                                        <option>Hotel 2</option>
+                                        <option>Hotel 3</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>Room</label>
+                                    <select class="selectpicker" name="selectRoom">
+                                        <option value="default">Select Room from Hotel</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                        <option>6</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <label class='custom-label'>From when till when?</label>
+                                </div>
+                                <div class="col-md-5 col-xs-5 no-lr-padding">
+                                    <div class="date-input start">
+                                        <input type="text" name="startDate" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-xs-2 no-lr-padding datepicker-to text-center">
+                                    <span class='bold'>TO</span>
+                                </div>
+                                <div class="col-md-5 col-xs-5 no-lr-padding">
+                                    <div class="date-input start">
+                                        <input type="text" name="endDate" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn submit pull-right margin-top-large">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

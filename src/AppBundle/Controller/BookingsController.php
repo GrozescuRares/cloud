@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class BookingsController
@@ -18,10 +19,14 @@ use Symfony\Component\HttpFoundation\Request;
 class BookingsController extends Controller
 {
     /**
+     * @Route("/bookings/create-booking", name="create-booking")
+     *
      * @param Request $request
+     * 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createBookingAction(Request $request)
     {
-        $this->render('bookings/create-booking.html.twig');
+        return $this->render('bookings/create-booking.html.twig');
     }
 }
