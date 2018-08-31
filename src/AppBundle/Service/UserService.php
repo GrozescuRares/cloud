@@ -158,7 +158,7 @@ class UserService
      */
     public function addUser(User $user, User $loggedUser)
     {
-        ValidateUserHelper::checkIfUserHasRole($loggedUser->getRoles());
+        $userRole = ValidateUserHelper::checkIfUserHasRole($loggedUser->getRoles());
 
         $password = $this
             ->encoder
@@ -170,7 +170,7 @@ class UserService
         $user->setIsActivated(true);
         $user->setExpirationDate($this->generateActivationTime());
 
-        if ($loggedUser->getRoles()[0] === UserConfig::ROLE_MANAGER) {
+        if ($userRole === UserConfig::ROLE_MANAGER) {
             $user->setHotel($loggedUser->getHotel());
         }
 

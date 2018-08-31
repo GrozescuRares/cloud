@@ -348,7 +348,7 @@ class UserServiceTest extends EntityManagerMock
             ->method('setIsActivated')
             ->with(true);
 
-        $loggedUserMock->expects($this->exactly(2))
+        $loggedUserMock->expects($this->once())
             ->method('getRoles')
             ->willReturn([UserConfig::ROLE_OWNER]);
 
@@ -399,7 +399,7 @@ class UserServiceTest extends EntityManagerMock
             ->method('setHotel')
             ->with($hotelMock);
 
-        $loggedUserMock->expects($this->exactly(2))
+        $loggedUserMock->expects($this->once())
             ->method('getRoles')
             ->willReturn([UserConfig::ROLE_MANAGER]);
         $loggedUserMock->expects($this->once())

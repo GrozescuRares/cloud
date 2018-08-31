@@ -52,7 +52,7 @@ class RoleService
      *
      * @return array
      */
-    public function getUserCreationalRoles(User $user)
+    public function getUserCreationalRoleDtos(User $user)
     {
         $userRole = ValidateUserHelper::checkIfUserHasRole($user->getRoles());
 
@@ -65,6 +65,33 @@ class RoleService
 
             if (!($roleDescription === UserConfig::ROLE_CLIENT || $roleDescription === $userRole)) {
                 $result[$roleDescription] = $this->roleAdapter->convertToDto($role);
+            }
+        }
+
+        if ($userRole === UserConfig::ROLE_MANAGER) {
+            unset($result[UserConfig::ROLE_OWNER]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function getUserCreationalRoles(User $user)
+    {
+        $userRole = ValidateUserHelper::checkIfUserHasRole($user->getRoles());
+
+        $roles = $this->em->getRepository(Role::class)->findAll();
+        $result = [];
+
+        /** @var Role $role */
+        foreach ($roles as $role) {
+            $roleDescription = $role->getDescription();
+
+            if (!($roleDescription === UserConfig::ROLE_CLIENT || $roleDescription === $userRole)) {
+                $result[$roleDescription] = $role;
             }
         }
 

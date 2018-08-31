@@ -68,7 +68,7 @@ class RoleServiceTest extends EntityManagerMock
             ->method('getRoles')
             ->willReturn(null);
 
-        $this->roleService->getUserCreationalRoles($loggedUserMock);
+        $this->roleService->getUserCreationalRoleDtos($loggedUserMock);
     }
 
     /**
@@ -112,7 +112,7 @@ class RoleServiceTest extends EntityManagerMock
 
         $this->assertEquals(
             [UserConfig::ROLE_MANAGER => $this->createMock(RoleDto::class), UserConfig::ROLE_EMPLOYEE => $this->createMock(RoleDto::class)],
-            $this->roleService->getUserCreationalRoles($userMock)
+            $this->roleService->getUserCreationalRoleDtos($userMock)
         );
     }
 
@@ -157,7 +157,7 @@ class RoleServiceTest extends EntityManagerMock
 
         $this->assertEquals(
             [UserConfig::ROLE_EMPLOYEE => $this->createMock(RoleDto::class)],
-            $this->roleService->getUserCreationalRoles($userMock)
+            $this->roleService->getUserCreationalRoleDtos($userMock)
         );
     }
 
@@ -174,6 +174,6 @@ class RoleServiceTest extends EntityManagerMock
             ->method('getRoles')
             ->willReturn(null);
 
-        $this->roleService->getUserCreationalRoles($userMock);
+        $this->roleService->getUserCreationalRoleDtos($userMock);
     }
 }
