@@ -19,8 +19,8 @@ use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Exception\SameRoleException;
 use AppBundle\Helper\MailInterface;
-
 use AppBundle\Helper\ValidateUserHelper;
+
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
