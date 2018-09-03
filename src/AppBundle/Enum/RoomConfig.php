@@ -30,4 +30,12 @@ class RoomConfig
         'capacity.six' => self::HEXTUPLE_ROOM,
         'capacity.title' => null,
     ];
+
+    const YES = 'Yes';
+    const NO = 'No';
+
+    const ALLOWED = [
+        true => self::YES,
+        false => self::NO,
+    ];
 }

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Enum\RoomConfig;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -242,6 +243,6 @@ class Room
      */
     public function __toString()
     {
-        return "Id: ".$this->getRoomId()." Capacity: ".$this->getCapacity()." Price: ".$this->getPrice()." Smoking: ".$this->isSmoking()." Pet: ".$this->isPet();
+        return "Id: ".$this->getRoomId()." Capacity: ".$this->getCapacity()." Price: ".$this->getPrice()." Smoking: ".RoomConfig::ALLOWED[$this->isSmoking()]." Pet: ".RoomConfig::ALLOWED[$this->isPet()];
     }
 }
