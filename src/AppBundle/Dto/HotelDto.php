@@ -14,7 +14,16 @@ namespace AppBundle\Dto;
  */
 class HotelDto
 {
+    public $hotelId;
     public $name;
     public $location;
     public $description;
+
+    /**
+     * @return mixed
+     */
+    public function __toString()
+    {
+        return $this->name." t";
+    }
 }

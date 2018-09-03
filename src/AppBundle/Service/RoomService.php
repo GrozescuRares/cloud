@@ -66,7 +66,7 @@ class RoomService
      * @param \DateTime $endDate
      * @return array
      */
-    public function getAvailableRoomsDtos($hotelId, \DateTime $startDate, \DateTime $endDate)
+    public function getAvailableRooms($hotelId, \DateTime $startDate, \DateTime $endDate)
     {
         if ($startDate > $endDate) {
             return [];
@@ -90,7 +90,7 @@ class RoomService
         /** @var Room $room */
         foreach ($hotel->getRooms() as $room) {
             if (!isset($bookedRooms[$room->getRoomId()])) {
-                $availableRooms[$room->__toString()] = $this->roomAdapter->convertToDto($room);
+                $availableRooms[$room->__toString()] = (string)$room->getRoomId();
             }
         }
 

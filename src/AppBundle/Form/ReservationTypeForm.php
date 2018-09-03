@@ -14,6 +14,7 @@ use AppBundle\Enum\RoutesConfig;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -54,32 +55,37 @@ class ReservationTypeForm extends AbstractType
                 'hotel',
                 ChoiceType::class,
                 [
+                    'placeholder' => 'Please choose Hotel',
                     'choices' => $options['hotels'],
                     'label' => 'form.label.hotel',
-                    'mapped' => false,
+                    'required' => false,
                 ]
             )
             ->add(
                 'room',
                 ChoiceType::class,
                 [
+                    'placeholder' => 'Please choose Room',
                     'choices' => $options['rooms'],
                     'label' => 'form.label.room',
                     'attr' => [
                         'class' => 'selectpicker',
                     ],
-                ]
-            )
-            ->add(
-                'save',
-                SubmitType::class,
-                [
-                    'attr' => [
-                        'class' => 'btn submit pull-right margin-top-large',
-                    ],
-                    'label' => 'form.label.save',
+                    'required' => false,
                 ]
             );
+
+        // move to twig
+        $builder->add(
+            'save',
+            SubmitType::class,
+            [
+                'attr' => [
+                    'class' => 'btn submit pull-right margin-top-large',
+                ],
+                'label' => 'form.label.save',
+            ]
+        );
     }
 
     /**
@@ -90,8 +96,8 @@ class ReservationTypeForm extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => ReservationDto::class,
-                'hotels'     => null,
-                'rooms'      => null,
+                'hotels' => null,
+                'rooms' => null,
             ]
         );
     }

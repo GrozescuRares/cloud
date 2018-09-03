@@ -108,7 +108,6 @@ class HotelService
         }
         $hotels = $this->em->getRepository(Hotel::class)->findAll();
         $reservations = $this->em->getRepository(Reservation::class)->findAll();
-        $freeHotels = CollectionModifierHelper::addKeyValueToCollection([], 'Please choose hotel', 'default');
         /** @var Hotel $hotel */
         foreach ($hotels as $hotel) {
             $bookedRooms = [];
@@ -119,7 +118,7 @@ class HotelService
             }
 
             if (count($bookedRooms) !== count($hotel->getRooms())) {
-                $freeHotels[$hotel->getName()] = $hotel->getHotelId();
+                $freeHotels[$hotel->getName()] = (string)$hotel->getHotelId();
             }
         }
 

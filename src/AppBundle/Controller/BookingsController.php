@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Dto\ReservationDto;
+use AppBundle\Entity\Hotel;
 use AppBundle\Form\ReservationTypeForm;
 use AppBundle\Helper\ValidateReservationHelper;
 use DateTime;
@@ -34,21 +35,16 @@ class BookingsController extends Controller
         $reservationDto = new ReservationDto();
         $form = $this->createForm(ReservationTypeForm::class, $reservationDto);
 
-        $form->handleRequest($request);
 
-        if (!($form->isSubmitted() && $form->isValid())) {
-            return $this->render(
-                'bookings/create-booking.html.twig',
-                [
-                    'booking_form' => $form->createView(),
-                    'showHotels' => false,
-                    'showRooms' => false,
-                    'showSave' => false,
-                ]
-            );
-        }
-
-        return $this->redirectToRoute('create-booking');
+        return $this->render(
+            'bookings/create-booking.html.twig',
+            [
+                'booking_form' => $form->createView(),
+                'showHotels' => false,
+                'showRooms' => false,
+                'showSave' => false,
+            ]
+        );
     }
 
     /**
@@ -60,44 +56,40 @@ class BookingsController extends Controller
      */
     public function loadAvailableHotels(Request $request)
     {
-        if ($request->isXmlHttpRequest()) {
-            $startDate = ValidateReservationHelper::convertToDateTime($request->query->get('startDate'));
-            $endDate = ValidateReservationHelper::convertToDateTime($request->query->get('endDate'));
-            $hotelService = $this->get('app.hotel.service');
-            $availableHotels = $hotelService->getAvailableHotels($startDate, $endDate);
-            $showHotels = true;
-
-            $reservationDto = new ReservationDto();
-            $reservationDto->startDate = $startDate;
-            $reservationDto->endDate = $endDate;
-            $form = $this->createForm(
-                ReservationTypeForm::class,
-                $reservationDto,
-                [
-                    'hotels' => $availableHotels,
-                ]
-            );
-
-            if (empty($availableHotels)) {
-                $this->addFlash('danger', 'There are no hotels available in that period.');
-                $showHotels = false;
-            }
-
+        if (!$request->isXmlHttpRequest()) {
             return $this->render(
-                'bookings/load-hotels.html.twig',
+                'error.html.twig',
                 [
-                    'booking_form' => $form->createView(),
-                    'showHotels' => $showHotels,
-                    'showRooms' => false,
-                    'showSave' => false,
+                    'error' => 'Stay out of here.',
                 ]
             );
         }
 
-        return $this->render(
-            'error.html.twig',
+        $reservationDto = $this->handleReservation($request);
+        $hotelService = $this->get('app.hotel.service');
+        $availableHotels = $hotelService->getAvailableHotels($reservationDto->startDate, $reservationDto->endDate);
+        $showHotels = true;
+
+        $form = $this->createForm(
+            ReservationTypeForm::class,
+            $reservationDto,
             [
-                'error' => 'Stay out of here.',
+                'hotels' => $availableHotels,
+            ]
+        );
+
+        if (empty($availableHotels)) {
+            $this->addFlash('danger', 'There are no hotels available in that period.');
+            $showHotels = false;
+        }
+
+        return $this->render(
+            'bookings/reservation-form.html.twig',
+            [
+                'booking_form' => $form->createView(),
+                'showHotels' => $showHotels,
+                'showRooms' => false,
+                'showSave' => false,
             ]
         );
     }
@@ -111,57 +103,80 @@ class BookingsController extends Controller
      */
     public function loadAvailableRooms(Request $request)
     {
-        if ($request->isXmlHttpRequest()) {
-            $startDate = ValidateReservationHelper::convertToDateTime($request->query->get('startDate'));
-            $endDate = ValidateReservationHelper::convertToDateTime($request->query->get('endDate'));
-            $hotelId = $request->query->get('hotelId');
-            $hotelService = $this->get('app.hotel.service');
-            $hotelDto = $hotelService->getHotelDtoById($hotelId);
-            $availableHotels = $hotelService->getAvailableHotels($startDate, $endDate);
-            $showHotels = true;
-            $roomService = $this->get('app.room.service');
-            $availableRooms = $roomService->getAvailableRoomsDtos($hotelId, $startDate, $endDate);
-            $showRooms = true;
-
-            $reservationDto = new ReservationDto();
-            $reservationDto->startDate = $startDate;
-            $reservationDto->endDate = $endDate;
-            $reservationDto->hotel = $hotelDto;
-            $form = $this->createForm(
-                ReservationTypeForm::class,
-                $reservationDto,
-                [
-                    'hotels' => $availableHotels,
-                    'rooms'  => $availableRooms,
-                ]
-            );
-
-            if (empty($availableHotels)) {
-                $this->addFlash('danger', 'There are no hotels available in that period.');
-                $showHotels = false;
-            }
-
-            if (empty($availableRooms)) {
-                $this->addFlash('danger', 'There are no rooms available in that period');
-                $showRooms = false;
-            }
-
+        if (!$request->isXmlHttpRequest()) {
             return $this->render(
-                'bookings/load-rooms.html.twig',
+                'error.html.twig',
                 [
-                    'booking_form' => $form->createView(),
-                    'showHotels' => $showHotels,
-                    'showRooms' => $showRooms,
-                    'showSave' => true,
+                    'error' => 'Stay out of here.',
                 ]
             );
         }
 
-        return $this->render(
-            'error.html.twig',
+        $reservationDto = $this->handleReservation($request);
+        $roomService = $this->get('app.room.service');
+        $availableRooms = $roomService->getAvailableRooms(
+            $reservationDto->hotel,
+            $reservationDto->startDate,
+            $reservationDto->endDate
+        );
+        $showRooms = true;
+        $hotelService = $this->get('app.hotel.service');
+        $availableHotels = $hotelService->getAvailableHotels($reservationDto->startDate, $reservationDto->endDate);
+
+        if (empty($availableRooms)) {
+            $this->addFlash('danger', 'There are no rooms available in that period');
+            $showRooms = false;
+        }
+
+        $form = $this->createForm(
+            ReservationTypeForm::class,
+            $reservationDto,
             [
-                'error' => 'Stay out of here.',
+                'hotels' => $availableHotels,
+                'rooms' => $availableRooms,
             ]
         );
+
+        return $this->render(
+            'bookings/reservation-form.html.twig',
+            [
+                'booking_form' => $form->createView(),
+                'showHotels' => true,
+                'showRooms' => $showRooms,
+                'showSave' => true,
+            ]
+        );
+    }
+
+    /**
+     * @Route("/bookings/handle-booking", name="handle-booking")
+     *
+     * @param Request $request
+     */
+    public function handleBookFormSubmission(Request $request)
+    {
+        var_dump($request->request);
+        die;
+    }
+
+    private function handleReservation(Request $request)
+    {
+        $reservation = $request->request->get('appbundle_reservationDto');
+        $reservationDto = new ReservationDto();
+
+        if (!empty($reservation['startDate'])) {
+            $reservationDto->startDate = ValidateReservationHelper::convertToDateTime($reservation['startDate']);
+        }
+        if (!empty($reservation['endDate'])) {
+            $reservationDto->endDate = ValidateReservationHelper::convertToDateTime($reservation['endDate']);
+        }
+        if (!empty($reservation['hotel'])) {
+            $reservationDto->hotel = $reservation['hotel'];
+        }
+        if (!empty($reservation['room'])) {
+            $reservationDto->room = $reservation['room'];
+        }
+
+        return $reservationDto;
     }
 }
