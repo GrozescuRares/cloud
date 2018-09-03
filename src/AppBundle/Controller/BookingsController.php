@@ -64,7 +64,7 @@ class BookingsController extends Controller
             $startDate = ValidateReservationHelper::convertToDateTime($request->query->get('startDate'));
             $endDate = ValidateReservationHelper::convertToDateTime($request->query->get('endDate'));
             $hotelService = $this->get('app.hotel.service');
-            $availableHotels = $hotelService->getAvailableHotelsDto($startDate, $endDate);
+            $availableHotels = $hotelService->getAvailableHotels($startDate, $endDate);
             $showHotels = true;
 
             $reservationDto = new ReservationDto();
@@ -84,12 +84,75 @@ class BookingsController extends Controller
             }
 
             return $this->render(
-                'bookings/create-booking-content.html.twig',
+                'bookings/load-hotels.html.twig',
                 [
                     'booking_form' => $form->createView(),
                     'showHotels' => $showHotels,
                     'showRooms' => false,
                     'showSave' => false,
+                ]
+            );
+        }
+
+        return $this->render(
+            'error.html.twig',
+            [
+                'error' => 'Stay out of here.',
+            ]
+        );
+    }
+
+    /**
+     * @Route("/bookings/create-booking/load-rooms", name="load-available-rooms")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function loadAvailableRooms(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            $startDate = ValidateReservationHelper::convertToDateTime($request->query->get('startDate'));
+            $endDate = ValidateReservationHelper::convertToDateTime($request->query->get('endDate'));
+            $hotelId = $request->query->get('hotelId');
+            $hotelService = $this->get('app.hotel.service');
+            $hotelDto = $hotelService->getHotelDtoById($hotelId);
+            $availableHotels = $hotelService->getAvailableHotels($startDate, $endDate);
+            $showHotels = true;
+            $roomService = $this->get('app.room.service');
+            $availableRooms = $roomService->getAvailableRoomsDtos($hotelId, $startDate, $endDate);
+            $showRooms = true;
+
+            $reservationDto = new ReservationDto();
+            $reservationDto->startDate = $startDate;
+            $reservationDto->endDate = $endDate;
+            $reservationDto->hotel = $hotelDto;
+            $form = $this->createForm(
+                ReservationTypeForm::class,
+                $reservationDto,
+                [
+                    'hotels' => $availableHotels,
+                    'rooms'  => $availableRooms,
+                ]
+            );
+
+            if (empty($availableHotels)) {
+                $this->addFlash('danger', 'There are no hotels available in that period.');
+                $showHotels = false;
+            }
+
+            if (empty($availableRooms)) {
+                $this->addFlash('danger', 'There are no rooms available in that period');
+                $showRooms = false;
+            }
+
+            return $this->render(
+                'bookings/load-rooms.html.twig',
+                [
+                    'booking_form' => $form->createView(),
+                    'showHotels' => $showHotels,
+                    'showRooms' => $showRooms,
+                    'showSave' => true,
                 ]
             );
         }

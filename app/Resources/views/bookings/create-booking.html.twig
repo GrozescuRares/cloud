@@ -1,9 +1,49 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="content general">
-        {{ include('bookings/create-booking-content.html.twig') }}
+    {{ include('flash-messages.html.twig') }}
+    <div class="container-fluid">
+        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+            <div class="wrapper">
+                <div class="container-small">
+                    <a href="#" class="back">Back</a>
+                    <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                        <h1 class="text-center">Create New Booking</h1>
+                    </div>
+                    <form>
+                        <div class="col-md-12 col-xs-12 no-lr-padding">
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <label class='custom-label'>From when till when?</label>
+                            </div>
+                            <div class="col-md-5 col-xs-5 no-lr-padding">
+                                <div class="date-input start">
+                                    {{ form_errors(booking_form.startDate) }}
+                                    {{ form_widget(booking_form.startDate) }}
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-2 no-lr-padding datepicker-to text-center">
+                                <span class='bold'>TO</span>
+                            </div>
+                            <div class="col-md-5 col-xs-5 no-lr-padding">
+                                <div class="date-input start">
+                                    {{ form_errors(booking_form.endDate) }}
+                                    {{ form_widget(booking_form.endDate, {'attr': {'data-action': path('load-available-hotels')}}) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div id="load-hotels">
+                            {{ include('bookings/load-hotels.html.twig') }}
+                        </div>
+                        <div id="load-rooms">
+                            {{ include('bookings/load-rooms.html.twig') }}
+                        </div>
+                        {{ form_row(booking_form._token) }}
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+
 {% endblock %}
 {% block javascripts %}
     <script src="{{ asset('js/bookings/create-booking.js') }}"></script>

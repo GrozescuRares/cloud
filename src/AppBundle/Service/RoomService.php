@@ -14,6 +14,9 @@ use AppBundle\Dto\HotelDto;
 use AppBundle\Dto\RoomDto;
 use AppBundle\Entity\Hotel;
 
+use AppBundle\Entity\Reservation;
+use AppBundle\Entity\Room;
+use AppBundle\Helper\ValidateReservationHelper;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -55,6 +58,43 @@ class RoomService
 
         $this->em->persist($room);
         $this->em->flush();
+    }
+
+    /**
+     * @param mixed     $hotelId
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return array
+     */
+    public function getAvailableRoomsDtos($hotelId, \DateTime $startDate, \DateTime $endDate)
+    {
+        if ($startDate > $endDate) {
+            return [];
+        }
+
+        $bookedRooms = [];
+        $reservations = $this->em->getRepository(Reservation::class)->findAll();
+
+        foreach ($reservations as $reservation) {
+            if (!ValidateReservationHelper::checkIdDatesAreValid($startDate, $endDate, $reservation->getStartDate(), $reservation->getEndDate()) && $reservation->getHotel()->getHotelId() === $hotelId) {
+                $bookedRooms[$reservation->getRoom()->getRoomId()] = $reservation->getRoom();
+            }
+        }
+
+        $hotel = $this->em->getRepository(Hotel::class)->findOneBy([
+            'hotelId' => $hotelId,
+        ]);
+
+        $availableRooms = [];
+
+        /** @var Room $room */
+        foreach ($hotel->getRooms() as $room) {
+            if (!isset($bookedRooms[$room->getRoomId()])) {
+                $availableRooms[$room->__toString()] = $this->roomAdapter->convertToDto($room);
+            }
+        }
+
+        return $availableRooms;
     }
 
     /**

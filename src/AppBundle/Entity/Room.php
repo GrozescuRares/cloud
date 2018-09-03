@@ -236,4 +236,12 @@ class Room
     {
         return $this->pet;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return "Id: ".$this->getRoomId()." Capacity: ".$this->getCapacity()." Price: ".$this->getPrice()." Smoking: ".$this->isSmoking()." Pet: ".$this->isPet();
+    }
 }

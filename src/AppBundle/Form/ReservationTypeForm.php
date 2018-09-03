@@ -56,6 +56,7 @@ class ReservationTypeForm extends AbstractType
                 [
                     'choices' => $options['hotels'],
                     'label' => 'form.label.hotel',
+                    'mapped' => false,
                 ]
             )
             ->add(

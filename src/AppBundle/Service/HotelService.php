@@ -13,6 +13,7 @@ use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Reservation;
 use AppBundle\Entity\User;
 use AppBundle\Exception\NoRoleException;
+use AppBundle\Helper\CollectionModifierHelper;
 use AppBundle\Helper\ValidateReservationHelper;
 use AppBundle\Helper\ValidateUserHelper;
 
@@ -100,14 +101,14 @@ class HotelService
      *
      * @return array
      */
-    public function getAvailableHotelsDto(\DateTime $startDate, \DateTime $endDate)
+    public function getAvailableHotels(\DateTime $startDate, \DateTime $endDate)
     {
         if ($startDate > $endDate) {
             return [];
         }
         $hotels = $this->em->getRepository(Hotel::class)->findAll();
         $reservations = $this->em->getRepository(Reservation::class)->findAll();
-        $freeHotels = [];
+        $freeHotels = CollectionModifierHelper::addKeyValueToCollection([], 'Please choose hotel', 'default');
         /** @var Hotel $hotel */
         foreach ($hotels as $hotel) {
             $bookedRooms = [];
@@ -118,7 +119,7 @@ class HotelService
             }
 
             if (count($bookedRooms) !== count($hotel->getRooms())) {
-                $freeHotels[$hotel->getName()] = $this->hotelAdapter->convertToDto($hotel);
+                $freeHotels[$hotel->getName()] = $hotel->getHotelId();
             }
         }
 
@@ -135,5 +136,23 @@ class HotelService
         return $this->em->getRepository(Hotel::class)->findOneBy([
             'hotelId' => $hotelId,
         ]);
+    }
+
+    /**
+     * @param mixed $hotelId
+     *
+     * @return \AppBundle\Dto\HotelDto|null
+     */
+    public function getHotelDtoById($hotelId)
+    {
+        $hotel = $this->em->getRepository(Hotel::class)->findOneBy([
+            'hotelId' => $hotelId,
+        ]);
+
+        if (empty($hotel)) {
+            return null;
+        }
+
+        return $this->hotelAdapter->convertToDto($hotel);
     }
 }
