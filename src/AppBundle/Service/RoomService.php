@@ -76,7 +76,6 @@ class RoomService
         $reservations = $this->em->getRepository(Reservation::class)->findAll();
 
         foreach ($reservations as $reservation) {
-            $reservationhotel = $reservation->getHotel()->getHotelId();
             if (!ValidateReservationHelper::checkIdDatesAreValid($startDate, $endDate, $reservation->getStartDate(), $reservation->getEndDate()) && $reservation->getHotel()->getHotelId() == $hotelId) {
                 $bookedRooms[$reservation->getRoom()->getRoomId()] = $reservation->getRoom();
             }
