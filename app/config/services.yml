@@ -138,3 +138,12 @@ services:
             - '@app.room.adapter'
 
     AppBundle\Adapter\ReservationAdapter: '@app.reservation.adapter'
+
+    app.bookings.manager:
+        class: AppBundle\Manager\BookingsManager
+        arguments:
+            - '@app.hotel.service'
+            - '@app.room.service'
+        public: true
+
+    AppBundle\Manager\BookingsManager: '@app.bookings.manager'
