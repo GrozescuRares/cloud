@@ -11,6 +11,7 @@ namespace AppBundle\Service;
 use AppBundle\Adapter\HotelAdapter;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Reservation;
+use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Helper\CollectionModifierHelper;
@@ -106,19 +107,23 @@ class HotelService
         if ($startDate > $endDate) {
             return [];
         }
-        $hotels = $this->em->getRepository(Hotel::class)->findAll();
-        $reservations = $this->em->getRepository(Reservation::class)->findAll();
+
+        $bookedRoomsInPeriod = $this->em->getRepository(Room::class)->getBookedRooms($startDate, $endDate);
+        $hotels = $this->em->getRepository(Hotel::class)->getHotelsWithReservations();
+        $freeHotels = [];
+
         /** @var Hotel $hotel */
         foreach ($hotels as $hotel) {
-            $bookedRooms = [];
-            foreach ($reservations as $reservation) {
-                if ($reservation->getHotel() === $hotel && !ValidateReservationHelper::checkIdDatesAreValid($startDate, $endDate, $reservation->getStartDate(), $reservation->getEndDate())) {
-                    $bookedRooms[$reservation->getRoom()->getRoomId()] = $reservation->getRoom();
+            $bookedInHotel = 0;
+            /** @var Room $room */
+            foreach ($bookedRoomsInPeriod as $room) {
+                if ($room->getHotel()->getHotelId() === $hotel->getHotelId()) {
+                    $bookedInHotel++;
                 }
             }
 
-            if (count($bookedRooms) !== count($hotel->getRooms())) {
-                $freeHotels[$hotel->getName()] = (string)$hotel->getHotelId();
+            if ($bookedInHotel === 0 || $bookedInHotel < count($hotel->getRooms())) {
+                $freeHotels[$hotel->getName()] = (string) $hotel->getHotelId();
             }
         }
 

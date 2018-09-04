@@ -72,29 +72,12 @@ class RoomService
             return [];
         }
 
-        $bookedRooms = [];
-        $reservations = $this->em->getRepository(Reservation::class)->findAll();
+        $roomRepository = $this->em->getRepository(Room::class);
+        $bookedRoomsInPeriod = $roomRepository->getBookedRooms($startDate, $endDate, $hotelId);
+        $reservedRooms = $roomRepository->getHotelRooms($hotelId);
+        $freeRooms = array_diff($reservedRooms, $bookedRoomsInPeriod);
 
-        foreach ($reservations as $reservation) {
-            if (!ValidateReservationHelper::checkIdDatesAreValid($startDate, $endDate, $reservation->getStartDate(), $reservation->getEndDate()) && $reservation->getHotel()->getHotelId() == $hotelId) {
-                $bookedRooms[$reservation->getRoom()->getRoomId()] = $reservation->getRoom();
-            }
-        }
-
-        $hotel = $this->em->getRepository(Hotel::class)->findOneBy([
-            'hotelId' => $hotelId,
-        ]);
-
-        $availableRooms = [];
-
-        /** @var Room $room */
-        foreach ($hotel->getRooms() as $room) {
-            if (!isset($bookedRooms[$room->getRoomId()])) {
-                $availableRooms[$room->__toString()] = (string)$room->getRoomId();
-            }
-        }
-
-        return $availableRooms;
+        return $this->roomAdapter->convertToCustomArray($freeRooms);
     }
 
     /**
