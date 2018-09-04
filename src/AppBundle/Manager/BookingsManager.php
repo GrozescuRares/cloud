@@ -10,6 +10,8 @@ namespace AppBundle\Manager;
 
 use AppBundle\Dto\ReservationDto;
 use AppBundle\Entity\User;
+use AppBundle\Helper\MailHelper;
+use AppBundle\Helper\MailInterface;
 use AppBundle\Service\HotelService;
 use AppBundle\Service\ReservationService;
 use AppBundle\Service\RoomService;
@@ -26,6 +28,8 @@ class BookingsManager
     protected $roomService;
     /** @var ReservationService */
     protected $reservationService;
+    /** @var MailHelper */
+    protected $mailHelper;
 
     /**
      * BookingsManager constructor.
@@ -33,12 +37,18 @@ class BookingsManager
      * @param HotelService       $hotelService
      * @param RoomService        $roomService
      * @param ReservationService $reservationService
+     * @param MailInterface      $mailHelper
      */
-    public function __construct(HotelService $hotelService, RoomService $roomService, ReservationService $reservationService)
-    {
+    public function __construct(
+        HotelService $hotelService,
+        RoomService $roomService,
+        ReservationService $reservationService,
+        MailInterface $mailHelper
+    ) {
         $this->hotelService = $hotelService;
         $this->roomService = $roomService;
         $this->reservationService = $reservationService;
+        $this->mailHelper = $mailHelper;
     }
 
     /**
@@ -52,7 +62,7 @@ class BookingsManager
     }
 
     /**
-     * @param mixed     $hotelId
+     * @param mixed $hotelId
      * @param \DateTime $startDate
      * @param \DateTime $endDate
      * @return array
@@ -66,9 +76,24 @@ class BookingsManager
      * @param User           $client
      * @param ReservationDto $reservationDto
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
      */
     public function addReservation(User $client, ReservationDto $reservationDto)
     {
-        $this->reservationService->addReservation($client, $reservationDto);
+        $reservationDto = $this->reservationService->addReservation($client, $reservationDto);
+        $this->mailHelper->sendEmail(
+            $client->getEmail(),
+            'Booking Confirmation',
+            [
+                'name' => $client->getLastName().' '.$client->getFirstName(),
+                'hotel' => $reservationDto->hotel->name,
+                'startDate' => $reservationDto->startDate,
+                'location' => $reservationDto->hotel->location,
+                'room' => $reservationDto->room->roomId,
+            ],
+            'emails/booking.html.twig'
+        );
     }
 }

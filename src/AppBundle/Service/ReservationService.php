@@ -46,6 +46,7 @@ class ReservationService
      * @param User           $client
      * @param ReservationDto $reservationDto
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @return ReservationDto
      */
     public function addReservation(User $client, ReservationDto $reservationDto)
     {
@@ -73,6 +74,8 @@ class ReservationService
 
         $this->em->persist($reservation);
         $this->em->flush();
+
+        return $this->reservationAdapter->convertToDto($reservation);
     }
 
     /**

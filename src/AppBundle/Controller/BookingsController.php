@@ -132,7 +132,7 @@ class BookingsController extends Controller
 
         try {
             $bookingsManager->addReservation($loggedUser, $reservationDto);
-            $this->addFlash('success', 'Booking successfully created');
+            $this->addFlash('success', 'Booking successfully registered. Check your e-mail.');
         } catch (NoRoleException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         } catch (InappropriateUserRoleException $ex) {
