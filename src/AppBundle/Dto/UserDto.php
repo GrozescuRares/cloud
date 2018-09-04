@@ -25,7 +25,7 @@ class UserDto
      */
     public $username;
     /**
-     * @var Role $role
+     * @var RoleDto $role
      *
      * @Assert\NotBlank(groups={"register", "edit-my-account", "edit-user"}, message="constraints.role")
      */

@@ -8,13 +8,14 @@
 
 namespace Tests\AppBundle\Service;
 
+use AppBundle\Adapter\HotelAdapter;
+use AppBundle\Dto\HotelDto;
 use AppBundle\Entity\Hotel;
 use AppBundle\Enum\EntityConfig;
 use AppBundle\Enum\RepositoryConfig;
 use AppBundle\Enum\UserConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
-use AppBundle\Repository\HotelRepository;
 use AppBundle\Service\HotelService;
 use AppBundle\Entity\User;
 
@@ -24,8 +25,10 @@ use AppBundle\Entity\User;
  */
 class HotelServiceTest extends EntityManagerMock
 {
-    /** @var HotelServiceTest | \PHPUnit_Framework_MockObject_MockObject */
+    /** @var HotelService | \PHPUnit_Framework_MockObject_MockObject */
     protected $hotelService;
+    /** @var HotelAdapter | \PHPUnit_Framework_MockObject_MockObject */
+    protected $hotelAdapterMock;
 
     /**
      * HotelServiceTest constructor.
@@ -44,13 +47,14 @@ class HotelServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Sets up data
      */
     public function setUp()
     {
         parent::setUp();
 
-        $this->hotelService = new HotelService($this->emMock);
+        $this->hotelAdapterMock = $this->createMock(HotelAdapter::class);
+        $this->hotelService = new HotelService($this->emMock, $this->hotelAdapterMock);
     }
 
     /**
@@ -119,7 +123,7 @@ class HotelServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testGetHotelsByOwnerWhenIsCalledWithAUserWithNoRoles()
     {
@@ -132,5 +136,71 @@ class HotelServiceTest extends EntityManagerMock
             ->willReturn(null);
 
         $this->hotelService->getHotelsByOwner($userMock);
+    }
+
+    /**
+     * @test
+     */
+    public function testSuccessfullyGetOwnerHotelsDto()
+    {
+        $userMock = $this->createMock(User::class);
+        $userMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_OWNER]);
+        $userMock->expects($this->once())
+            ->method('getUserId')
+            ->willReturn(183);
+
+        $hotelMock1 = $this->createMock(Hotel::class);
+        $hotelMock2 = $this->createMock(Hotel::class);
+        $hotelMocks = [$hotelMock1, $hotelMock2];
+
+        $this->repositoriesMocks[EntityConfig::HOTEL]->expects($this->once())
+            ->method('findBy')
+            ->with([
+                'owner' => 183,
+            ])
+            ->willReturn($hotelMocks);
+
+        $hotelDtoMock1 = $this->createMock(HotelDto::class);
+        $hotelDtoMock2 = $this->createMock(HotelDto::class);
+
+        $this->hotelAdapterMock->expects($this->once())
+            ->method('convertHotelsToHotelDtos')
+            ->with($hotelMocks)
+            ->willReturn(['name1' => $hotelDtoMock1, 'name2' => $hotelDtoMock2]);
+
+        $result = $this->hotelService->getOwnerHotelsDto($userMock);
+
+        $this->assertEquals($hotelDtoMock1, $result['name1']);
+        $this->assertEquals($hotelDtoMock2, $result['name2']);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetOwnerHotelsDtoByUserWithNoRoles()
+    {
+        $this->expectException(NoRoleException::class);
+        $userMock = $this->createMock(User::class);
+        $userMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn(null);
+
+        $this->hotelService->getOwnerHotelsDto($userMock);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetOwnerHotelsDtoByUserWithNoHighRoles()
+    {
+        $this->expectException(InappropriateUserRoleException::class);
+        $userMock = $this->createMock(User::class);
+        $userMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_EMPLOYEE]);
+
+        $this->hotelService->getOwnerHotelsDto($userMock);
     }
 }

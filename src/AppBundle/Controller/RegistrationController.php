@@ -8,16 +8,12 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Member;
 use AppBundle\Entity\User;
-use AppBundle\Form\Type\MemberType;
 use AppBundle\Form\UserTypeForm;
-use AppBundle\Service\UserService;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * Class RegistrationController

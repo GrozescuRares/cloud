@@ -2,10 +2,13 @@
 
 namespace Tests\AppBundle\Adapter;
 
+use AppBundle\Adapter\RoleAdapter;
 use AppBundle\Adapter\UserAdapter;
+use AppBundle\Dto\RoleDto;
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,13 +19,15 @@ class UserAdapterTest extends TestCase
 {
     /** @var UserAdapter */
     protected $userAdapter;
-
+    /** @var RoleAdapter | \PHPUnit_Framework_MockObject_MockObject */
+    protected $roleAdapterMock;
     /**
      *
      */
     public function setUp()
     {
-        $this->userAdapter = new UserAdapter();
+        $this->roleAdapterMock = $this->createMock(RoleAdapter::class);
+        $this->userAdapter = new UserAdapter($this->roleAdapterMock);
     }
 
     /**
@@ -40,10 +45,15 @@ class UserAdapterTest extends TestCase
             ->method('getRole')
             ->willReturn($roleMock);
 
+        $this->roleAdapterMock->expects($this->once())
+            ->method('convertToDto')
+            ->with($roleMock)
+            ->willReturn($this->createMock(RoleDto::class));
+
         $userDto = $this->userAdapter->convertToDto($userMock);
 
         $this->assertEquals('username', $userDto->username);
-        $this->assertEquals($roleMock, $userDto->role);
+        $this->assertInstanceOf(RoleDto::class, $userDto->role);
     }
 
     /**
@@ -53,12 +63,12 @@ class UserAdapterTest extends TestCase
     {
         $userMockDto = $this->createMock(UserDto::class);
         $userMockDto->username = 'username';
-        $userMockDto->role = $this->createMock(Role::class);
+        $userMockDto->role = $this->createMock(RoleDto::class);
 
         $user = $this->userAdapter->convertToEntity($userMockDto);
 
         $this->assertEquals('username', $user->getUsername());
-        $this->assertEquals($this->createMock(Role::class), $user->getRole());
+        $this->assertEquals(null, $user->getRole());
     }
 
     /**
@@ -66,7 +76,7 @@ class UserAdapterTest extends TestCase
      */
     public function testSuccessfullyConvertToEntityWithExistingUser()
     {
-        $roleMock2 = $this->createMock(Role::class);
+        $roleMock2 = $this->createMock(RoleDto::class);
 
         $userMockDto = $this->createMock(UserDto::class);
         $userMockDto->username = 'username';
@@ -78,7 +88,7 @@ class UserAdapterTest extends TestCase
         $user = $this->userAdapter->convertToEntity($userMockDto, $user);
 
         $this->assertEquals('username', $user->getUsername());
-        $this->assertEquals($roleMock2, $user->getRole());
+        $this->assertInstanceOf(Role::class, $user->getRole());
     }
 
     /**
@@ -88,6 +98,8 @@ class UserAdapterTest extends TestCase
     {
         $userMock1 = $this->createMock(User::class);
         $userMock2 = $this->createMock(User::class);
+        $roleMock1 = $this->createMock(Role::class);
+        $roleMock2 = $this->createMock(Role::class);
 
         $userMock1->expects($this->once())
             ->method('getUsername')
@@ -98,6 +110,9 @@ class UserAdapterTest extends TestCase
         $userMock1->expects($this->once())
             ->method('getFirstName')
             ->willReturn('firstName');
+        $userMock1->expects($this->once())
+            ->method('getRole')
+            ->willReturn($roleMock1);
 
         $userMock2->expects($this->once())
             ->method('getUsername')
@@ -108,7 +123,14 @@ class UserAdapterTest extends TestCase
         $userMock2->expects($this->once())
             ->method('getFirstName')
             ->willReturn('firstName');
+        $userMock2->expects($this->once())
+            ->method('getRole')
+            ->willReturn($roleMock2);
         $userMocks = [$userMock1, $userMock2];
+
+        $this->roleAdapterMock->expects($this->exactly(2))
+            ->method('convertToDto')
+            ->willReturn($this->createMock(RoleDto::class));
 
         $userDtoMocks = $this->userAdapter->convertCollectionToDto($userMocks);
 
@@ -118,5 +140,7 @@ class UserAdapterTest extends TestCase
         $this->assertEquals('email', $userDtoMocks[1]->email);
         $this->assertEquals('firstName', $userDtoMocks[0]->firstName);
         $this->assertEquals('firstName', $userDtoMocks[1]->firstName);
+        $this->assertInstanceOf(RoleDto::class, $userDtoMocks[1]->role);
+        $this->assertInstanceOf(RoleDto::class, $userDtoMocks[0]->role);
     }
 }

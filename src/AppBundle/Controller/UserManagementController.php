@@ -18,6 +18,7 @@ use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Form\EditUserTypeForm;
 use AppBundle\Form\UserTypeForm;
+
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -45,8 +46,9 @@ class UserManagementController extends Controller
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
         $hotelService = $this->get('app.hotel.service');
+        $roleService = $this->get('app.role.service');
         $hotels = $hotelService->getHotelsByOwner($loggedUser);
-        $roles = $userService->getUserCreationalRoles($loggedUser);
+        $roles = $roleService->getUserCreationalRoles($loggedUser);
 
         $form = $this->createForm(
             UserTypeForm::class,
@@ -94,7 +96,8 @@ class UserManagementController extends Controller
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
         $hotelService = $this->get('app.hotel.service');
-        $roles = $userService->getUserCreationalRoles($loggedUser);
+        $roleService = $this->get('app.role.service');
+        $roles = $roleService->getUserCreationalRoleDtos($loggedUser);
         $hotels = $hotelService->getHotelsByOwner($loggedUser);
 
         $form = $this->createForm(

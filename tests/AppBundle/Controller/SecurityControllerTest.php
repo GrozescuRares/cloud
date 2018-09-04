@@ -8,21 +8,23 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use AppBundle\Enum\RoutesConfig;
+use Tests\AppBundle\BaseWebTestCase;
 
 /**
  * Class SecurityControllerTest
  * @package Tests\AppBundle\Controller
  */
-class SecurityControllerTest extends WebTestCase
+class SecurityControllerTest extends BaseWebTestCase
 {
     /**
      * Tests the login route
+     * @group login
      */
     public function testLoginRoute()
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
+        $crawler = $client->request('GET', RoutesConfig::LOGIN);
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $this->assertContains('Welcome to Hotel Management System', $crawler->filter('h1.text-center')->text());
@@ -30,11 +32,12 @@ class SecurityControllerTest extends WebTestCase
 
     /**
      * Tests successfully log in
+     * @group login
      */
     public function testSuccessfullyLogInFormSubmit()
     {
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+        $crawler = $client->request('GET', RoutesConfig::LOGIN);
 
         $form = $crawler->selectButton('submit')->form();
         $form = $this->generateLoginForm($form, 'client', '12345');
@@ -45,11 +48,12 @@ class SecurityControllerTest extends WebTestCase
 
     /**
      * Tests bad credentials log in
+     * @group login
      */
     public function testBadCredentials()
     {
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+        $crawler = $client->request('GET', RoutesConfig::LOGIN);
 
         $form = $crawler->selectButton('submit')->form();
         $form = $this->generateLoginForm($form, 'noOne', '12345');
@@ -64,11 +68,12 @@ class SecurityControllerTest extends WebTestCase
 
     /**
      * Tests log in with inactive account
+     * @group login
      */
     public function testLoginWithInactiveAccount()
     {
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+        $crawler = $client->request('GET', RoutesConfig::LOGIN);
 
         $form = $crawler->selectButton('submit')->form();
         $form = $this->generateLoginForm($form, 'testInactive', '12345');
@@ -83,11 +88,12 @@ class SecurityControllerTest extends WebTestCase
 
     /**
      * Tests that logged user can't access the login page
+     * @group security
      */
     public function testThatLoggedUserCanNotAccessLogInPage()
     {
         $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+        $crawler = $client->request('GET', RoutesConfig::LOGIN);
 
         $form = $crawler->selectButton('submit')->form();
         $form = $this->generateLoginForm($form, 'client', '12345');
@@ -105,21 +111,12 @@ class SecurityControllerTest extends WebTestCase
 
     /**
      * Tests that logged user can't access the registration page
+     * @group security
      */
     public function testThatLoggedUserCanNotAccessRegisterPage()
     {
-        $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::REGISTER, 'client', '12345');
 
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'client', '12345');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-
-        $client->request('GET', $client->getContainer()->get('router')->generate('register'));
         $this->assertTrue(
             $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('dashboard'))
         );
@@ -127,37 +124,14 @@ class SecurityControllerTest extends WebTestCase
 
     /**
      * Tests that logged user can't access the activate-account page
+     * @group security
      */
     public function testThatLoggedUserCanNotAccessActivateAccountPage()
     {
-        $client = static:: createClient();
-        $crawler = $client->request('GET', $client->getContainer()->get('router')->generate('login'));
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ACTIVATE_ACCOUNT.'/dscsdcddsccds', 'client', '12345');
 
-        $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'client', '12345');
-        $client->submit($form);
-
-        $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
-
-        $client->followRedirect();
-
-        $client->request('GET', $client->getContainer()->get('router')->generate('activate-account', ['activationToken' => 'dfefefe']));
         $this->assertTrue(
             $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('dashboard'))
         );
-    }
-
-    /**
-     * @param $form
-     * @param $username
-     * @param $password
-     * @return mixed
-     */
-    private function generateLoginForm($form, $username, $password)
-    {
-        $form['_username'] = $username;
-        $form['_password'] = $password;
-
-        return $form;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -56,6 +57,64 @@ class Hotel implements \Serializable
     private $owner;
 
     /**
+     * @var Hotel $hotel
+     *
+     * @ORM\OneToMany(targetEntity="Room", mappedBy="hotel")
+     */
+    private $rooms;
+
+    /**
+     * Hotel constructor.
+     */
+    public function __construct()
+    {
+        $this->rooms = new ArrayCollection();
+        $this->users = new ArrayCollection();
+    }
+
+    /**
+     * @return Hotel
+     */
+    public function getRooms()
+    {
+        return $this->rooms;
+    }
+
+    /**
+     * @param Hotel $rooms
+     *
+     * @return Hotel
+     */
+    public function setRooms($rooms)
+    {
+        $this->rooms = $rooms;
+
+        return $this;
+    }
+
+    /**
+     * @param Room $room
+     *
+     * @return $this
+     */
+    public function addRoom(Room $room)
+    {
+        $this->rooms[] = $room;
+
+        return $this;
+    }
+
+    /**
+     * @param Room $room
+     * @return $this
+     */
+    public function removeRoom(Room $room)
+    {
+        $this->rooms->removeElement($room);
+
+        return $this;
+    }
+    /**
      * @return User
      */
     public function getOwner()
@@ -91,6 +150,28 @@ class Hotel implements \Serializable
     public function setUsers($users)
     {
         $this->users = $users;
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function addUser(User $user)
+    {
+        $this->users[] = $user;
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function removeUser(User $user)
+    {
+        $this->users->removeElement($user);
 
         return $this;
     }

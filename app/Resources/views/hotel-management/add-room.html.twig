@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="wrapper">
+                    <div class="container-small">
+                        <a>{{ 'page.hotel-management.add-room.back'| trans }}</a>
+                        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                            <h1 class="text-center">{{ 'page.hotel-management.add-room.title'| trans }}</h1>
+                        </div>
+                        <form action="{{ path('add-room') }}" method="post">
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    {{ form_label(add_room_form.hotel) }}
+                                    {{ form_errors(add_room_form.hotel) }}
+                                    {{ form_widget(add_room_form.hotel, {'attr': {'class': 'selectpicker' }}) }}
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    {{ form_label(add_room_form.capacity) }}
+                                    {{ form_errors(add_room_form.capacity) }}
+                                    {{ form_widget(add_room_form.capacity, {'attr': {'class': 'selectpicker' }}) }}
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    {{ form_label(add_room_form.price) }}
+                                    <div class="rel">
+                                        {{ form_errors(add_room_form.price) }}
+                                        {{ form_widget(add_room_form.price) }}
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
+                                {{ form_label(add_room_form.smoking) }}
+                                <div class="custom-form">
+                                    <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                        {{ form_widget(add_room_form.smoking.children[0]) }}
+                                        {{ form_label(add_room_form.smoking.children[0]) }}
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                        {{ form_widget(add_room_form.smoking.children[1]) }}
+                                        {{ form_label(add_room_form.smoking.children[1]) }}
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
+                                {{ form_label(add_room_form.pet) }}
+                                <div class="custom-form">
+                                    <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                        {{ form_widget(add_room_form.pet.children[0]) }}
+                                        {{ form_label(add_room_form.pet.children[0]) }}
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                        {{ form_widget(add_room_form.pet.children[1]) }}
+                                        {{ form_label(add_room_form.pet.children[1]) }}
+
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form_row(add_room_form._token) }}
+                            {{ form_widget(add_room_form.save) }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

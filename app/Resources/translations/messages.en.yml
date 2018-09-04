@@ -20,6 +20,13 @@ form:
     bio: 'Bio'
     date_of_birth: 'Date Of Birth'
     gender: 'Gender'
+    yes: 'Yes'
+    no: 'No'
+    save: 'Save'
+    people: 'People'
+    price: 'Price \ night'
+    smoking: 'Smoking'
+    pet: 'Pet'
     birth_date: 'Birth date'
     registration_date: 'Registration date'
 
@@ -57,7 +64,21 @@ page:
 
   user-management:
     add-user:
-      title: 'Add user'
+      title: 'Add User'
+      back: 'Back'
+    user-management:
+      items: '%users% item(s)'
+      previous: 'Previous'
+      next: 'Next'
+      page-number: '%page%'
+      add_new_user: 'Add New User'
+      back: 'Back'
+      title: 'User Management'
+      search: 'Search by hotel all users'
+
+  hotel-management:
+    add-room:
+      title: 'Add New Room'
       back: 'Back'
     user-management:
       items: '%users% item(s)'
@@ -111,3 +132,12 @@ navigation:
   user_management: 'User Management'
   bookings: 'Bookings'
   logout: 'Log Out'
+
+capacity:
+  one: '1'
+  two: '2'
+  three: '3'
+  four: '4'
+  five: '5'
+  six: '6'
+  title: 'Room capacity'
