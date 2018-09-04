@@ -81,9 +81,11 @@ class HotelManagementController extends Controller
     {
         $loggedUser = $this->getUser();
         $hotelManagementManager = $this->get('app.hotel-management.manager');
+        $bookingManager = $this->get('app.bookings.manager');
 
         try {
             $hotelsDto = $hotelManagementManager->getFirstHotels($loggedUser, 0);
+            $availableHotels = $bookingManager->getFreeHotels(new \DateTime('now'), new \DateTime('now'));
             $pages = $hotelManagementManager->getHotelPagesNumber($loggedUser);
 
             return $this->render(
@@ -91,6 +93,7 @@ class HotelManagementController extends Controller
                 [
                     'user' => $loggedUser,
                     'hotels' => $hotelsDto,
+                    'availableHotels' => $availableHotels,
                     'nrPages' => $pages,
                     'currentPage' => 1,
                     'nrHotels' => count($hotelsDto),

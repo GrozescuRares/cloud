@@ -102,7 +102,7 @@ class HotelService
         }
 
         $bookedRoomsInPeriod = $this->em->getRepository(Room::class)->getBookedRooms($startDate, $endDate);
-        $hotels = $this->em->getRepository(Hotel::class)->getHotelsWithReservations();
+        $hotels = $this->em->getRepository(Hotel::class)->findAll();
         $freeHotels = [];
 
         /** @var Hotel $hotel */
