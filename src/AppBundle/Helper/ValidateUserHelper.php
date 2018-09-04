@@ -56,4 +56,17 @@ class ValidateUserHelper
 
         return $userRole[0];
     }
+
+    /**
+     * @param mixed $userRole
+     * @return mixed
+     */
+    public static function checkIfUserHasRoleClient($userRole)
+    {
+        if ($userRole[0] !== UserConfig::ROLE_CLIENT) {
+            throw new InappropriateUserRoleException('This user is not a client.');
+        }
+
+        return $userRole[0];
+    }
 }

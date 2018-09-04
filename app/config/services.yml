@@ -147,3 +147,11 @@ services:
         public: true
 
     AppBundle\Manager\BookingsManager: '@app.bookings.manager'
+
+    app.reservation.service:
+        class: AppBundle\Service\ReservationService
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@app.reservation.adapter'
+
+    AppBundle\Service\ReservationService: '@app.reservation.service'
