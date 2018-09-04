@@ -149,14 +149,26 @@ class BookingsController extends Controller
     }
 
     /**
-     * @Route("/bookings/handle-booking", name="handle-booking")
+     * @Route("/bookings/handle-booking", name="handle-booking", methods={"POST"})
      *
      * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function handleBookFormSubmission(Request $request)
     {
-        var_dump($request->request);
-        die;
+        $validator = $this->get('validator');
+        $reservationDto = $this->handleReservation($request);
+        $errors = $validator->validate($reservationDto);
+
+        if (count($errors) > 0) {
+            $this->addFlash('danger', 'Invalid data !');
+
+            return $this->redirectToRoute('create-booking');
+        }
+        $this->addFlash('success', 'Booking successfully created');
+
+        return $this->redirectToRoute('create-booking');
     }
 
     private function handleReservation(Request $request)
