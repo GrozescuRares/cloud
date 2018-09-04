@@ -10,12 +10,9 @@ namespace AppBundle\Service;
 
 use AppBundle\Adapter\HotelAdapter;
 use AppBundle\Entity\Hotel;
-use AppBundle\Entity\Reservation;
 use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
 use AppBundle\Exception\NoRoleException;
-use AppBundle\Helper\CollectionModifierHelper;
-use AppBundle\Helper\ValidateReservationHelper;
 use AppBundle\Helper\ValidateUserHelper;
 
 use Doctrine\ORM\EntityManager;

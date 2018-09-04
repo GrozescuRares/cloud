@@ -62,7 +62,7 @@ class BookingsManager
     }
 
     /**
-     * @param mixed $hotelId
+     * @param mixed     $hotelId
      * @param \DateTime $startDate
      * @param \DateTime $endDate
      * @return array

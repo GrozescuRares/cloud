@@ -13,10 +13,8 @@ use AppBundle\Adapter\RoomAdapter;
 use AppBundle\Dto\HotelDto;
 use AppBundle\Dto\RoomDto;
 use AppBundle\Entity\Hotel;
-
-use AppBundle\Entity\Reservation;
 use AppBundle\Entity\Room;
-use AppBundle\Helper\ValidateReservationHelper;
+
 use Doctrine\ORM\EntityManager;
 
 /**

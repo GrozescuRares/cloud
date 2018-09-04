@@ -13,6 +13,7 @@ use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Enum\UserConfig;
 use AppBundle\Helper\ValidateUserHelper;
+
 use Doctrine\ORM\EntityManager;
 
 /**

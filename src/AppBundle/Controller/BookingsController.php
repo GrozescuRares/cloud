@@ -9,14 +9,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Dto\ReservationDto;
-use AppBundle\Entity\Hotel;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Exception\RoomNotFoundException;
 use AppBundle\Form\ReservationTypeForm;
 use AppBundle\Helper\ValidateReservationHelper;
-use DateTime;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -114,6 +113,9 @@ class BookingsController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
      */
     public function handleBookFormSubmission(Request $request)
     {
