@@ -152,4 +152,28 @@ class HotelService
 
         return $this->hotelAdapter->convertToDto($hotel);
     }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @return array
+     */
+    public function getFirstHotels(User $loggedUser, $offset)
+    {
+        ValidateUserHelper::checkIfUserHasRoleAndIsOwner($loggedUser);
+        $hotels = $this->em->getRepository(Hotel::class)->paginateAndSortHotels($loggedUser, $offset);
+
+        return $this->hotelAdapter->convertHotelsToHotelDtos($hotels);
+    }
+
+    /**
+     * @param User $loggedUser
+     * @return float
+     */
+    public function getHotelsPageNumber(User $loggedUser)
+    {
+        ValidateUserHelper::checkIfUserHasRoleAndIsOwner($loggedUser);
+
+        return $this->em->getRepository(Hotel::class)->getHotelsPagesNumber($loggedUser);
+    }
 }

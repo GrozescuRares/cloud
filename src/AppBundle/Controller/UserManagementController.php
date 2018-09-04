@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\User;
+use AppBundle\Enum\PaginationConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Enum\OrderConfig;
@@ -198,7 +199,7 @@ class UserManagementController extends Controller
                     $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
 
                     list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
-                    $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $pageNumber * 5 - 5, $column, $sortType);
+                    $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $pageNumber * (PaginationConfig::ITEMS-1), $column, $sortType);
 
                     return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
                 }
@@ -208,7 +209,7 @@ class UserManagementController extends Controller
                     $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
 
                     list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
-                    $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $pageNumber * 5 - 5, $column, $sortType, $hotelId);
+                    $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $pageNumber * (PaginationConfig::ITEMS-1), $column, $sortType, $hotelId);
 
                     return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
                 }
@@ -255,7 +256,7 @@ class UserManagementController extends Controller
     private function renderPaginatedTable($users, $nrPages, $pageNumber, $column, $sort)
     {
         return $this->render(
-            'user_management/table.html.twig',
+            'user_management/users-table.html.twig',
             [
                 'users' => $users,
                 'nrPages' => $nrPages,

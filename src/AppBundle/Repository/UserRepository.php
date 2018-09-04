@@ -2,7 +2,10 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Hotel;
 use AppBundle\Entity\User;
+use AppBundle\Enum\PaginationConfig;
+use AppBundle\Enum\UserConfig;
 use AppBundle\Exception\UserNotFoundException;
 
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
@@ -54,7 +57,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
             ->setParameter('managerId', $loggedUser->getUserId())
             ->getQuery()->execute();
 
-        return ceil(count($usersCount) / 5);
+        return ceil(count($usersCount) / PaginationConfig::ITEMS);
     }
 
     /**
@@ -72,7 +75,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
             ->andWhere('user.userId != :managerId')
             ->setParameter('managerHotel', $loggedUser->getHotel())
             ->setParameter('managerId', $loggedUser->getUserId())
-            ->setMaxResults(5)
+            ->setMaxResults(PaginationConfig::ITEMS)
             ->setFirstResult($offset);
 
         if (!empty($column) and !empty($sort)) {
@@ -101,7 +104,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
             ->setParameter('hotelId', $hotelId)
             ->getQuery()->execute();
 
-        return ceil(count($usersCount) / 5);
+        return ceil(count($usersCount) / PaginationConfig::ITEMS);
     }
 
     /**
@@ -122,7 +125,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
             ->setParameter('owner', $loggedUser)
             ->setParameter('hotelId', $hotelId)
             ->setFirstResult($offset)
-            ->setMaxResults(5);
+            ->setMaxResults(PaginationConfig::ITEMS);
 
         if (!empty($column) && !empty($sort)) {
             $result = $users->orderBy('user.'.$column, $sort)
@@ -132,5 +135,26 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
         }
 
         return $users->getQuery()->execute();
+    }
+
+    /**
+     * @param Hotel $hotel
+     * @return array
+     */
+    public function getNumberOfEmployeesByHotel(Hotel $hotel)
+    {
+        $nrEmployees = $this->createQueryBuilder('user')
+            ->select('COUNT(user)')
+            ->innerJoin('user.role', 'role')
+            ->where('user.hotel = :hotel')
+            ->andWhere('role.description != :client')
+            ->andWhere('role.description != :owner')
+            ->setParameter('hotel', $hotel)
+            ->setParameter('client', UserConfig::ROLE_CLIENT)
+            ->setParameter('owner', UserConfig::ROLE_OWNER)
+            ->getQuery()
+            ->getResult();
+
+        return $nrEmployees;
     }
 }

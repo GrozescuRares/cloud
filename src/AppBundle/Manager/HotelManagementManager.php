@@ -48,4 +48,23 @@ class HotelManagementManager
     {
         $this->roomService->addRoom($roomDto);
     }
+
+    /**
+     * @param User $loggedUser
+     * @return float
+     */
+    public function getHotelPagesNumber(User $loggedUser)
+    {
+        return $this->hotelService->getHotelsPageNumber($loggedUser);
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @return array
+     */
+    public function getFirstHotels(User $loggedUser, $offset)
+    {
+        return $this->hotelService->getFirstHotels($loggedUser, $offset);
+    }
 }

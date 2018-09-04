@@ -69,4 +69,38 @@ class HotelManagementController extends Controller
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         }
     }
+
+    /**
+     * @Route("hotel-management/hotel-information", name="hotel-information")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function hotelInformationAction(Request $request)
+    {
+        $loggedUser = $this->getUser();
+        $hotelManagementManager = $this->get('app.hotel-management.manager');
+
+        try {
+            $hotelsDto = $hotelManagementManager->getFirstHotels($loggedUser, 0);
+            $pages = $hotelManagementManager->getHotelPagesNumber($loggedUser);
+
+            return $this->render(
+                'hotel-management/hotel-information.html.twig',
+                [
+                    'user' => $loggedUser,
+                    'hotels' => $hotelsDto,
+                    'nrPages' => $pages,
+                    'currentPage' => 1,
+                    'nrHotels' => count($hotelsDto),
+                    'filters' => [],
+                ]
+            );
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
 }

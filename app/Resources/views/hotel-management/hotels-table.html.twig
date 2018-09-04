@@ -1,0 +1,78 @@
+<div class="table-paginated">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                    data-sort="{% if filters is empty or filters.name is not defined %}ASC{% else %}{{ filters.name }}{% endif %}"
+                    data-column="name"
+                    data-page="{{ currentPage }}">Hotel Name<span class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                    data-sort="{% if filters is empty or filters.location is not defined %}ASC{% else %}{{ filters.location }}{% endif %}"
+                    data-column="location"
+                    data-page="{{ currentPage }}">Location<span class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                    data-sort="{% if filters is empty or filters.employees is not defined %}ASC{% else %}{{ filters.employees }}{% endif %}"
+                    data-column="employees"
+                    data-page="{{ currentPage }}">Number of employees<span class="sort-icon"></span></th>
+                <th class="text-center">Availability</th>
+                <th class="text-center">Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for h in hotels %}
+                <tr>
+                    <td>{{ h.name }}</td>
+                    <td>{{ h.location }}</td>
+                    <td>{{ h.employees }}</td>
+                    <td class="text-center"><input type="checkbox"></td>
+                    <td class="text-center"><a href="10-hotel-information.php"><i class="fa fa-edit"></i></a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="table-items">{{ nrHotels }} items</div>
+    <nav class="table-pagination">
+        <ul class="pagination">
+            {% if currentPage != 1 %}
+                <li class="prev">
+                    <a data-action="{{ path('paginate-and-sort') }}"
+                       data-page="{{ currentPage -1 }}"
+                       data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
+                       data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
+                       data-paginate="true"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Previous</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if nrPages > 1 %}
+                {% for page in 1..nrPages %}
+                    <li {% if currentPage == page %} class="active" {% endif %}><a
+                                data-action="{{ path('paginate-and-sort') }}"
+                                data-page="{{ page }}"
+                                data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
+                                data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
+                                data-paginate="true">{{ page }}</a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+            {% if currentPage != nrPages %}
+                <li class="next">
+                    <a data-action="{{ path('paginate-and-sort') }}"
+                       data-page="{{ currentPage + 1 }}"
+                       data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
+                       data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
+                       data-paginate="true"
+                       aria-label="Next">
+                        <span aria-hidden="true">Next &raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    <div class="col-md-12 col-xs-12 no-lr-padding">
+        <a href="12-add-room.php" class="btn submit pull-right">Add New Room</a>
+    </div>
+</div>
