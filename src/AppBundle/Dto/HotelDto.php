@@ -18,12 +18,4 @@ class HotelDto
     public $name;
     public $location;
     public $description;
-
-    /**
-     * @return mixed
-     */
-    public function __toString()
-    {
-        return $this->name." t";
-    }
 }
