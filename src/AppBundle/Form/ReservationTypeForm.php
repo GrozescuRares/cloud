@@ -78,17 +78,6 @@ class ReservationTypeForm extends AbstractType
                 ]
             );
         }
-        // move to twig
-        $builder->add(
-            'save',
-            SubmitType::class,
-            [
-                'attr' => [
-                    'class' => 'btn submit pull-right margin-top-large',
-                ],
-                'label' => 'form.label.save',
-            ]
-        );
     }
 
     /**

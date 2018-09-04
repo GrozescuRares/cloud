@@ -1,13 +1,13 @@
     {{ include('flash-messages.html.twig') }}
     <div class="container-small">
-        <a href="#" class="back">Back</a>
+        <a href="#">{{ 'page.bookings.create-booking.back'| trans }}</a>
         <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
-            <h1 class="text-center">Create New Booking</h1>
+            <h1 class="text-center">{{ 'page.bookings.create-booking.title'| trans }}</h1>
         </div>
         {{ form_start(booking_form, {'method': 'POST', 'action': path('handle-booking'), attr: {class:'reservation-form'}}) }}
         <div class="col-md-12 col-xs-12 no-lr-padding">
             <div class="col-md-12 col-xs-12 no-lr-padding">
-                <label class='custom-label'>From when till when?</label>
+                <label class='custom-label'>{{ 'page.bookings.create-booking.date'| trans }}</label>
             </div>
             <div class="col-md-5 col-xs-5 no-lr-padding">
                 <div class="date-input start">
@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="col-md-2 col-xs-2 no-lr-padding datepicker-to text-center">
-                <span class='bold'>TO</span>
+                <span class='bold'>{{ 'page.bookings.create-booking.to'| trans }}</span>
             </div>
             <div class="col-md-5 col-xs-5 no-lr-padding">
                 <div class="date-input start">

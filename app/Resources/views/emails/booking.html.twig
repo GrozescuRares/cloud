@@ -26,12 +26,12 @@
                                 <table width="100%" style="border-spacing:0;font-family:sans-serif;color:#333333;" >
                                     <tr>
                                         <td class="inner contents" style="padding-top:30px;padding-bottom:0;padding-right:30px;padding-left:30px;padding-bottom:30px;width:100%;text-align:center; background-color: #f9f9f9;" >
-                                            <p class="h1" style="font-size:18px;font-weight:bold;Margin-bottom:18px;color:#000000;" >Booking Confirmation</p>
-                                            <p style='font-weight: bold; font-size:13px; line-height: 18px; margin-top: 30px;margin-bottom: 0;'>Congratulations, the booking has been successful!</p>
+                                            <p class="h1" style="font-size:18px;font-weight:bold;Margin-bottom:18px;color:#000000;" >{{ 'emails.booking_confirmation'| trans }}</p>
+                                            <p style='font-weight: bold; font-size:13px; line-height: 18px; margin-top: 30px;margin-bottom: 0;'>{{ 'emails.booking_congratulations'| trans }}</p>
                                             <p style='font-size:12px; line-height: 18px;'>
-                                                We will be waiting for your arrival on the {{ startDate| date('Y-m-d') }} at {{ hotel }} in {{ location }}. MR/s {{ name }}, you will be staying in room {{ room }}!
+                                                {{ 'emails.booking_message'|trans({'%startDate%': startDate | date('Y-m-d'), '%hotel%': hotel, '%location%': location, '%name%': name, '%room%': room}) }}
                                             </p>
-                                            <p style='font-size:12px; line-height: 18px;'>Have a great day!</p>
+                                            <p style='font-size:12px; line-height: 18px;'>{{ 'emails.booking_day'| trans }}</p>
                                         </td>
                                     </tr>
                                 </table>
