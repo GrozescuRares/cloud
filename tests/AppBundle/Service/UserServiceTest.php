@@ -340,6 +340,7 @@ class UserServiceTest extends EntityManagerMock
     {
         $userMock = $this->createMock(User::class);
         $loggedUserMock = $this->createMock(User::class);
+        $hotelMock = $this->createMock(Hotel::class);
 
         $this->userPasswordEncoderMock->expects($this->once())
             ->method('encodePassword');
@@ -347,6 +348,13 @@ class UserServiceTest extends EntityManagerMock
         $userMock->expects($this->once())
             ->method('setIsActivated')
             ->with(true);
+        $userMock->expects($this->once())
+            ->method('getHotel')
+            ->willReturn($hotelMock);
+
+        $hotelMock->expects($this->once())
+            ->method('getEmployees')
+            ->willReturn(10);
 
         $loggedUserMock->expects($this->once())
             ->method('getRoles')
@@ -388,6 +396,7 @@ class UserServiceTest extends EntityManagerMock
         $userMock = $this->createMock(User::class);
         $loggedUserMock = $this->createMock(User::class);
         $hotelMock = $this->createMock(Hotel::class);
+        $hotelMock1 = $this->createMock(Hotel::class);
 
         $this->userPasswordEncoderMock->expects($this->once())
             ->method('encodePassword');
@@ -397,14 +406,21 @@ class UserServiceTest extends EntityManagerMock
             ->with(true);
         $userMock->expects($this->once())
             ->method('setHotel')
-            ->with($hotelMock);
+            ->with($hotelMock1);
+        $userMock->expects($this->exactly(1))
+            ->method('getHotel')
+            ->willReturn($hotelMock);
 
         $loggedUserMock->expects($this->once())
             ->method('getRoles')
             ->willReturn([UserConfig::ROLE_MANAGER]);
         $loggedUserMock->expects($this->once())
             ->method('getHotel')
-            ->willReturn($hotelMock);
+            ->willReturn($hotelMock1);
+
+        $hotelMock->expects($this->once())
+            ->method('getEmployees')
+            ->willReturn(10);
 
         $this->userService->addUser($userMock, $loggedUserMock);
     }

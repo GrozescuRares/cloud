@@ -173,8 +173,12 @@ class UserService
         if ($userRole === UserConfig::ROLE_MANAGER) {
             $user->setHotel($loggedUser->getHotel());
         }
-
         $this->em->persist($user);
+
+        $hotel = $user->getHotel();
+        $hotel->setEmployees($hotel->getEmployees()+1);
+
+        $this->em->persist($hotel);
         $this->em->flush();
     }
 
