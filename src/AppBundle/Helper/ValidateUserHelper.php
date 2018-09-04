@@ -83,5 +83,4 @@ class ValidateUserHelper
 
         return ValidateUserHelper::checkIfUserHasHighRole($loggedUserRole);
     }
-    }
 }
