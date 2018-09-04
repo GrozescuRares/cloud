@@ -45,12 +45,12 @@ class BookingsManager
     }
 
     /**
+     * @param mixed     $hotelId
      * @param \DateTime $startDate
      * @param \DateTime $endDate
-     * @param mixed     $hotelId
      * @return array
      */
-    public function getFreeRooms(\DateTime $startDate, \DateTime $endDate, $hotelId)
+    public function getFreeRooms($hotelId, \DateTime $startDate, \DateTime $endDate)
     {
         return $this->roomService->getAvailableRooms($hotelId, $startDate, $endDate);
     }

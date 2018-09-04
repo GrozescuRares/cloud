@@ -48,13 +48,13 @@ class BookingsController extends Controller
     }
 
     /**
-     * @Route("/bookings/create-booking/load-hotels", name="load-available-hotels")
+     * @Route("/bookings/create-booking/load-data", name="load-data")
      *
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function loadAvailableHotels(Request $request)
+    public function loadData(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
             return $this->render(
@@ -66,74 +66,29 @@ class BookingsController extends Controller
         }
 
         $reservationDto = $this->handleReservation($request);
-        $hotelService = $this->get('app.hotel.service');
-        $availableHotels = $hotelService->getAvailableHotels($reservationDto->startDate, $reservationDto->endDate);
-        $showHotels = true;
+        $bookingsManager = $this->get('app.bookings.manager');
+        $availableHotels = $bookingsManager->getFreeHotels($reservationDto->startDate, $reservationDto->endDate);
+        $availableRooms = [];
+        $showHotel = true;
+        $showRooms = false;
+        $showSave = false;
 
-        $form = $this->createForm(
-            ReservationTypeForm::class,
-            $reservationDto,
-            [
-                'hotels' => $availableHotels,
-            ]
-        );
+        if (!empty($reservationDto->hotel)) {
+            $availableRooms = $bookingsManager->getFreeRooms($reservationDto->hotel, $reservationDto->startDate, $reservationDto->endDate);
+            $showRooms = true;
+            $showSave = true;
+        }
 
         if (empty($availableHotels)) {
-            $this->addFlash('danger', 'There are no hotels available in that period.');
-            $showHotels = false;
+            $this->addFlash('danger', 'There are no available hotels in that period.');
+            $showHotel = false;
         }
-
-        return $this->render(
-            'bookings/reservation-form.html.twig',
-            [
-                'booking_form' => $form->createView(),
-                'showHotels' => $showHotels,
-                'showRooms' => false,
-                'showSave' => false,
-            ]
-        );
-    }
-
-    /**
-     * @Route("/bookings/create-booking/load-rooms", name="load-available-rooms")
-     *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function loadAvailableRooms(Request $request)
-    {
-        if (!$request->isXmlHttpRequest()) {
-            return $this->render(
-                'error.html.twig',
-                [
-                    'error' => 'Stay out of here.',
-                ]
-            );
-        }
-
-        $reservationDto = $this->handleReservation($request);
-        $roomService = $this->get('app.room.service');
-        $availableRooms = $roomService->getAvailableRooms(
-            $reservationDto->hotel,
-            $reservationDto->startDate,
-            $reservationDto->endDate
-        );
-        $showRooms = true;
-        $hotelService = $this->get('app.hotel.service');
-        $availableHotels = $hotelService->getAvailableHotels($reservationDto->startDate, $reservationDto->endDate);
-
-        if (empty($availableRooms)) {
-            $this->addFlash('danger', 'There are no rooms available in that period');
-            $showRooms = false;
-        }
-
         $form = $this->createForm(
             ReservationTypeForm::class,
             $reservationDto,
             [
                 'hotels' => $availableHotels,
-                'rooms' => $availableRooms,
+                'rooms'  => $availableRooms,
             ]
         );
 
@@ -141,9 +96,9 @@ class BookingsController extends Controller
             'bookings/reservation-form.html.twig',
             [
                 'booking_form' => $form->createView(),
-                'showHotels' => true,
+                'showHotels' => $showHotel,
                 'showRooms' => $showRooms,
-                'showSave' => true,
+                'showSave' => $showSave,
             ]
         );
     }

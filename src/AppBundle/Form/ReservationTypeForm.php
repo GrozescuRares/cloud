@@ -50,8 +50,9 @@ class ReservationTypeForm extends AbstractType
                         'class' => 'form-control',
                     ],
                 ]
-            )
-            ->add(
+            );
+        if (!empty($options['hotels'])) {
+            $builder->add(
                 'hotel',
                 ChoiceType::class,
                 [
@@ -60,8 +61,10 @@ class ReservationTypeForm extends AbstractType
                     'label' => 'form.label.hotel',
                     'required' => false,
                 ]
-            )
-            ->add(
+            );
+        }
+        if (!empty($options['rooms'])) {
+            $builder->add(
                 'room',
                 ChoiceType::class,
                 [
@@ -74,7 +77,7 @@ class ReservationTypeForm extends AbstractType
                     'required' => false,
                 ]
             );
-
+        }
         // move to twig
         $builder->add(
             'save',
