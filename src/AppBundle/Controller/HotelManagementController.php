@@ -84,7 +84,7 @@ class HotelManagementController extends Controller
         $bookingManager = $this->get('app.bookings.manager');
 
         try {
-            $hotelsDto = $hotelManagementManager->getFirstHotels($loggedUser, 0);
+            $hotelsDto = $hotelManagementManager->paginateAndSortHotels($loggedUser, 0, null, null);
             $availableHotels = $bookingManager->getFreeHotels(new \DateTime('now'), new \DateTime('now'));
             $pages = $hotelManagementManager->getHotelPagesNumber($loggedUser);
 

@@ -61,10 +61,12 @@ class HotelManagementManager
     /**
      * @param User  $loggedUser
      * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
      * @return array
      */
-    public function getFirstHotels(User $loggedUser, $offset)
+    public function paginateAndSortHotels(User $loggedUser, $offset, $column, $sort)
     {
-        return $this->hotelService->getFirstHotels($loggedUser, $offset);
+        return $this->hotelService->paginateAndSortHotels($loggedUser, $offset, $column, $sort);
     }
 }

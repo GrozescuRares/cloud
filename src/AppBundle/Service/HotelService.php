@@ -156,12 +156,14 @@ class HotelService
     /**
      * @param User  $loggedUser
      * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
      * @return array
      */
-    public function getFirstHotels(User $loggedUser, $offset)
+    public function paginateAndSortHotels(User $loggedUser, $offset, $column, $sort)
     {
         ValidateUserHelper::checkIfUserHasRoleAndIsOwner($loggedUser);
-        $hotels = $this->em->getRepository(Hotel::class)->paginateAndSortHotels($loggedUser, $offset);
+        $hotels = $this->em->getRepository(Hotel::class)->paginateAndSortHotels($loggedUser, $offset, $column, $sort);
 
         return $this->hotelAdapter->convertHotelsToHotelDtos($hotels);
     }

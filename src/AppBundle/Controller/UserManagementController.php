@@ -117,7 +117,7 @@ class UserManagementController extends Controller
                 'user_management/edit-user.html.twig',
                 [
                     'edit_user_form' => $form->createView(),
-                    'username'       => $username,
+                    'username' => $username,
                 ]
             );
         }
@@ -191,41 +191,40 @@ class UserManagementController extends Controller
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
 
-        if ($request->isXmlHttpRequest()) {
-            $type = $request->query->get('type');
-            try {
-                if ($type === 'manager') {
-                    list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
-                    $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
-
-                    list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
-                    $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $pageNumber * (PaginationConfig::ITEMS-1), $column, $sortType);
-
-                    return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
-                }
-
-                if ($type === 'owner') {
-                    list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
-                    $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
-
-                    list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
-                    $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $pageNumber * (PaginationConfig::ITEMS-1), $column, $sortType, $hotelId);
-
-                    return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
-                }
-            } catch (NoRoleException $ex) {
-                return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
-            } catch (InappropriateUserRoleException $ex) {
-                return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
-            }
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
         }
+        $type = $request->query->get('type');
+        try {
+            if ($type === 'manager') {
+                list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+                $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
 
-        return $this->render(
-            'error.html.twig',
-            [
-                'error' => 'Stay out of here.',
-            ]
-        );
+                list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
+                $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType);
+
+                return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
+            }
+
+            if ($type === 'owner') {
+                list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+                $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
+
+                list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
+                $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType, $hotelId);
+
+                return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
+            }
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
     }
 
     /**
