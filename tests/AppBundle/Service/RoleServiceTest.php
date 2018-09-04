@@ -45,7 +45,7 @@ class RoleServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * Sets up data
      */
     public function setUp()
     {
@@ -56,7 +56,7 @@ class RoleServiceTest extends EntityManagerMock
     }
 
     /**
-     *
+     * @test
      */
     public function testGetCreationalRolesWhenLoggedUserHasNoRole()
     {

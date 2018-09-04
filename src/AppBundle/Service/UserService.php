@@ -214,9 +214,7 @@ class UserService
      */
     public function getUsersFromHotels(User $loggedUser, $offset, $hotelId = null)
     {
-        $loggedUserRole = $loggedUser->getRoles();
-        ValidateUserHelper::checkIfUserHasRole($loggedUserRole);
-        ValidateUserHelper::checkIfUserHasHighRole($loggedUserRole);
+        ValidateUserHelper::checkIfUserIsOwnerOrManager($loggedUser);
 
         if (empty($hotelId)) {
             $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, null, null);
@@ -234,9 +232,7 @@ class UserService
      */
     public function getPagesNumberForManagerManagement(User $loggedUser)
     {
-        $loggedUserRole = $loggedUser->getRoles();
-        ValidateUserHelper::checkIfUserHasRole($loggedUserRole);
-        ValidateUserHelper::checkIfUserHasHighRole($loggedUserRole);
+        ValidateUserHelper::checkIfUserIsOwnerOrManager($loggedUser);
 
         return $this->em->getRepository(User::class)->getUsersPagesNumberFromManagerHotel($loggedUser);
     }
@@ -250,10 +246,7 @@ class UserService
      */
     public function paginateAndSortManagersUsers(User $loggedUser, $offset, $column, $sortType)
     {
-        $loggedUserRole = $loggedUser->getRoles();
-        ValidateUserHelper::checkIfUserHasRole($loggedUserRole);
-        ValidateUserHelper::checkIfUserHasHighRole($loggedUserRole);
-
+        ValidateUserHelper::checkIfUserIsOwnerOrManager($loggedUser);
         $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromManagerHotel($loggedUser, $offset, $column, $sortType);
 
         return $this->userAdapter->convertCollectionToDto($users);
@@ -267,9 +260,7 @@ class UserService
      */
     public function getPagesNumberForOwnerManagement(User $loggedUser, $hotelId)
     {
-        $loggedUserRole = $loggedUser->getRoles();
-        ValidateUserHelper::checkIfUserHasRole($loggedUserRole);
-        ValidateUserHelper::checkIfUserHasHighRole($loggedUserRole);
+        ValidateUserHelper::checkIfUserIsOwnerOrManager($loggedUser);
 
         return $this->em->getRepository(User::class)->getUsersPagesNumberFromOwnerHotel($loggedUser, $hotelId);
     }
@@ -285,9 +276,7 @@ class UserService
      */
     public function paginateAndSortOwnersUsers(User $loggedUser, $offset, $column, $sortType, $hotelId)
     {
-        $loggedUserRole = $loggedUser->getRoles();
-        ValidateUserHelper::checkIfUserHasRole($loggedUserRole);
-        ValidateUserHelper::checkIfUserHasHighRole($loggedUserRole);
+        ValidateUserHelper::checkIfUserIsOwnerOrManager($loggedUser);
 
         $users = $this->em->getRepository(User::class)->paginateAndSortUsersFromOwnerHotel($loggedUser, $offset, $column, $sortType, $hotelId);
 
@@ -306,9 +295,7 @@ class UserService
      */
     public function editUserRole(UserDto $userDto, User $loggedUser, $hotels)
     {
-        $loggedUserRole = $loggedUser->getRoles();
-        ValidateUserHelper::checkIfUserHasRole($loggedUserRole);
-        $loggedUserRole = ValidateUserHelper::checkIfUserHasHighRole($loggedUserRole);
+        $loggedUserRole = ValidateUserHelper::checkIfUserIsOwnerOrManager($loggedUser);
 
         if ($loggedUserRole === UserConfig::ROLE_MANAGER) {
             if (!$this->checkIfUserHasManagerHotelId($loggedUser->getHotel(), $userDto->username)) {

@@ -8,6 +8,7 @@
 
 namespace AppBundle\Helper;
 
+use AppBundle\Entity\User;
 use AppBundle\Enum\UserConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
@@ -68,5 +69,19 @@ class ValidateUserHelper
         }
 
         return $userRole[0];
+    }
+
+    /**
+     * @param User $loggedUser
+     *
+     * @return mixed
+     */
+    public static function checkIfUserIsOwnerOrManager(User $loggedUser)
+    {
+        $loggedUserRole = $loggedUser->getRoles();
+        ValidateUserHelper::checkIfUserHasRole($loggedUserRole);
+
+        return ValidateUserHelper::checkIfUserHasHighRole($loggedUserRole);
+    }
     }
 }
