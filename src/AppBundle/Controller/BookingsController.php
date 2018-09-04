@@ -10,6 +10,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto\ReservationDto;
 use AppBundle\Entity\Hotel;
+use AppBundle\Exception\HotelNotFoundException;
+use AppBundle\Exception\InappropriateUserRoleException;
+use AppBundle\Exception\NoRoleException;
+use AppBundle\Exception\RoomNotFoundException;
 use AppBundle\Form\ReservationTypeForm;
 use AppBundle\Helper\ValidateReservationHelper;
 use DateTime;
@@ -108,7 +112,8 @@ class BookingsController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function handleBookFormSubmission(Request $request)
     {
@@ -121,7 +126,22 @@ class BookingsController extends Controller
 
             return $this->redirectToRoute('create-booking');
         }
-        $this->addFlash('success', 'Booking successfully created');
+
+        $loggedUser = $this->getUser();
+        $bookingsManager = $this->get('app.bookings.manager');
+
+        try {
+            $bookingsManager->addReservation($loggedUser, $reservationDto);
+            $this->addFlash('success', 'Booking successfully created');
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (HotelNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (RoomNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
 
         return $this->redirectToRoute('create-booking');
     }
