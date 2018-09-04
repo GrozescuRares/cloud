@@ -53,18 +53,10 @@ class HotelRepository extends \Doctrine\ORM\EntityRepository
     public function paginateAndSortHotels(User $owner, $offset, $column = null, $sort = null)
     {
         $qb = $this->createQueryBuilder('hotel');
-        $qb ->select('hotel, COUNT(hotel) as employees')
-            ->innerJoin('hotel.users', 'users')
-            ->innerJoin('users.role', 'role')
-            ->where('hotel.owner =:owner')
-            ->andWhere('role.description != :client')
-            ->andWhere('role.description != :owner')
+        $qb ->where('hotel.owner =:owner')
             ->setParameter('owner', $owner)
-            ->setParameter('client', UserConfig::ROLE_CLIENT)
-            ->setParameter('owner', UserConfig::ROLE_OWNER)
             ->setMaxResults(PaginationConfig::ITEMS)
-            ->setFirstResult($offset)
-            ->groupBy('hotel.hotelId');
+            ->setFirstResult($offset);
 
         if (!empty($column) and !empty($sort)) {
             $qb->orderBy('hotel.'.$column, $sort);
