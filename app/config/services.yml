@@ -144,6 +144,7 @@ services:
         arguments:
             - '@app.hotel.service'
             - '@app.room.service'
+            - '@app.reservation.service'
         public: true
 
     AppBundle\Manager\BookingsManager: '@app.bookings.manager'
