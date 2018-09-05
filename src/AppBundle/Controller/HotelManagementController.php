@@ -9,13 +9,12 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Dto\RoomDto;
-use AppBundle\Enum\OrderConfig;
 use AppBundle\Enum\PaginationConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Form\RoomTypeForm;
-
 use AppBundle\Helper\PaginateAndSortHelper;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -100,7 +99,7 @@ class HotelManagementController extends Controller
                     'nrPages' => $pages,
                     'currentPage' => 1,
                     'nrHotels' => count($hotelsDto),
-                    'filters' => [],
+                    'sortBy' => [],
                 ]
             );
         } catch (NoRoleException $ex) {
@@ -148,7 +147,7 @@ class HotelManagementController extends Controller
                     'nrPages' => $pages,
                     'currentPage' => $pageNumber,
                     'nrHotels' => count($hotelsDto),
-                    'filters' => [
+                    'sortBy' => [
                         $column => $sort,
                     ],
                 ]
@@ -159,6 +158,18 @@ class HotelManagementController extends Controller
         } catch (InappropriateUserRoleException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         }
+    }
+
+    /**
+     * @Route("/hotel-management/room-management", name="room-management")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function roomManagementAction(Request $request)
+    {
+        return $this->render('hotel-management/room-management.html.twig');
     }
 
     /**

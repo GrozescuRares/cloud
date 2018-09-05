@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="wrapper">
+                    <a href="#" class="back">Back</a>
+                    <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                        <h1 class="text-center">Room Management <span>(Owner)</span></h1>
+                    </div>
+                    <div class="table-paginated table-filtered">
+                        <div class="filters">
+                            <a href="#" class="filters-toggle"><i class="fa fa-sliders"></i></a>
+                            <div class="filters-open">
+                                <div class="col-md-4 col-sm-6 col-xs-12 input-wrapper">
+                                    <div class="styled-input">
+                                        <select class="selectpicker">
+                                            <option disabled="disabled" selected="selected">Please choose Hotel</option>
+                                            <option>Hotel 1</option>
+                                            <option>Hotel 2</option>
+                                            <option>Hotel 3</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 col-xs-12 input-wrapper">
+                                    <div class="styled-input">
+                                        <select class="selectpicker">
+                                            <option selected="selected" disabled="disabled">Smoking</option>
+                                            <option>Yes</option>
+                                            <option>No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 col-xs-12 input-wrapper">
+                                    <div class="styled-input">
+                                        <select class="selectpicker">
+                                            <option disabled="disabled" selected="selected">Dogs</option>
+                                            <option>Yes</option>
+                                            <option>No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button class="btn submit">Filter</button>
+                                <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                                    <a href="#" class="reset-filters"><i class="fa fa-close"></i>Reset filters</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Number<span class="sort-icon"></span></th>
+                                    <th>People<span class="sort-icon"></span></th>
+                                    <th>Price<span class="sort-icon"></span></th>
+                                    <th>Smoking<span class="sort-icon"></span></th>
+                                    <th>Dogs Allowed<span class="sort-icon"></span></th>
+                                    <th class="text-center">Reserved</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>100</td>
+                                    <td>Y</td>
+                                    <td>N</td>
+                                    <td class="text-center"><input type="checkbox"></td>
+                                </tr>
+                                <tr>
+                                    <td>20</td>
+                                    <td>3</td>
+                                    <td>130</td>
+                                    <td>N</td>
+                                    <td>Y</td>
+                                    <td class="text-center"><input type="checkbox"></td>
+                                </tr>
+                                <tr>
+                                    <td>45</td>
+                                    <td>1</td>
+                                    <td>60</td>
+                                    <td>N</td>
+                                    <td>Y</td>
+                                    <td class="text-center"><input type="checkbox"></td>
+                                </tr>
+                                <tr>
+                                    <td>60</td>
+                                    <td>4</td>
+                                    <td>200</td>
+                                    <td>N</td>
+                                    <td>Y</td>
+                                    <td class="text-center"><input type="checkbox"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-items">4 items</div>
+                        <nav class="table-pagination">
+                            <ul class="pagination">
+                                <li class="prev">
+                                    <a href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo; Previous</span>
+                                    </a>
+                                </li>
+                                <li class="active"><a href="#">1</a></li>
+                                <li><a href="#">2</a></li>
+                                <li><a href="#">3</a></li>
+                                <li><a href="#">4</a></li>
+                                <li><a href="#">5</a></li>
+                                <li class="next">
+                                    <a href="#" aria-label="Next">
+                                        <span aria-hidden="true">Next &raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <div class='col-md-12 col-xs-12 no-lr-padding'>
+                            <a href='12-add-room.php' class='submit btn pull-right'>Add new Room</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

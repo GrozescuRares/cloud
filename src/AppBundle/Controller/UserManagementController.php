@@ -170,7 +170,7 @@ class UserManagementController extends Controller
                     'nrPages' => $nrPages,
                     'currentPage' => 1,
                     'nrUsers' => count($usersDto),
-                    'filters' => [],
+                    'sortBy' => [],
                 ]
             );
         } catch (NoRoleException $ex) {
@@ -262,7 +262,7 @@ class UserManagementController extends Controller
                 'nrPages' => $nrPages,
                 'currentPage' => $pageNumber,
                 'nrUsers' => count($users),
-                'filters' => [
+                'sortBy' => [
                     $column => $sort,
                 ],
             ]
