@@ -20,6 +20,7 @@ use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Form\EditUserTypeForm;
 use AppBundle\Form\UserTypeForm;
 
+use AppBundle\Helper\PaginateAndSortHelper;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -205,7 +206,7 @@ class UserManagementController extends Controller
                 list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
                 $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
 
-                list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
+                list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
                 $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType);
 
                 return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
@@ -215,7 +216,7 @@ class UserManagementController extends Controller
                 list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
                 $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
 
-                list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
+                list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
                 $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType, $hotelId);
 
                 return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
@@ -266,26 +267,5 @@ class UserManagementController extends Controller
                 ],
             ]
         );
-    }
-
-    /**
-     * @param $column
-     * @param $sort
-     * @param $paginate
-     *
-     * @return array
-     */
-    private function configPaginationFilters($column, $sort, $paginate)
-    {
-        if (!empty($column) && !empty($sort) && !empty($paginate)) {
-            $sortType = OrderConfig::TYPE[$sort];
-        } else {
-            $sortType = $sort;
-            if (!empty($column) && !empty($sort)) {
-                $sort = OrderConfig::TYPE[$sort];
-            }
-        }
-
-        return array($sortType, $sort);
     }
 }

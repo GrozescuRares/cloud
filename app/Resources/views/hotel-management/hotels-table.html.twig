@@ -3,15 +3,15 @@
         <table class="table">
             <thead>
             <tr>
-                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                <th class="columns" data-action="{{ path('paginate-and-sort-hotels') }}"
                     data-sort="{% if filters is empty or filters.name is not defined %}ASC{% else %}{{ filters.name }}{% endif %}"
                     data-column="name"
                     data-page="{{ currentPage }}">Hotel Name<span class="sort-icon"></span></th>
-                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                <th class="columns" data-action="{{ path('paginate-and-sort-hotels') }}"
                     data-sort="{% if filters is empty or filters.location is not defined %}ASC{% else %}{{ filters.location }}{% endif %}"
                     data-column="location"
                     data-page="{{ currentPage }}">Location<span class="sort-icon"></span></th>
-                <th class="columns" data-action="{{ path('paginate-and-sort') }}"
+                <th class="columns" data-action="{{ path('paginate-and-sort-hotels') }}"
                     data-sort="{% if filters is empty or filters.employees is not defined %}ASC{% else %}{{ filters.employees }}{% endif %}"
                     data-column="employees"
                     data-page="{{ currentPage }}">Number of employees<span class="sort-icon"></span></th>
@@ -37,7 +37,7 @@
         <ul class="pagination">
             {% if currentPage != 1 %}
                 <li class="prev">
-                    <a data-action="{{ path('paginate-and-sort') }}"
+                    <a data-action="{{ path('paginate-and-sort-hotels') }}"
                        data-page="{{ currentPage -1 }}"
                        data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
                        data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
@@ -50,7 +50,7 @@
             {% if nrPages > 1 %}
                 {% for page in 1..nrPages %}
                     <li {% if currentPage == page %} class="active" {% endif %}><a
-                                data-action="{{ path('paginate-and-sort') }}"
+                                data-action="{{ path('paginate-and-sort-hotels') }}"
                                 data-page="{{ page }}"
                                 data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
                                 data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
@@ -60,7 +60,7 @@
             {% endif %}
             {% if currentPage != nrPages %}
                 <li class="next">
-                    <a data-action="{{ path('paginate-and-sort') }}"
+                    <a data-action="{{ path('paginate-and-sort-hotels') }}"
                        data-page="{{ currentPage + 1 }}"
                        data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
                        data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
@@ -73,6 +73,6 @@
         </ul>
     </nav>
     <div class="col-md-12 col-xs-12 no-lr-padding">
-        <a href="12-add-room.php" class="btn submit pull-right">Add New Room</a>
+        <a href="{{ path('add-room') }}" class="btn submit pull-right">Add New Room</a>
     </div>
 </div>

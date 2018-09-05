@@ -1,9 +1,5 @@
 $(document).ready(function () {
 
-    $(document).on('change', '#hotels', {}, function (event) {
-        loadOwnerHotelUsers(event, $('select option:selected'));
-    });
-
     $(document).on('click', '.pagination li a', {}, function (event) {
         paginateAndSort(event, this);
     });
@@ -13,7 +9,10 @@ $(document).ready(function () {
     });
 });
 
-function loadOwnerHotelUsers(event, element) {
+function paginateAndSort(event, element) {
+    event.preventDefault();
+    let hotelId = $('#hotels').val();
+
     $.ajax({
         url: $(element).attr('data-action'),
         type: 'GET',
@@ -21,10 +20,11 @@ function loadOwnerHotelUsers(event, element) {
         data: {
             'type': $(element).attr('data-role'),
             'pageNumber': $(element).attr('data-page'),
-            'hotelId': $(element).val()
+            'column': $(element).attr('data-column'),
+            'sort': $(element).attr('data-sort'),
+            'hotelId': hotelId,
+            'paginate': $(element).attr('data-paginate')
         },
-        async: true,
-
         success: function (data, status) {
             $('#reload').html(data);
         },

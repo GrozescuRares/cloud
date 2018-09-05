@@ -10,7 +10,7 @@
                     <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title text-center">
                         <h1>Hotel Information <span>(Owner only)</span></h1>
                     </div>
-                    <div id="load-hotels-table">
+                    <div id="reload">
                         {{ include('hotel-management/hotels-table.html.twig') }}
                     </div>
                 </div>
@@ -18,4 +18,7 @@
         </div>
     </div>
 
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/paginateAndSort.js') }}"></script>
 {% endblock %}

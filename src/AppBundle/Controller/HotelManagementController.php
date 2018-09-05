@@ -9,10 +9,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Dto\RoomDto;
+use AppBundle\Enum\OrderConfig;
+use AppBundle\Enum\PaginationConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Form\RoomTypeForm;
 
+use AppBundle\Helper\PaginateAndSortHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -105,5 +108,71 @@ class HotelManagementController extends Controller
         } catch (InappropriateUserRoleException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         }
+    }
+
+    /**
+     * @Route("/hotel-management/paginate-and-sort", name="paginate-and-sort-hotels")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function paginateAndSortAction(Request $request)
+    {
+        $loggedUser = $this->getUser();
+        $hotelManagementManager = $this->get('app.hotel-management.manager');
+        $bookingManager = $this->get('app.bookings.manager');
+
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
+        try {
+            list($pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+            $pages = $hotelManagementManager->getHotelPagesNumber($loggedUser);
+
+            list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
+            $hotelsDto = $hotelManagementManager->paginateAndSortHotels($loggedUser, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType);
+            $availableHotels = $bookingManager->getFreeHotels(new \DateTime('now'), new \DateTime('now'));
+
+            return $this->render(
+                'hotel-management/hotels-table.html.twig',
+                [
+                    'user' => $loggedUser,
+                    'hotels' => $hotelsDto,
+                    'availableHotels' => $availableHotels,
+                    'nrPages' => $pages,
+                    'currentPage' => $pageNumber,
+                    'nrHotels' => count($hotelsDto),
+                    'filters' => [
+                        $column => $sort,
+                    ],
+                ]
+            );
+
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    private function getPaginationParameters(Request $request)
+    {
+        $pageNumber = $request->query->get('pageNumber');
+        $column = $request->query->get('column');
+        $sort = $request->query->get('sort');
+        $paginate = $request->query->get('paginate');
+
+        return array($pageNumber, $column, $sort, $paginate);
     }
 }

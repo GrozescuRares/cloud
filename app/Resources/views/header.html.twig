@@ -25,7 +25,7 @@
                             <a href="{{ path('user-management') }}" class="navigation-item">{{ 'navigation.user_management'| trans }}</a>
                         </li>
                         <li {% if app.request.get('_route') == "hotel-managemenet" %} class="active" {% endif %}>
-                            <a href="09-hotel-information-owner.php" class="navigation-item">{{ 'navigation.hotel_management'| trans }}
+                            <a href="{{ path('hotel-information') }}" class="navigation-item">{{ 'navigation.hotel_management'| trans }}
                             </a>
                         </li>
                     {% endif %}
