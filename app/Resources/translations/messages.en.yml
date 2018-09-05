@@ -81,15 +81,14 @@ page:
     add-room:
       title: 'Add New Room'
       back: 'Back'
-    user-management:
-      items: '%users% item(s)'
+    hotel-information:
+      items: '%hotels% item(s)'
       previous: 'Previous'
       next: 'Next'
       page-number: '%page%'
-      add_new_user: 'Add New User'
+      add_new_room: 'Add New Room'
       back: 'Back'
-      title: 'User Management'
-      search: 'Search by hotel all users'
+      title: 'Hotel Information'
 
   my-account:
     back: 'Back'

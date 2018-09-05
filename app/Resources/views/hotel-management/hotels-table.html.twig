@@ -32,7 +32,7 @@
             </tbody>
         </table>
     </div>
-    <div class="table-items">{{ nrHotels }} items</div>
+    <div class="table-items">{{ 'page.hotel-management.hotel-information.items'| trans({'%hotels%': nrHotels}) }}</div>
     <nav class="table-pagination">
         <ul class="pagination">
             {% if currentPage != 1 %}
@@ -43,7 +43,7 @@
                        data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
                        data-paginate="true"
                        aria-label="Previous">
-                        <span aria-hidden="true">&laquo; Previous</span>
+                        <span aria-hidden="true">&laquo; {{ 'page.hotel-management.hotel-information.previous'| trans }}</span>
                     </a>
                 </li>
             {% endif %}
@@ -54,7 +54,7 @@
                                 data-page="{{ page }}"
                                 data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
                                 data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
-                                data-paginate="true">{{ page }}</a>
+                                data-paginate="true">{{ 'page.hotel-management.hotel-information.page-number' |trans({'%page%': page}) }}</a>
                     </li>
                 {% endfor %}
             {% endif %}
@@ -66,13 +66,13 @@
                        data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
                        data-paginate="true"
                        aria-label="Next">
-                        <span aria-hidden="true">Next &raquo;</span>
+                        <span aria-hidden="true">{{ 'page.hotel-management.hotel-information.next'| trans }} &raquo;</span>
                     </a>
                 </li>
             {% endif %}
         </ul>
     </nav>
     <div class="col-md-12 col-xs-12 no-lr-padding">
-        <a href="{{ path('add-room') }}" class="btn submit pull-right">Add New Room</a>
+        <a href="{{ path('add-room') }}" class="btn submit pull-right">{{ 'page.hotel-management.hotel-information.add_new_room'| trans }}</a>
     </div>
 </div>

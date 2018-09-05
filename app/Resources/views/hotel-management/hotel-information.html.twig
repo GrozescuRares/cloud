@@ -6,9 +6,9 @@
         <div class="container-fluid">
             <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                 <div class="wrapper">
-                    <a href="#" class="back">Back</a>
+                    <a href="{{ path('dashboard') }}">{{ 'page.hotel-management.hotel-information.back'| trans }}</a>
                     <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title text-center">
-                        <h1>Hotel Information <span>(Owner only)</span></h1>
+                        <h1>{{ 'page.hotel-management.hotel-information.title'| trans }}</h1>
                     </div>
                     <div id="reload">
                         {{ include('hotel-management/hotels-table.html.twig') }}
