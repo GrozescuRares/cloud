@@ -329,6 +329,15 @@ class UserService
     }
 
     /**
+     * @param User $loggedUser
+     * @return UserDto
+     */
+    public function getUserDto(User $loggedUser)
+    {
+        return $this->userAdapter->convertToDto($loggedUser);
+    }
+
+    /**
      * @param $hotels
      * @param $username
      *

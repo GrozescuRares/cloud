@@ -59,6 +59,15 @@ class HotelManagementManager
     }
 
     /**
+     * @param mixed $hotelId
+     * @return float
+     */
+    public function getRoomsPagesNumber($hotelId)
+    {
+        return $this->roomService->getPagesNumberForRooms($hotelId);
+    }
+
+    /**
      * @param User  $loggedUser
      * @param mixed $offset
      * @param mixed $column
@@ -68,5 +77,28 @@ class HotelManagementManager
     public function paginateAndSortHotels(User $loggedUser, $offset, $column, $sort)
     {
         return $this->hotelService->paginateAndSortHotels($loggedUser, $offset, $column, $sort);
+    }
+
+    /**
+     * @param mixed $hotelId
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @param mixed $petFilter
+     * @param mixed $smokingFilter
+     * @return array
+     */
+    public function paginateAndSortRooms($hotelId, $offset, $column = null, $sort = null, $petFilter = null, $smokingFilter = null)
+    {
+        return $this->roomService->paginateAndSortRooms($hotelId, $offset, $column, $sort, $petFilter, $smokingFilter);
+    }
+
+    /**
+     * @param User $loggedUser
+     * @return array
+     */
+    public function getOwnedHotels(User $loggedUser)
+    {
+        return $this->hotelService->getOwnerHotelsDto($loggedUser);
     }
 }

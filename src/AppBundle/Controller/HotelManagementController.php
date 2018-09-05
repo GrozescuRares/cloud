@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto\RoomDto;
 use AppBundle\Enum\PaginationConfig;
+use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Form\RoomTypeForm;
@@ -169,7 +170,52 @@ class HotelManagementController extends Controller
      */
     public function roomManagementAction(Request $request)
     {
-        return $this->render('hotel-management/room-management.html.twig');
+        $loggedUser = $this->getUser();
+        $hotelManagementManager = $this->get('app.hotel-management.manager');
+        $bookingManager = $this->get('app.bookings.manager');
+        $hotels = $hotelManagementManager->getOwnedHotels($loggedUser);
+        $hotelId = reset($hotels)->hotelId;
+
+        try {
+            if (empty($hotels)) {
+                $hotelId = $loggedUser->getHotel()->getHotelId();
+            }
+            $nrPages = $hotelManagementManager->getRoomsPagesNumber($hotelId);
+            $roomDtos = $hotelManagementManager->paginateAndSortRooms($hotelId, 0);
+            $availableRooms = $bookingManager->getFreeRooms($hotelId, new \DateTime('now'), new \DateTime('now'));
+
+            return $this->render(
+                'hotel-management/room-management.html.twig',
+                [
+                    'hotels' => $hotels,
+                    'user' => $loggedUser,
+                    'rooms' => $roomDtos,
+                    'nrPages' => $nrPages,
+                    'currentPage' => 1,
+                    'availableRooms' => $availableRooms,
+                    'nrRooms' => count($roomDtos),
+                    'sortBy' => [],
+                    'filters' => [],
+                ]
+            );
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (HotelNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/hotel-management/paginate-and-sort-rooms", name="paginate-and-sort-rooms")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function paginateAndSortRoomsAction(Request $request)
+    {
     }
 
     /**

@@ -8,6 +8,7 @@
 
 namespace AppBundle\Dto;
 
+use AppBundle\Enum\RoomConfig;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -43,4 +44,12 @@ class RoomDto
      * @Assert\NotEqualTo("default", message="constraints.choose-hotel")
      */
     public $hotel;
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return "Id: ".$this->roomId." Capacity: ".$this->capacity." Price: ".$this->price." Smoking: ".RoomConfig::ALLOWED[$this->smoking]." Pet: ".RoomConfig::ALLOWED[$this->pet];
+    }
 }

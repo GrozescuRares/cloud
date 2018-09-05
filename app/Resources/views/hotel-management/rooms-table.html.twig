@@ -1,0 +1,84 @@
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
+                data-sort="{% if sortBy is empty or sortBy.roomId is not defined %}ASC{% else %}{{ sortBy.roomId }}{% endif %}"
+                data-column="number"
+                data-page="{{ currentPage }}">Number<span class="sort-icon"></span></th>
+            <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
+                data-sort="{% if sortBy is empty or sortBy.capacity is not defined %}ASC{% else %}{{ sortBy.capacity }}{% endif %}"
+                data-column="capacity"
+                data-page="{{ currentPage }}">People<span class="sort-icon"></span></th>
+            <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
+                data-sort="{% if sortBy is empty or sortBy.price is not defined %}ASC{% else %}{{ sortBy.price }}{% endif %}"
+                data-column="price"
+                data-page="{{ currentPage }}">Price<span class="sort-icon"></span></th>
+            <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
+                data-sort="{% if sortBy is empty or sortBy.smoking is not defined %}ASC{% else %}{{ sortBy.smoking }}{% endif %}"
+                data-column="smoking"
+                data-page="{{ currentPage }}">Smoking<span class="sort-icon"></span></th>
+            <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
+                data-sort="{% if sortBy is empty or sortBy.pet is not defined %}ASC{% else %}{{ sortBy.pet }}{% endif %}"
+                data-column="pet"
+                data-page="{{ currentPage }}">Pets allowed<span class="sort-icon"></span></th>
+            <th class="text-center">Reserved</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for r in rooms %}
+            <tr>
+                <td>{{ r.roomId }}</td>
+                <td>{{ r.capacity }}</td>
+                <td>{{ r.price }}</td>
+                <td>{% if r.smoking %}'Y'{% else %}'N'{% endif %}</td>
+                <td>{% if r.pet %}'Y'{% else %}'N'{% endif %}</td>
+                <td class="text-center"><input type="checkbox" {% if availableRooms[r.__toString()] is defined %} checked {% endif %}></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="table-items">{{ nrRooms }} items</div>
+<nav class="table-pagination">
+    <ul class="pagination">
+        {% if currentPage != 1 %}
+            <li class="prev">
+                <a data-action="{{ path('paginate-and-sort-rooms') }}"
+                   data-page="{{ currentPage -1 }}"
+                   data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                   data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
+                   data-paginate="true"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo; {{ 'page.hotel-management.hotel-information.previous'| trans }}</span>
+                </a>
+            </li>
+        {% endif %}
+        {% if nrPages > 1 %}
+            {% for page in 1..nrPages %}
+                <li {% if currentPage == page %} class="active" {% endif %}><a
+                            data-action="{{ path('paginate-and-sort-rooms') }}"
+                            data-page="{{ page }}"
+                            data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                            data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
+                            data-paginate="true">{{ 'page.hotel-management.hotel-information.page-number' |trans({'%page%': page}) }}</a>
+                </li>
+            {% endfor %}
+        {% endif %}
+        {% if currentPage != nrPages %}
+            <li class="next">
+                <a data-action="{{ path('paginate-and-sort-rooms') }}"
+                   data-page="{{ currentPage + 1 }}"
+                   data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                   data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
+                   data-paginate="true"
+                   aria-label="Next">
+                    <span aria-hidden="true">{{ 'page.hotel-management.hotel-information.next'| trans }} &raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+<div class='col-md-12 col-xs-12 no-lr-padding'>
+    <a href='{{ path('add-room') }}' class='submit btn pull-right'>Add new Room</a>
+</div>

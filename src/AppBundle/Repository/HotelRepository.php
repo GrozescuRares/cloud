@@ -40,7 +40,7 @@ class HotelRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
 
-        return ceil(count($hotels) / 5);
+        return ceil(count($hotels) / PaginationConfig::ITEMS);
     }
 
     /**

@@ -89,6 +89,11 @@ page:
       add_new_room: 'Add New Room'
       back: 'Back'
       title: 'Hotel Information'
+      hotel: 'Hotel Name'
+      location: 'Location'
+      employees: 'Number of employees'
+      availability: 'Availability'
+      edit: 'Edit'
 
   my-account:
     back: 'Back'

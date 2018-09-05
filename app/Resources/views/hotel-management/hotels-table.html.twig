@@ -6,17 +6,17 @@
                 <th class="columns" data-action="{{ path('paginate-and-sort-hotels') }}"
                     data-sort="{% if sortBy is empty or sortBy.name is not defined %}ASC{% else %}{{ sortBy.name }}{% endif %}"
                     data-column="name"
-                    data-page="{{ currentPage }}">Hotel Name<span class="sort-icon"></span></th>
+                    data-page="{{ currentPage }}">{{ 'page.hotel-management.hotel-information.hotel'| trans }}<span class="sort-icon"></span></th>
                 <th class="columns" data-action="{{ path('paginate-and-sort-hotels') }}"
                     data-sort="{% if sortBy is empty or sortBy.location is not defined %}ASC{% else %}{{ sortBy.location }}{% endif %}"
                     data-column="location"
-                    data-page="{{ currentPage }}">Location<span class="sort-icon"></span></th>
+                    data-page="{{ currentPage }}">{{ 'page.hotel-management.hotel-information.location'| trans }}<span class="sort-icon"></span></th>
                 <th class="columns" data-action="{{ path('paginate-and-sort-hotels') }}"
                     data-sort="{% if sortBy is empty or sortBy.employees is not defined %}ASC{% else %}{{ sortBy.employees }}{% endif %}"
                     data-column="employees"
-                    data-page="{{ currentPage }}">Number of employees<span class="sort-icon"></span></th>
-                <th class="text-center">Availability</th>
-                <th class="text-center">Edit</th>
+                    data-page="{{ currentPage }}">{{ 'page.hotel-management.hotel-information.employees'| trans }}<span class="sort-icon"></span></th>
+                <th class="text-center">{{ 'page.hotel-management.hotel-information.availability'| trans }}</th>
+                <th class="text-center">{{ 'page.hotel-management.hotel-information.edit'| trans }}</th>
             </tr>
             </thead>
             <tbody>

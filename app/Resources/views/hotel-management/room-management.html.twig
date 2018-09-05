@@ -16,10 +16,18 @@
                                 <div class="col-md-4 col-sm-6 col-xs-12 input-wrapper">
                                     <div class="styled-input">
                                         <select class="selectpicker">
-                                            <option disabled="disabled" selected="selected">Please choose Hotel</option>
-                                            <option>Hotel 1</option>
-                                            <option>Hotel 2</option>
-                                            <option>Hotel 3</option>
+                                            {% if is_granted('ROLE_OWNER') %}
+                                                <option disabled="disabled" selected="selected">Please choose Hotel</option>
+                                                {% for hotel in hotels %}
+                                                    <option data-action="{{ path('paginate-and-sort-rooms') }}" data-role="owner"
+                                                            data-page="{{ currentPage }}"
+                                                            value="{{ hotel.hotelId }}"> {{ hotel.name }} </option>
+                                                {% endfor %}
+                                            {% elseif is_granted('ROLE_MANAGER') %}
+                                                <option data-action="{{ path('paginate-and-sort-rooms') }}" data-role="manager"
+                                                        data-page="{{ currentPage }}" disabled="disabled"
+                                                        value="{{ user.hotel[hotelId] }}"> {{ user.hotel[name] }} </option>
+                                            {% endif %}
                                         </select>
                                     </div>
                                 </div>
@@ -27,8 +35,8 @@
                                     <div class="styled-input">
                                         <select class="selectpicker">
                                             <option selected="selected" disabled="disabled">Smoking</option>
-                                            <option>Yes</option>
-                                            <option>No</option>
+                                            <option data-action="{{ path('paginate-and-sort-rooms') }}" data-page="{{ currentPage }}" value="Y">Yes</option>
+                                            <option data-action="{{ path('paginate-and-sort-rooms') }}" data-page="{{ currentPage }}" value="N">No</option>
                                         </select>
                                     </div>
                                 </div>
@@ -36,8 +44,8 @@
                                     <div class="styled-input">
                                         <select class="selectpicker">
                                             <option disabled="disabled" selected="selected">Dogs</option>
-                                            <option>Yes</option>
-                                            <option>No</option>
+                                            <option data-action="{{ path('paginate-and-sort-rooms') }}" data-page="{{ currentPage }}" value="Y">Yes</option>
+                                            <option data-action="{{ path('paginate-and-sort-rooms') }}" data-page="{{ currentPage }}" value="N">No</option>
                                         </select>
                                     </div>
                                 </div>
@@ -47,80 +55,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>Number<span class="sort-icon"></span></th>
-                                    <th>People<span class="sort-icon"></span></th>
-                                    <th>Price<span class="sort-icon"></span></th>
-                                    <th>Smoking<span class="sort-icon"></span></th>
-                                    <th>Dogs Allowed<span class="sort-icon"></span></th>
-                                    <th class="text-center">Reserved</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>2</td>
-                                    <td>100</td>
-                                    <td>Y</td>
-                                    <td>N</td>
-                                    <td class="text-center"><input type="checkbox"></td>
-                                </tr>
-                                <tr>
-                                    <td>20</td>
-                                    <td>3</td>
-                                    <td>130</td>
-                                    <td>N</td>
-                                    <td>Y</td>
-                                    <td class="text-center"><input type="checkbox"></td>
-                                </tr>
-                                <tr>
-                                    <td>45</td>
-                                    <td>1</td>
-                                    <td>60</td>
-                                    <td>N</td>
-                                    <td>Y</td>
-                                    <td class="text-center"><input type="checkbox"></td>
-                                </tr>
-                                <tr>
-                                    <td>60</td>
-                                    <td>4</td>
-                                    <td>200</td>
-                                    <td>N</td>
-                                    <td>Y</td>
-                                    <td class="text-center"><input type="checkbox"></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="table-items">4 items</div>
-                        <nav class="table-pagination">
-                            <ul class="pagination">
-                                <li class="prev">
-                                    <a href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo; Previous</span>
-                                    </a>
-                                </li>
-                                <li class="active"><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li><a href="#">4</a></li>
-                                <li><a href="#">5</a></li>
-                                <li class="next">
-                                    <a href="#" aria-label="Next">
-                                        <span aria-hidden="true">Next &raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                        <div class='col-md-12 col-xs-12 no-lr-padding'>
-                            <a href='12-add-room.php' class='submit btn pull-right'>Add new Room</a>
+                        <div id="reload">
+                            {{ include('hotel-management/rooms-table.html.twig') }}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/paginateAndSort.js') }}"></script>
 {% endblock %}

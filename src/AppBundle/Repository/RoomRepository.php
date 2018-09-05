@@ -2,6 +2,9 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Hotel;
+use AppBundle\Enum\PaginationConfig;
+
 /**
  * RoomRepository
  *
@@ -19,7 +22,7 @@ class RoomRepository extends \Doctrine\ORM\EntityRepository
     public function getBookedRooms(\DateTime $startDate, \DateTime $endDate, $hotelId = null)
     {
         $qb = $this->createQueryBuilder('room');
-        $qb ->innerJoin('room.reservations', 'reservation')
+        $qb->innerJoin('room.reservations', 'reservation')
             ->innerJoin('room.hotel', 'hotel')
             ->where('reservation.startDate <= :endDate')
             ->andWhere('reservation.endDate >= :startDate')
@@ -52,5 +55,55 @@ class RoomRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
 
         return $rooms;
+    }
+
+    /**
+     * @param Hotel $hotel
+     * @return float
+     */
+    public function getRoomsPagesNumber(Hotel $hotel)
+    {
+        $rooms = $this->createQueryBuilder('room')
+            ->where('room.hotel = :hotel')
+            ->setParameter('hotel', $hotel)
+            ->getQuery()
+            ->getResult();
+
+        return ceil(count($rooms) / PaginationConfig::ITEMS);
+    }
+
+    /**
+     * @param Hotel $hotel
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @param mixed $petFilter
+     * @param mixed $smokingFilter
+     * @return array
+     */
+    public function paginateAndSortRooms(Hotel $hotel, $offset, $column = null, $sort = null, $petFilter = null, $smokingFilter = null)
+    {
+        $qb = $this->createQueryBuilder('room');
+        $qb ->where('room.hotel =:hotel')
+            ->setParameter('hotel', $hotel);
+
+        if (!empty($animalFilter)) {
+            $qb->andWhere('room.pet = :petFilter')
+                ->setParameter('petFilter', $petFilter);
+        }
+
+        if (!empty($smokingFilter)) {
+            $qb->andWhere('room.smoking = :smokingFilter')
+                ->setParameter('smokingFilter', $smokingFilter);
+        }
+        $qb
+            ->setMaxResults(PaginationConfig::ITEMS)
+            ->setFirstResult($offset);
+
+        if (!empty($column) and !empty($sort)) {
+            $qb->orderBy('room.'.$column, $sort);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }
