@@ -52,4 +52,6 @@ security:
     - { path: ^/activate-account, role: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/user-management/, role: ROLE_MANAGER }
     - { path: ^/hotel-management/add-room, role: ROLE_OWNER }
+    - { path: ^/hotel-management/hotel-information, role: ROLE_OWNER }
+    - { path: ^/hotel-management/room-management, role: ROLE_MANAGER }
     - { path: ^/, role: ROLE_CLIENT }
