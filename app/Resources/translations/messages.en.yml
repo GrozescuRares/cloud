@@ -86,7 +86,6 @@ page:
       previous: 'Previous'
       next: 'Next'
       page-number: '%page%'
-      add_new_room: 'Add New Room'
       back: 'Back'
       title: 'Hotel Information'
       hotel: 'Hotel Name'
@@ -94,6 +93,9 @@ page:
       employees: 'Number of employees'
       availability: 'Availability'
       edit: 'Edit'
+    room-management:
+      to: 'Room Management'
+      add_new_rom: 'Add New Room'
 
   my-account:
     back: 'Back'

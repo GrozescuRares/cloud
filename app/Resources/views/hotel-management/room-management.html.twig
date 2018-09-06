@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                 <div class="wrapper">
-                    <a href="#" class="back">Back</a>
+                    <a href="{% if is_granted('ROLE_OWNER') %}{{ path('hotel-information') }}{% else %}{{ path('dashboard') }} {% endif %}">Back</a>
                     <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
                         <h1 class="text-center">Room Management <span>(Owner)</span></h1>
                     </div>
@@ -18,7 +18,8 @@
                                         <select class="selectpicker" id="hotels">
                                             {% if is_granted('ROLE_OWNER') %}
                                                 {% for hotel in hotels %}
-                                                    <option value="{{ hotel.hotelId }}" {% if hotel.hotelId == firstHotel %}selected="selected{% endif %}">
+                                                    <option value="{{ hotel.hotelId }}"
+                                                            {% if hotel.hotelId == firstHotel %}selected="selected{% endif %}">
                                                         {{ hotel.name }} </option>
                                                 {% endfor %}
                                             {% elseif is_granted('ROLE_MANAGER') %}
@@ -46,15 +47,24 @@
                                         </select>
                                     </div>
                                 </div>
-                                <button class="btn submit" data-action="{{ path('filter-rooms') }}" data-page="{{ currentPage }}">Filter</button>
+                                <button class="btn submit" id="filter" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
+                                        data-page="{{ currentPage }}">Filter
+                                </button>
                                 <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
-                                    <a data-action="{{ path('filter-rooms') }}" data-filter-reset="true" data-page="{{ currentPage }}" class="reset-filters"><i class="fa fa-close"></i>Reset filters</a>
+                                    <a data-action="{{ path('paginate-filter-and-sort-rooms') }}" data-filter-reset="true"
+                                       data-page="{{ currentPage }}" class="reset-filters"><i class="fa fa-close"></i>Reset
+                                        filters</a>
                                 </div>
                             </div>
                         </div>
                         <div id="reload">
                             {{ include('hotel-management/rooms-table.html.twig') }}
                         </div>
+                        {% if is_granted('ROLE_OWNER') %}
+                            <div class='col-md-12 col-xs-12 no-lr-padding'>
+                                <a href='{{ path('add-room') }}' class='submit btn pull-right'>Add new Room</a>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

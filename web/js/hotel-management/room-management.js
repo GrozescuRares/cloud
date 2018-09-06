@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $('.filters-toggle').click();
-    $(document).on('click', '.submit', {}, function (event) {
+    $(document).on('click', '#filter', {}, function (event) {
         filterData(event, this);
     });
     $(document).on('click', '.reset-filters', {}, function (event) {

@@ -217,7 +217,7 @@ class HotelManagementController extends Controller
     }
 
     /**
-     * @Route("/hotel-management/paginate-and-sort-rooms", name="paginate-and-sort-rooms")
+     * @Route("/hotel-management/paginate-filter-and-sort-rooms", name="paginate-filter-and-sort-rooms")
      *
      * @param Request $request
      *
@@ -238,9 +238,8 @@ class HotelManagementController extends Controller
             );
         }
         try {
-            list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getPaginationParameters($request);
+            list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters($request);
             $nrPages = $hotelManagementManager->getRoomsPagesNumber($hotelId, $petFilter, $smokingFilter);
-
             list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
             $roomDtos = $hotelManagementManager->paginateAndSortRooms($hotelId, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType, $petFilter, $smokingFilter);
             $availableRooms = $bookingManager->getFreeRooms($hotelId, new \DateTime('now'), new \DateTime('now'));
@@ -274,64 +273,11 @@ class HotelManagementController extends Controller
     }
 
     /**
-     * @Route("/hotel-management/filter-rooms", name="filter-rooms")
-     *
-     * @param Request $request
-     * @return Response
-     */
-    public function filterRoomsAction(Request $request)
-    {
-        $loggedUser = $this->getUser();
-        $hotelManagementManager = $this->get('app.hotel-management.manager');
-        $bookingManager = $this->get('app.bookings.manager');
-
-        if (!$request->isXmlHttpRequest()) {
-            return $this->render(
-                'error.html.twig',
-                [
-                    'error' => 'Stay out of here.',
-                ]
-            );
-        }
-        try {
-            list($hotelId, $pageNumber, $petFilter, $smokingFilter) = $this->getFilterParameters($request);
-            $nrPages = $hotelManagementManager->getRoomsPagesNumber($hotelId, $petFilter, $smokingFilter);
-
-            $roomDtos = $hotelManagementManager->paginateAndSortRooms($hotelId, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, null, null, $petFilter, $smokingFilter);
-            $availableRooms = $bookingManager->getFreeRooms($hotelId, new \DateTime('now'), new \DateTime('now'));
-
-            return $this->render(
-                'hotel-management/rooms-table.html.twig',
-                [
-                    'user' => $loggedUser,
-                    'rooms' => $roomDtos,
-                    'nrPages' => $nrPages,
-                    'currentPage' => $pageNumber,
-                    'availableRooms' => $availableRooms,
-                    'nrRooms' => count($roomDtos),
-                    'sortBy' => [],
-                    'filters' => [
-                        'petFilter' => RoomConfig::ALLOWED[$petFilter],
-                        'smokingFilter' => RoomConfig::ALLOWED[$smokingFilter],
-                    ],
-                ]
-            );
-
-        } catch (NoRoleException $ex) {
-            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
-        } catch (InappropriateUserRoleException $ex) {
-            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
-        } catch (HotelNotFoundException $ex) {
-            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
-        }
-    }
-
-    /**
      * @param Request $request
      *
      * @return array
      */
-    private function getPaginationParameters(Request $request)
+    private function getRequestParameters(Request $request)
     {
         $hotelId = $request->query->get('hotelId');
         $pageNumber = $request->query->get('pageNumber');
@@ -344,21 +290,5 @@ class HotelManagementController extends Controller
         $smokingFilter = RoomConfig::CONVERT[$smokingFilter];
 
         return array($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter);
-    }
-
-    /**
-     * @param Request $request
-     * @return array
-     */
-    private function getFilterParameters(Request $request)
-    {
-        $hotelId = $request->query->get('hotelId');
-        $pageNumber = $request->query->get('pageNumber');
-        $petFilter = $request->query->get('petFilter');
-        $smokingFilter = $request->query->get('smokingFilter');
-        $petFilter = RoomConfig::CONVERT[$petFilter];
-        $smokingFilter = RoomConfig::CONVERT[$smokingFilter];
-
-        return array($hotelId, $pageNumber, $petFilter, $smokingFilter);
     }
 }

@@ -28,6 +28,9 @@
                     <div id="reload">
                         {{ include('user_management/users-table.html.twig') }}
                     </div>
+                    <div class="col-md-12 col-xs-12 no-lr-padding">
+                        <a href="{{ path('add-user') }}" class="btn submit pull-right">{{ 'page.user-management.user-management.add_new_user'| trans }}</a>
+                    </div>
                 </div>
             </div>
         </div>

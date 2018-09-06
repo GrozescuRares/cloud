@@ -5,23 +5,23 @@
            data-filter-smoking="{{ filters.smokingFilter }}">
         <thead>
         <tr>
-            <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
+            <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.roomId is not defined %}ASC{% else %}{{ sortBy.roomId }}{% endif %}"
                 data-column="roomId"
                 data-page="{{ currentPage }}">Number<span class="sort-icon"></span></th>
-            <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
+            <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.capacity is not defined %}ASC{% else %}{{ sortBy.capacity }}{% endif %}"
                 data-column="capacity"
                 data-page="{{ currentPage }}">People<span class="sort-icon"></span></th>
-            <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
+            <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.price is not defined %}ASC{% else %}{{ sortBy.price }}{% endif %}"
                 data-column="price"
                 data-page="{{ currentPage }}">Price<span class="sort-icon"></span></th>
-            <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
+            <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.smoking is not defined %}ASC{% else %}{{ sortBy.smoking }}{% endif %}"
                 data-column="smoking"
                 data-page="{{ currentPage }}">Smoking<span class="sort-icon"></span></th>
-            <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
+            <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.pet is not defined %}ASC{% else %}{{ sortBy.pet }}{% endif %}"
                 data-column="pet"
                 data-page="{{ currentPage }}">Pets allowed<span class="sort-icon"></span></th>
@@ -47,7 +47,7 @@
     <ul class="pagination">
         {% if currentPage != 1 %}
             <li class="prev">
-                <a data-action="{{ path('paginate-and-sort-rooms') }}"
+                <a data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                    data-page="{{ currentPage -1 }}"
                    data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
                    data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
@@ -60,7 +60,7 @@
         {% if nrPages > 1 %}
             {% for page in 1..nrPages %}
                 <li {% if currentPage == page %} class="active" {% endif %}><a
-                            data-action="{{ path('paginate-and-sort-rooms') }}"
+                            data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                             data-page="{{ page }}"
                             data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
                             data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
@@ -70,7 +70,7 @@
         {% endif %}
         {% if currentPage != nrPages %}
             <li class="next">
-                <a data-action="{{ path('paginate-and-sort-rooms') }}"
+                <a data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                    data-page="{{ currentPage + 1 }}"
                    data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
                    data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
@@ -82,9 +82,6 @@
         {% endif %}
     </ul>
 </nav>
-<div class='col-md-12 col-xs-12 no-lr-padding'>
-    <a href='{{ path('add-room') }}' class='submit btn pull-right'>Add new Room</a>
-</div>
 {% else %}
     <h1>Sorry, but there are no rooms.</h1>
 {% endif %}
