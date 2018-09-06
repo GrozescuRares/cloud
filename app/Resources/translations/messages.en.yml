@@ -29,6 +29,7 @@ form:
     pet: 'Pet'
     birth_date: 'Birth date'
     registration_date: 'Registration date'
+    room: 'Room'
 
 page:
   activation-account:
@@ -111,6 +112,13 @@ page:
     title: 'Edit user'
     back: 'Back'
 
+  bookings:
+    create-booking:
+      back: 'Back'
+      title: 'Create New Booking'
+      date: 'From when till when?'
+      to: 'TO'
+
 emails:
   to_activate: 'To activate the account, go to:'
   here: 'here.'
@@ -120,6 +128,10 @@ emails:
   credentials: 'Your credentials:'
   username: 'Username: %user%'
   password: 'Password: %pass%'
+  booking_confirmation: 'Booking Confirmation'
+  booking_congratulations: 'Congratulations, the booking has been successful!'
+  booking_message: 'We will be waiting for your arrival on the %startDate% at %hotel% in %location%. MR/s %name%, you will be staying in room %room%!'
+  booking_day: 'Have a great day!'
 
 flash_messages:
   message: '%message%'

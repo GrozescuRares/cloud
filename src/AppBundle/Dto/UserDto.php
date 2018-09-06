@@ -8,7 +8,6 @@
 
 namespace AppBundle\Dto;
 
-use AppBundle\Entity\Role;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

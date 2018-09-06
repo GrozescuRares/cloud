@@ -13,6 +13,7 @@ use AppBundle\Adapter\RoomAdapter;
 use AppBundle\Dto\HotelDto;
 use AppBundle\Dto\RoomDto;
 use AppBundle\Entity\Hotel;
+use AppBundle\Entity\Room;
 
 use Doctrine\ORM\EntityManager;
 
@@ -55,6 +56,26 @@ class RoomService
 
         $this->em->persist($room);
         $this->em->flush();
+    }
+
+    /**
+     * @param mixed     $hotelId
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return array
+     */
+    public function getAvailableRooms($hotelId, \DateTime $startDate, \DateTime $endDate)
+    {
+        if ($startDate > $endDate) {
+            return [];
+        }
+
+        $roomRepository = $this->em->getRepository(Room::class);
+        $bookedRoomsInPeriod = $roomRepository->getBookedRooms($startDate, $endDate, $hotelId);
+        $reservedRooms = $roomRepository->getHotelRooms($hotelId);
+        $freeRooms = array_diff($reservedRooms, $bookedRoomsInPeriod);
+
+        return $this->roomAdapter->convertToCustomArray($freeRooms);
     }
 
     /**

@@ -26,4 +26,5 @@ class RoutesConfig
     const USER_MANAGEMENT = '/user-management/';
     const PAGINATE_AND_SORT = 'user-management/paginate-and-sort';
     const REGISTRATION_CONFIRMATION = '/registration-confirmation';
+    const CREATE_BOOKING_LOAD_HOTELS = '/bookings/create-booking/load-hotels';
 }

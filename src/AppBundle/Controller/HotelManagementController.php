@@ -18,9 +18,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Doctrine\ORM\OptimisticLockException;
+
 /**
  * Class HotelManagementController
- * @package AppBundle\Controller
  */
 class HotelManagementController extends Controller
 {
@@ -30,7 +31,7 @@ class HotelManagementController extends Controller
      * @param Request $request
      *
      * @return Response
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws OptimisticLockException
      */
     public function addRoomAction(Request $request)
     {

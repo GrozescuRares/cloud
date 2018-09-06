@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class RoomDto
 {
+    public $roomId;
     /**
      * @Assert\NotBlank(message="constraints.choose-capacity")
      * @Assert\NotEqualTo("default", message="constraints.choose-capacity")

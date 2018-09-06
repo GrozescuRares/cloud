@@ -14,10 +14,15 @@ use AppBundle\Form\UserTypeForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+use Doctrine\ORM\OptimisticLockException;
+use Twig_Error_Loader;
+use Twig_Error_Syntax;
+use Twig_Error_Runtime;
 
 /**
  * Class RegistrationController
- * @package AppBundle\Controller
  */
 class RegistrationController extends Controller
 {
@@ -27,12 +32,12 @@ class RegistrationController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Twig_Error_Syntax
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
+     * @throws OptimisticLockException
+     * @throws Twig_Error_Syntax
+     * @throws Twig_Error_Loader
+     * @throws Twig_Error_Runtime
      */
     public function registerAction(Request $request)
     {
@@ -67,7 +72,7 @@ class RegistrationController extends Controller
      *
      * @param string $email
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function registrationConfirmationAction($email)
     {

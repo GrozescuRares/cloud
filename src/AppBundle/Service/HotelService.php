@@ -10,6 +10,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Adapter\HotelAdapter;
 use AppBundle\Entity\Hotel;
+use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Helper\ValidateUserHelper;
@@ -86,6 +87,43 @@ class HotelService
     }
 
     /**
+     * Return an array of hotelsDto that have free rooms
+     * in the interval [$startDate, $endDate] of time.
+     *
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     *
+     * @return array
+     */
+    public function getAvailableHotels(\DateTime $startDate, \DateTime $endDate)
+    {
+        if ($startDate > $endDate) {
+            return [];
+        }
+
+        $bookedRoomsInPeriod = $this->em->getRepository(Room::class)->getBookedRooms($startDate, $endDate);
+        $hotels = $this->em->getRepository(Hotel::class)->getHotelsWithReservations();
+        $freeHotels = [];
+
+        /** @var Hotel $hotel */
+        foreach ($hotels as $hotel) {
+            $bookedInHotel = 0;
+            /** @var Room $room */
+            foreach ($bookedRoomsInPeriod as $room) {
+                if ($room->getHotel()->getHotelId() === $hotel->getHotelId()) {
+                    $bookedInHotel++;
+                }
+            }
+
+            if ($bookedInHotel === 0 || $bookedInHotel < count($hotel->getRooms())) {
+                $freeHotels[$hotel->getName()] = (string) $hotel->getHotelId();
+            }
+        }
+
+        return $freeHotels;
+    }
+
+    /**
      * @param int $hotelId
      *
      * @return Hotel|null|object
@@ -95,5 +133,23 @@ class HotelService
         return $this->em->getRepository(Hotel::class)->findOneBy([
             'hotelId' => $hotelId,
         ]);
+    }
+
+    /**
+     * @param mixed $hotelId
+     *
+     * @return \AppBundle\Dto\HotelDto|null
+     */
+    public function getHotelDtoById($hotelId)
+    {
+        $hotel = $this->em->getRepository(Hotel::class)->findOneBy([
+            'hotelId' => $hotelId,
+        ]);
+
+        if (empty($hotel)) {
+            return null;
+        }
+
+        return $this->hotelAdapter->convertToDto($hotel);
     }
 }

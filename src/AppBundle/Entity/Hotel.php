@@ -57,11 +57,18 @@ class Hotel implements \Serializable
     private $owner;
 
     /**
-     * @var Hotel $hotel
+     * @var array
      *
      * @ORM\OneToMany(targetEntity="Room", mappedBy="hotel")
      */
     private $rooms;
+
+    /**
+     * @var array
+     *
+     * @ORM\OneToMany(targetEntity="Reservation", mappedBy="hotel")
+     */
+    private $reservations;
 
     /**
      * Hotel constructor.
@@ -70,10 +77,11 @@ class Hotel implements \Serializable
     {
         $this->rooms = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     /**
-     * @return Hotel
+     * @return array
      */
     public function getRooms()
     {
@@ -81,7 +89,7 @@ class Hotel implements \Serializable
     }
 
     /**
-     * @param Hotel $rooms
+     * @param array $rooms
      *
      * @return Hotel
      */
@@ -114,6 +122,49 @@ class Hotel implements \Serializable
 
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getReservations()
+    {
+        return $this->reservations;
+    }
+
+    /**
+     * @param array $reservations
+     *
+     * @return Hotel
+     */
+    public function setReservations($reservations)
+    {
+        $this->reservations = $reservations;
+
+        return $this;
+    }
+
+    /**
+     * @param Reservation $reservation
+     * @return $this
+     */
+    public function addReservation(Reservation $reservation)
+    {
+        $this->reservations[] = $reservation;
+
+        return $this;
+    }
+
+    /**
+     * @param Reservation $reservation
+     * @return $this
+     */
+    public function removeReservation(Reservation $reservation)
+    {
+        $this->reservations->removeElement($reservation);
+
+        return $this;
+    }
+
     /**
      * @return User
      */

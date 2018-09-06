@@ -11,10 +11,10 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class SecurityController
- * @package AppBundle\Controller
  */
 class SecurityController extends Controller
 {
@@ -23,7 +23,7 @@ class SecurityController extends Controller
      *
      * @param AuthenticationUtils $authenticationUtils
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function loginAction(AuthenticationUtils $authenticationUtils)
     {

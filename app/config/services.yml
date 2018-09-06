@@ -129,3 +129,30 @@ services:
         public: true
 
     AppBundle\Service\RoleService: '@app.role.service'
+
+    app.reservation.adapter:
+        class: AppBundle\Adapter\ReservationAdapter
+        arguments:
+            - '@app.user.adapter'
+            - '@app.hotel.adapter'
+            - '@app.room.adapter'
+
+    AppBundle\Adapter\ReservationAdapter: '@app.reservation.adapter'
+
+    app.bookings.manager:
+        class: AppBundle\Manager\BookingsManager
+        arguments:
+            - '@app.hotel.service'
+            - '@app.room.service'
+            - '@app.reservation.service'
+        public: true
+
+    AppBundle\Manager\BookingsManager: '@app.bookings.manager'
+
+    app.reservation.service:
+        class: AppBundle\Service\ReservationService
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@app.reservation.adapter'
+
+    AppBundle\Service\ReservationService: '@app.reservation.service'

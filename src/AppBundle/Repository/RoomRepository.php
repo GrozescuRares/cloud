@@ -10,4 +10,47 @@ namespace AppBundle\Repository;
  */
 class RoomRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @param mixed     $hotelId
+     * @return mixed
+     */
+    public function getBookedRooms(\DateTime $startDate, \DateTime $endDate, $hotelId = null)
+    {
+        $qb = $this->createQueryBuilder('room');
+        $qb ->innerJoin('room.reservations', 'reservation')
+            ->innerJoin('room.hotel', 'hotel')
+            ->where('reservation.startDate <= :endDate')
+            ->andWhere('reservation.endDate >= :startDate')
+            ->groupBy('room.roomId')
+            ->setParameter('endDate', $endDate)
+            ->setParameter('startDate', $startDate);
+
+        if (!empty($hotelId)) {
+            $qb->andWhere('reservation.hotel = :hotelId')
+                ->setParameter('hotelId', $hotelId);
+        }
+        $bookedRooms = $qb->getQuery()->getResult();
+
+        return $bookedRooms;
+    }
+
+
+    /**
+     * @param mixed $hotelId
+     *
+     * @return array
+     */
+    public function getHotelRooms($hotelId)
+    {
+        $qb = $this->createQueryBuilder('room');
+        $rooms = $qb->innerJoin('room.hotel', 'hotel')
+            ->where('room.hotel = :hotelId')
+            ->setParameter('hotelId', $hotelId)
+            ->getQuery()
+            ->getResult();
+
+        return $rooms;
+    }
 }

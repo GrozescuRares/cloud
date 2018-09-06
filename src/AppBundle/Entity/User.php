@@ -155,6 +155,11 @@ class User implements UserInterface, \Serializable
     private $ownedHotels;
 
     /**
+     * @ORM\OneToMany(targetEntity="Reservation", mappedBy="user")
+     */
+    private $reservations;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="isActivated", type="boolean")
@@ -180,6 +185,7 @@ class User implements UserInterface, \Serializable
     public function __construct()
     {
         $this->ownedHotels = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     /**
@@ -220,6 +226,48 @@ class User implements UserInterface, \Serializable
     public function removeOwnedHotel(Hotel $hotel)
     {
         $this->ownedHotels->removeElement($hotel);
+
+        return $this;
+    }
+
+    /**
+     * @param Reservation $reservation
+     * @return $this
+     */
+    public function addReservation(Reservation $reservation)
+    {
+        $this->reservations[] = $reservation;
+
+        return $this;
+    }
+
+    /**
+     * @param Reservation $reservation
+     * @return $this
+     */
+    public function removeReservation(Reservation $reservation)
+    {
+        $this->reservations->removeElement($reservation);
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReservations()
+    {
+        return $this->reservations;
+    }
+
+    /**
+     * @param mixed $reservations
+     *
+     * @return User
+     */
+    public function setReservations($reservations)
+    {
+        $this->reservations = $reservations;
 
         return $this;
     }

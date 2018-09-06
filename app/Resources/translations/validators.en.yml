@@ -12,3 +12,6 @@ constraints:
   choose-capacity: "Please choose capacity."
   choose-hotel: "Please choose a hotel."
   blank-price: 'The price field should not be blank.'
+  blank-date: 'The date field should not be blank.'
+  blank-hotel: 'Please choose a hotel.'
+  blank-room: 'Please choose a room.'

@@ -64,4 +64,19 @@ class RoomAdapter
 
         return $room;
     }
+
+    /**
+     * @param array $rooms
+     * @return array
+     */
+    public function convertToCustomArray(array $rooms)
+    {
+        $result = [];
+        /** @var Room $room */
+        foreach ($rooms as $room) {
+            $result[$room->__toString()] = (string) $room->getRoomId();
+        }
+
+        return $result;
+    }
 }

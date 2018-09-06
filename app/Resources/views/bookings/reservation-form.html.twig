@@ -1,0 +1,37 @@
+    {{ include('flash-messages.html.twig') }}
+    <div class="container-small">
+        <a href="#">{{ 'page.bookings.create-booking.back'| trans }}</a>
+        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+            <h1 class="text-center">{{ 'page.bookings.create-booking.title'| trans }}</h1>
+        </div>
+        {{ form_start(booking_form, {'method': 'POST', 'action': path('handle-booking'), attr: {class:'reservation-form'}}) }}
+        <div class="col-md-12 col-xs-12 no-lr-padding">
+            <div class="col-md-12 col-xs-12 no-lr-padding">
+                <label class='custom-label'>{{ 'page.bookings.create-booking.date'| trans }}</label>
+            </div>
+            <div class="col-md-5 col-xs-5 no-lr-padding">
+                <div class="date-input start">
+                    {{ form_errors(booking_form.startDate) }}
+                    {{ form_widget(booking_form.startDate) }}
+                </div>
+            </div>
+            <div class="col-md-2 col-xs-2 no-lr-padding datepicker-to text-center">
+                <span class='bold'>{{ 'page.bookings.create-booking.to'| trans }}</span>
+            </div>
+            <div class="col-md-5 col-xs-5 no-lr-padding">
+                <div class="date-input start">
+                    {{ form_errors(booking_form.endDate) }}
+                    {{ form_widget(booking_form.endDate, {'attr': {'data-action': path('load-data')}}) }}
+                </div>
+            </div>
+        </div>
+        <div id="load-hotels">
+            {{ include('bookings/load-hotels.html.twig') }}
+        </div>
+        <div id="load-rooms">
+            {{ include('bookings/load-rooms.html.twig') }}
+        </div>
+        {{ form_row(booking_form._token) }}
+        </form>
+    </div>
+
