@@ -117,7 +117,7 @@ class HotelManagementController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function paginateAndSortAction(Request $request)
     {
@@ -168,7 +168,7 @@ class HotelManagementController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function roomManagementAction(Request $request)
     {
@@ -222,7 +222,7 @@ class HotelManagementController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function paginateAndSortRoomsAction(Request $request)
     {

@@ -8,23 +8,23 @@
             <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.roomId is not defined %}ASC{% else %}{{ sortBy.roomId }}{% endif %}"
                 data-column="roomId"
-                data-page="{{ currentPage }}">Number<span class="sort-icon"></span></th>
+                data-page="{{ currentPage }}">{{ 'page.hotel-management.room-management.number'| trans }}<span class="sort-icon"></span></th>
             <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.capacity is not defined %}ASC{% else %}{{ sortBy.capacity }}{% endif %}"
                 data-column="capacity"
-                data-page="{{ currentPage }}">People<span class="sort-icon"></span></th>
+                data-page="{{ currentPage }}">{{ 'page.hotel-management.room-management.people'| trans }}<span class="sort-icon"></span></th>
             <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.price is not defined %}ASC{% else %}{{ sortBy.price }}{% endif %}"
                 data-column="price"
-                data-page="{{ currentPage }}">Price<span class="sort-icon"></span></th>
+                data-page="{{ currentPage }}">{{ 'page.hotel-management.room-management.price'| trans }}<span class="sort-icon"></span></th>
             <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.smoking is not defined %}ASC{% else %}{{ sortBy.smoking }}{% endif %}"
                 data-column="smoking"
-                data-page="{{ currentPage }}">Smoking<span class="sort-icon"></span></th>
+                data-page="{{ currentPage }}">{{ 'page.hotel-management.room-management.smoking'| trans }}<span class="sort-icon"></span></th>
             <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.pet is not defined %}ASC{% else %}{{ sortBy.pet }}{% endif %}"
                 data-column="pet"
-                data-page="{{ currentPage }}">Pets allowed<span class="sort-icon"></span></th>
+                data-page="{{ currentPage }}">{{ 'page.hotel-management.room-management.pets'| trans }}<span class="sort-icon"></span></th>
             <th class="text-center">Reserved</th>
         </tr>
         </thead>
@@ -42,7 +42,7 @@
         </tbody>
     </table>
 </div>
-<div class="table-items">{{ nrRooms }} item(s)</div>
+<div class="table-items">{{ 'page.hotel-management.room-management.items'| trans({'%nrRooms%': nrRooms}) }}</div>
 <nav class="table-pagination">
     <ul class="pagination">
         {% if currentPage != 1 %}
@@ -83,5 +83,5 @@
     </ul>
 </nav>
 {% else %}
-    <h1>Sorry, but there are no rooms.</h1>
+    <h1>{{ 'page.hotel-management.room-management.no_rooms'| trans }}</h1>
 {% endif %}

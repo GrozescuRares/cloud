@@ -76,6 +76,7 @@ page:
       back: 'Back'
       title: 'User Management'
       search: 'Search by hotel all users'
+      no_users: "Sorry, but this hotel doesn't have any user."
 
   hotel-management:
     add-room:
@@ -93,9 +94,22 @@ page:
       employees: 'Number of employees'
       availability: 'Availability'
       edit: 'Edit'
+      no_hotels: "Sorry, but you don't have any hotel."
+
     room-management:
       to: 'Room Management'
       add_new_rom: 'Add New Room'
+      smoking: 'Smoking'
+      pets: 'Pets'
+      yes: 'Yes'
+      no: 'No'
+      filter: 'Filter'
+      reset: 'Reset filters'
+      number: 'Number'
+      people: 'People'
+      price: 'Price'
+      no_rooms: 'Sorry, but there are no rooms.'
+      items: '%nrRooms% item(s)'
 
   my-account:
     back: 'Back'
