@@ -445,7 +445,7 @@ class UserManagementControllerTest extends BaseWebTestCase
         $crawler = $client->request(
             'GET',
             '/user-management/paginate-and-sort',
-            ['type' => 'owner', 'pageNumber' => 2, 'paginate' => 'true'],
+            ['type' => 'manager', 'pageNumber' => 2, 'paginate' => 'true'],
             [],
             ['HTTP_X-Requested-With' => 'XMLHttpRequest']
         );
@@ -458,8 +458,8 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testPaginateAndSortRouteAccessedWithAjaxByOwner()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::PAGINATE_AND_SORT, 'owner', 'owner', ['type' => 'manager', 'pageNumber' => 2, 'paginate' => 'true'], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::PAGINATE_AND_SORT, 'owner', 'owner', ['type' => 'owner', 'pageNumber' => 2, 'paginate' => 'true'], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
-        $this->assertCount(1, $crawler->filter('div.table-paginated'));
+        $this->assertCount(1, $crawler->filter('h1'));
     }
 }
