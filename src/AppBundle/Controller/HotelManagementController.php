@@ -175,11 +175,14 @@ class HotelManagementController extends Controller
         $hotelManagementManager = $this->get('app.hotel-management.manager');
         $bookingManager = $this->get('app.bookings.manager');
         $hotels = $hotelManagementManager->getOwnedHotels($loggedUser);
-        $hotelId = reset($hotels)->hotelId;
+        $hotelManagerName = "";
 
         try {
             if (empty($hotels)) {
                 $hotelId = $loggedUser->getHotel()->getHotelId();
+                $hotelManagerName = $loggedUser->getHotel()->getName();
+            } else {
+                $hotelId = reset($hotels)->hotelId;
             }
             $nrPages = $hotelManagementManager->getRoomsPagesNumber($hotelId);
             $roomDtos = $hotelManagementManager->paginateAndSortRooms($hotelId, 0);
@@ -188,6 +191,7 @@ class HotelManagementController extends Controller
             return $this->render(
                 'hotel-management/room-management.html.twig',
                 [
+                    'managerHotelName' => $hotelManagerName,
                     'firstHotel' => $hotelId,
                     'hotels' => $hotels,
                     'user' => $loggedUser,

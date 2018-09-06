@@ -1,3 +1,4 @@
+{% if rooms|length > 0 %}
 <div class="table-responsive">
     <table class="table"
            data-filter-pet="{{ filters.petFilter }}"
@@ -41,7 +42,7 @@
         </tbody>
     </table>
 </div>
-<div class="table-items">{{ nrRooms }} items</div>
+<div class="table-items">{{ nrRooms }} item(s)</div>
 <nav class="table-pagination">
     <ul class="pagination">
         {% if currentPage != 1 %}
@@ -84,3 +85,6 @@
 <div class='col-md-12 col-xs-12 no-lr-padding'>
     <a href='{{ path('add-room') }}' class='submit btn pull-right'>Add new Room</a>
 </div>
+{% else %}
+    <h1>Sorry, but there are no rooms.</h1>
+{% endif %}

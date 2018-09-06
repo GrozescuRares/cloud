@@ -1,3 +1,4 @@
+{% if hotels|length > 0 %}
 <div class="table-paginated">
     <div class="table-responsive">
         <table class="table">
@@ -76,3 +77,6 @@
         <a href="{{ path('add-room') }}" class="btn submit pull-right">{{ 'page.hotel-management.hotel-information.add_new_room'| trans }}</a>
     </div>
 </div>
+{% else %}
+    <h1>Sorry, but you don't have any hotel.</h1>
+{% endif %}

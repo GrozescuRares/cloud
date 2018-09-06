@@ -1,3 +1,4 @@
+{% if users|length > 0 %}
 <div class="table-paginated">
     <div class="table-responsive">
         <table class="table">
@@ -101,3 +102,6 @@
         <a href="{{ path('add-user') }}" class="btn submit pull-right">{{ 'page.user-management.user-management.add_new_user'| trans }}</a>
     </div>
 </div>
+{% else %}
+    <h1>Sorry, but this hotel doesn't have any user.</h1>
+{% endif %}
