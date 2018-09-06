@@ -2,6 +2,10 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Hotel;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+
 /**
  * ReservationRepository
  *
@@ -10,4 +14,27 @@ namespace AppBundle\Repository;
  */
 class ReservationRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @param Hotel     $hotel
+     * @param \DateTime $startYear
+     * @param \DateTime $endYear
+     *
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     * @return mixed
+     */
+    public function getAnnualEarnings(Hotel $hotel, \DateTime $startYear, \DateTime $endYear)
+    {
+        $qb = $this->createQueryBuilder('reservation');
+        $qb ->select('SUM(room.price)')
+            ->innerJoin('reservation.room', 'room')
+            ->where('reservation.hotel = :hotel')
+            ->andWhere('reservation.startDate >= :startYear')
+            ->andWhere('reservation.startDate <= :endYear ')
+            ->setParameter('hotel', $hotel)
+            ->setParameter('startYear', $startYear)
+            ->setParameter('endYear', $endYear);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
 }

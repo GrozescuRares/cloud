@@ -12,6 +12,7 @@ use AppBundle\Adapter\HotelAdapter;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
+use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Helper\ValidateUserHelper;
 
@@ -136,18 +137,22 @@ class HotelService
     }
 
     /**
+     * @param User  $loggedUser
      * @param mixed $hotelId
      *
      * @return \AppBundle\Dto\HotelDto|null
      */
-    public function getHotelDtoById($hotelId)
+    public function getHotelDtoByIdAndOwner(User $loggedUser, $hotelId)
     {
+        ValidateUserHelper::checkIfUserHasRoleAndIsOwner($loggedUser);
+
         $hotel = $this->em->getRepository(Hotel::class)->findOneBy([
             'hotelId' => $hotelId,
+            'owner' => $loggedUser,
         ]);
 
         if (empty($hotel)) {
-            return null;
+            throw new HotelNotFoundException('There is no hotel with id: '.$hotelId.' and owner: '.$loggedUser->getFirstName());
         }
 
         return $this->hotelAdapter->convertToDto($hotel);

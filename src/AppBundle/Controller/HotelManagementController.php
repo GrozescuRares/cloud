@@ -17,6 +17,7 @@ use AppBundle\Exception\NoRoleException;
 use AppBundle\Form\RoomTypeForm;
 use AppBundle\Helper\PaginateAndSortHelper;
 
+use AppBundle\Helper\ValidateReservationHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -191,6 +192,7 @@ class HotelManagementController extends Controller
             return $this->render(
                 'hotel-management/room-management.html.twig',
                 [
+                    'currency' => RoomConfig::CURRENCY,
                     'managerHotelName' => $hotelManagerName,
                     'firstHotel' => $hotelId,
                     'hotels' => $hotels,
@@ -247,6 +249,7 @@ class HotelManagementController extends Controller
             return $this->render(
                 'hotel-management/rooms-table.html.twig',
                 [
+                    'currency' => RoomConfig::CURRENCY,
                     'user' => $loggedUser,
                     'rooms' => $roomDtos,
                     'nrPages' => $nrPages,
@@ -267,6 +270,42 @@ class HotelManagementController extends Controller
         } catch (InappropriateUserRoleException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         } catch (HotelNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/hotel-management/hotel-information/{hotelId}", name="show-hotel-information")
+     *
+     * @param mixed $hotelId
+     *
+     * @return Response
+     */
+    public function showHotelInformationAction($hotelId)
+    {
+        $loggedUser = $this->getUser();
+        $hotelService = $this->get('app.hotel.service');
+        $reservationService = $this->get('app.reservation.service');
+        $bookingManager = $this->get('app.bookings.manager');
+        try {
+            $hotelDto = $hotelService->getHotelDtoByIdAndOwner($loggedUser, $hotelId);
+            $earnings = $reservationService->getAnnualEarnings($hotelId, ValidateReservationHelper::convertToDateTime(date('Y').'-1-1'), ValidateReservationHelper::convertToDateTime(date('Y').'-12-31'));
+            $availableHotels = $bookingManager->getFreeHotels(new \DateTime('now'), new \DateTime('now'));
+            $availability = !empty($availableHotels[$hotelDto->name]) ? true : false;
+
+            return $this->render(
+                'hotel-management/show-hotel-information.html.twig',
+                [
+                    'hotel' => $hotelDto,
+                    'availability' => RoomConfig::AVAILABILITY[$availability],
+                    'earnings' => $earnings.RoomConfig::CURRENCY,
+                ]
+            );
+        } catch (HotelNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         }
     }

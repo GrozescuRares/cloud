@@ -27,7 +27,7 @@
                     <td>{{ h.location }}</td>
                     <td>{{ h.employees }}</td>
                     <td class="text-center"><input type="checkbox" disabled="disabled" {% if availableHotels[h.name] is defined %} checked {% endif %}></td>
-                    <td class="text-center"><a href="10-hotel-information.php"><i class="fa fa-edit"></i></a></td>
+                    <td class="text-center"><a href="{{ path('show-hotel-information', {'hotelId': h.hotelId}) }}"><i class="fa fa-edit"></i></a></td>
                 </tr>
             {% endfor %}
             </tbody>

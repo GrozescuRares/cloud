@@ -19,4 +19,5 @@ class HotelDto
     public $location;
     public $description;
     public $employees;
+    public $facilities;
 }

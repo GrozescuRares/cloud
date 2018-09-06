@@ -24,7 +24,7 @@ form:
     no: 'No'
     save: 'Save'
     people: 'People'
-    price: 'Price \ night'
+    price: 'Price \ night in dollars'
     smoking: 'Smoking'
     pet: 'Pet'
     birth_date: 'Birth date'
@@ -95,6 +95,11 @@ page:
       availability: 'Availability'
       edit: 'Edit'
       no_hotels: "Sorry, but you don't have any hotel."
+    show-hotel-information:
+      message: 'The %name% hotel is located in %location%. It is a %description%. %employees% employees are working at this hotel. In this moment %name% %availability% available. This year the hotel earned %earnings%. Some facilities: %facilities%.'
+      title: 'Hotel Information'
+      back: 'Back'
+      edit: 'Edit'
 
     room-management:
       to: 'Room Management'

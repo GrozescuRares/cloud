@@ -33,7 +33,7 @@
             <tr>
                 <td>{{ r.roomId }}</td>
                 <td>{{ r.capacity }}</td>
-                <td>{{ r.price }}</td>
+                <td>{{ r.price ~ currency }}</td>
                 <td>{% if r.smoking %}Y{% else %}N{% endif %}</td>
                 <td>{% if r.pet %}Y{% else %}N{% endif %}</td>
                 <td class="text-center"><input type="checkbox" disabled="disabled" {% if availableRooms[r.__toString()] is not defined %} checked {% endif %}></td>

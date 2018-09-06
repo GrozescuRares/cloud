@@ -154,5 +154,6 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@app.reservation.adapter'
+        public: true
 
     AppBundle\Service\ReservationService: '@app.reservation.service'

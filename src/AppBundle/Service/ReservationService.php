@@ -79,6 +79,19 @@ class ReservationService
     }
 
     /**
+     * @param mixed     $hotelId
+     * @param \DateTime $startYear
+     * @param \DateTime $endYear
+     * @return mixed
+     */
+    public function getAnnualEarnings($hotelId, \DateTime $startYear, \DateTime $endYear)
+    {
+        $hotel = $this->getHotelById($hotelId);
+
+        return $this->em->getRepository(Reservation::class)->getAnnualEarnings($hotel, $startYear, $endYear);
+    }
+
+    /**
      * @param mixed $hotelId
      * @return Hotel|null|object
      */
