@@ -10,10 +10,10 @@ namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class DashboardController
- * @package AppBundle\Controller
  */
 class DashboardController extends Controller
 {
@@ -21,7 +21,7 @@ class DashboardController extends Controller
     /**
      * @Route("/", name="dashboard")
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function dashboardAction()
     {
