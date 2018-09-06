@@ -19,10 +19,15 @@ use AppBundle\Helper\ValidateReservationHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
+
+use Doctrine\ORM\OptimisticLockException;
+use Twig_Error_Runtime;
+use Twig_Error_Syntax;
+use Twig_Error_Loader;
 
 /**
  * Class BookingsController
- * @package AppBundle\Controller
  */
 class BookingsController extends Controller
 {
@@ -31,7 +36,7 @@ class BookingsController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function createBookingAction(Request $request)
     {
@@ -55,7 +60,7 @@ class BookingsController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function loadData(Request $request)
     {
@@ -111,11 +116,11 @@ class BookingsController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Twig_Error_Syntax
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
+     * @return Response
+     * @throws OptimisticLockException
+     * @throws Twig_Error_Syntax
+     * @throws Twig_Error_Loader
+     * @throws Twig_Error_Runtime
      */
     public function handleBookFormSubmission(Request $request)
     {

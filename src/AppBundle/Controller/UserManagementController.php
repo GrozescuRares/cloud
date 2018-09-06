@@ -25,10 +25,10 @@ use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class UserManagementController
- * @package AppBundle\Controller
  */
 class UserManagementController extends Controller
 {
@@ -40,7 +40,7 @@ class UserManagementController extends Controller
      *
      * @throws OptimisticLockException
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function addUserAction(Request $request)
     {
@@ -87,7 +87,7 @@ class UserManagementController extends Controller
      * @param Request $request
      * @param string  $username
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      *
      * @throws OptimisticLockException
      */
@@ -142,7 +142,7 @@ class UserManagementController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function userManagementAction(Request $request)
     {
@@ -185,7 +185,7 @@ class UserManagementController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function paginateAndSortAction(Request $request)
     {
@@ -251,7 +251,7 @@ class UserManagementController extends Controller
      * @param $column
      * @param $sort
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     private function renderPaginatedTable($users, $nrPages, $pageNumber, $column, $sort)
     {

@@ -13,10 +13,12 @@ use AppBundle\Exception\UserNotFoundException;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
+
+use Doctrine\ORM\OptimisticLockException;
 
 /**
  * Class ActivationController
- * @package AppBundle\Controller
  */
 class ActivationController extends Controller
 {
@@ -25,9 +27,9 @@ class ActivationController extends Controller
      *
      * @param string $activationToken
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws OptimisticLockException
      */
     public function activationAction($activationToken)
     {
