@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                 <div class="wrapper">
-                    <a href="{% if is_granted('ROLE_OWNER') %}{{ path('hotel-information') }}{% else %}{{ path('dashboard') }} {% endif %}">Back</a>
+                    <a href="{% if is_granted('ROLE_OWNER') %}{{ path('hotels-information') }}{% else %}{{ path('dashboard') }} {% endif %}">Back</a>
                     <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
                         <h1 class="text-center">{{ 'page.hotel-management.room-management.to'| trans }}</h1>
                     </div>

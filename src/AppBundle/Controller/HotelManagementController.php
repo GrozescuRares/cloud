@@ -76,7 +76,7 @@ class HotelManagementController extends Controller
     }
 
     /**
-     * @Route("hotel-management/hotel-information", name="hotel-information")
+     * @Route("hotel-management/hotels-information", name="hotels-information")
      *
      * @param Request $request
      *
@@ -94,7 +94,7 @@ class HotelManagementController extends Controller
             $pages = $hotelManagementManager->getHotelPagesNumber($loggedUser);
 
             return $this->render(
-                'hotel-management/hotel-information.html.twig',
+                'hotel-management/hotels-information.html.twig',
                 [
                     'user' => $loggedUser,
                     'hotels' => $hotelsDto,
@@ -119,7 +119,7 @@ class HotelManagementController extends Controller
      *
      * @return Response
      */
-    public function paginateAndSortAction(Request $request)
+    public function paginateAndSortHotelsAction(Request $request)
     {
         $loggedUser = $this->getUser();
         $hotelManagementManager = $this->get('app.hotel-management.manager');
