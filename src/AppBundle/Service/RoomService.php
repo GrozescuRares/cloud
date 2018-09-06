@@ -81,13 +81,15 @@ class RoomService
 
     /**
      * @param mixed $hotelId
+     * @param mixed $petFilter
+     * @param mixed $smokingFilter
      * @return float
      */
-    public function getPagesNumberForRooms($hotelId)
+    public function getPagesNumberForRooms($hotelId, $petFilter = null, $smokingFilter = null)
     {
         $hotel = $this->getHotelById($hotelId);
 
-        return $this->em->getRepository(Room::class)->getRoomsPagesNumber($hotel);
+        return $this->em->getRepository(Room::class)->getRoomsPagesNumber($hotel, $petFilter, $smokingFilter);
     }
 
     /**
@@ -102,7 +104,7 @@ class RoomService
     public function paginateAndSortRooms($hotelId, $offset, $column = null, $sort = null, $petFilter = null, $smokingFilter = null)
     {
         $hotel = $this->getHotelById($hotelId);
-        $rooms = $this->em->getRepository(Room::class)->paginateAndSortRooms($hotel, $offset, $sort, $petFilter, $smokingFilter);
+        $rooms = $this->em->getRepository(Room::class)->paginateAndSortRooms($hotel, $offset, $column, $sort, $petFilter, $smokingFilter);
 
         return $this->roomAdapter->convertToRoomDtos($rooms);
     }

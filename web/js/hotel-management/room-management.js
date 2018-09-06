@@ -1,21 +1,25 @@
 $(document).ready(function () {
-    $(document).on('change', '#hotels', {}, function (event) {
-        loadOwnerHotelUsers(event, $('select option:selected'));
+    $(document).on('click', '.submit', {}, function (event) {
+        loadFilteredData(this);
     });
 });
 
-function loadOwnerHotelUsers(event, element) {
+function loadFilteredData(element)
+{
+    let hotelId = $('#hotels').val();
+    let petFilter = $('#petFilter').val();
+    let smokingFilter = $('#smokingFilter').val();
+
     $.ajax({
         url: $(element).attr('data-action'),
         type: 'GET',
         dataType: 'html',
         data: {
-            'type': $(element).attr('data-role'),
             'pageNumber': $(element).attr('data-page'),
-            'hotelId': $(element).val()
+            'hotelId': hotelId,
+            'petFilter': petFilter,
+            'smokingFilter': smokingFilter,
         },
-        async: true,
-
         success: function (data, status) {
             $('#reload').html(data);
         },

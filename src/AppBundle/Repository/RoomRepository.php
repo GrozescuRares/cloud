@@ -59,15 +59,27 @@ class RoomRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param Hotel $hotel
+     * @param mixed $petFilter
+     * @param mixed $smokingFilter
+     *
      * @return float
      */
-    public function getRoomsPagesNumber(Hotel $hotel)
+    public function getRoomsPagesNumber(Hotel $hotel, $petFilter = null, $smokingFilter = null)
     {
-        $rooms = $this->createQueryBuilder('room')
-            ->where('room.hotel = :hotel')
-            ->setParameter('hotel', $hotel)
-            ->getQuery()
-            ->getResult();
+        $qb = $this->createQueryBuilder('room');
+        $qb ->where('room.hotel =:hotel')
+            ->setParameter('hotel', $hotel);
+
+        if (!empty($petFilter) || $petFilter === false) {
+            $qb->andWhere('room.pet = :petFilter')
+                ->setParameter('petFilter', $petFilter);
+        }
+
+        if (!empty($smokingFilter) || $smokingFilter === false) {
+            $qb->andWhere('room.smoking = :smokingFilter')
+                ->setParameter('smokingFilter', $smokingFilter);
+        }
+        $rooms = $qb->getQuery()->getResult();
 
         return ceil(count($rooms) / PaginationConfig::ITEMS);
     }
@@ -87,12 +99,12 @@ class RoomRepository extends \Doctrine\ORM\EntityRepository
         $qb ->where('room.hotel =:hotel')
             ->setParameter('hotel', $hotel);
 
-        if (!empty($animalFilter)) {
+        if (!empty($petFilter) || $petFilter === false) {
             $qb->andWhere('room.pet = :petFilter')
                 ->setParameter('petFilter', $petFilter);
         }
 
-        if (!empty($smokingFilter)) {
+        if (!empty($smokingFilter) || $smokingFilter === false) {
             $qb->andWhere('room.smoking = :smokingFilter')
                 ->setParameter('smokingFilter', $smokingFilter);
         }

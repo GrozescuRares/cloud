@@ -24,7 +24,7 @@
                         <li {% if app.request.get('_route') == "user-management" %} class="active" {% endif %}>
                             <a href="{{ path('user-management') }}" class="navigation-item">{{ 'navigation.user_management'| trans }}</a>
                         </li>
-                        <li {% if app.request.get('_route') == "hotel-managemenet" %} class="active" {% endif %}>
+                        <li {% if app.request.get('_route') == "hotel-information" %} class="active" {% endif %}>
                             <a href="{{ path('hotel-information') }}" class="navigation-item">{{ 'navigation.hotel_management'| trans }}
                             </a>
                         </li>

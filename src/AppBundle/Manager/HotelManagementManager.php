@@ -60,11 +60,13 @@ class HotelManagementManager
 
     /**
      * @param mixed $hotelId
+     * @param mixed $petFilter
+     * @param mixed $smokingFilter
      * @return float
      */
-    public function getRoomsPagesNumber($hotelId)
+    public function getRoomsPagesNumber($hotelId, $petFilter = null, $smokingFilter = null)
     {
-        return $this->roomService->getPagesNumberForRooms($hotelId);
+        return $this->roomService->getPagesNumberForRooms($hotelId, $petFilter, $smokingFilter);
     }
 
     /**

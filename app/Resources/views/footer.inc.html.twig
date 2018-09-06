@@ -12,4 +12,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.2/rangeslider.min.js"></script>
 <script src="{{ asset('js/lib/modernizr.js') }}"></script>
 
-<script src="{{ asset('js/scripts.js') }}"></script>
+{% if app.request.get('_route') != "create-booking" %}
+    <script src="{{ asset('js/scripts.js') }}"></script>
+{% endif %}

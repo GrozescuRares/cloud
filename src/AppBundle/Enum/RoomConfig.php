@@ -37,5 +37,12 @@ class RoomConfig
     const ALLOWED = [
         true => self::YES,
         false => self::NO,
+        "" => "",
+    ];
+
+    const CONVERT = [
+        self::YES => true,
+        self::NO => false,
+        "" => "",
     ];
 }

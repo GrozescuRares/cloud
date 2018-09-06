@@ -12,6 +12,8 @@ $(document).ready(function () {
 function paginateAndSort(event, element) {
     event.preventDefault();
     let hotelId = $('#hotels').val();
+    let petFilter = $('.table').attr('data-filter-pet');
+    let smokingFilter = $('.table').attr('data-filter-smoking');
 
     $.ajax({
         url: $(element).attr('data-action'),
@@ -23,7 +25,9 @@ function paginateAndSort(event, element) {
             'column': $(element).attr('data-column'),
             'sort': $(element).attr('data-sort'),
             'hotelId': hotelId,
-            'paginate': $(element).attr('data-paginate')
+            'paginate': $(element).attr('data-paginate'),
+            'petFilter': petFilter,
+            'smokingFilter': smokingFilter,
         },
         success: function (data, status) {
             $('#reload').html(data);

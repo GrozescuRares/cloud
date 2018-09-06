@@ -1,10 +1,12 @@
 <div class="table-responsive">
-    <table class="table">
+    <table class="table"
+           data-filter-pet="{{ filters.petFilter }}"
+           data-filter-smoking="{{ filters.smokingFilter }}">
         <thead>
         <tr>
             <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.roomId is not defined %}ASC{% else %}{{ sortBy.roomId }}{% endif %}"
-                data-column="number"
+                data-column="roomId"
                 data-page="{{ currentPage }}">Number<span class="sort-icon"></span></th>
             <th class="columns" data-action="{{ path('paginate-and-sort-rooms') }}"
                 data-sort="{% if sortBy is empty or sortBy.capacity is not defined %}ASC{% else %}{{ sortBy.capacity }}{% endif %}"
@@ -31,9 +33,9 @@
                 <td>{{ r.roomId }}</td>
                 <td>{{ r.capacity }}</td>
                 <td>{{ r.price }}</td>
-                <td>{% if r.smoking %}'Y'{% else %}'N'{% endif %}</td>
-                <td>{% if r.pet %}'Y'{% else %}'N'{% endif %}</td>
-                <td class="text-center"><input type="checkbox" {% if availableRooms[r.__toString()] is defined %} checked {% endif %}></td>
+                <td>{% if r.smoking %}Y{% else %}N{% endif %}</td>
+                <td>{% if r.pet %}Y{% else %}N{% endif %}</td>
+                <td class="text-center"><input type="checkbox" {% if availableRooms[r.__toString()] is not defined %} checked {% endif %}></td>
             </tr>
         {% endfor %}
         </tbody>

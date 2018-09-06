@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto\RoomDto;
 use AppBundle\Enum\PaginationConfig;
+use AppBundle\Enum\RoomConfig;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
@@ -132,7 +133,7 @@ class HotelManagementController extends Controller
             );
         }
         try {
-            list($pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+            list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
             $pages = $hotelManagementManager->getHotelPagesNumber($loggedUser);
 
             list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
@@ -187,6 +188,7 @@ class HotelManagementController extends Controller
             return $this->render(
                 'hotel-management/room-management.html.twig',
                 [
+                    'firstHotel' => $hotelId,
                     'hotels' => $hotels,
                     'user' => $loggedUser,
                     'rooms' => $roomDtos,
@@ -195,7 +197,10 @@ class HotelManagementController extends Controller
                     'availableRooms' => $availableRooms,
                     'nrRooms' => count($roomDtos),
                     'sortBy' => [],
-                    'filters' => [],
+                    'filters' => [
+                        'petFilter' => "",
+                        'smokingFilter' => "",
+                    ],
                 ]
             );
         } catch (NoRoleException $ex) {
@@ -216,6 +221,105 @@ class HotelManagementController extends Controller
      */
     public function paginateAndSortRoomsAction(Request $request)
     {
+        $loggedUser = $this->getUser();
+        $hotelManagementManager = $this->get('app.hotel-management.manager');
+        $bookingManager = $this->get('app.bookings.manager');
+
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
+        try {
+            list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getPaginationParameters($request);
+            $nrPages = $hotelManagementManager->getRoomsPagesNumber($hotelId, $petFilter, $smokingFilter);
+
+            list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
+            $roomDtos = $hotelManagementManager->paginateAndSortRooms($hotelId, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType, $petFilter, $smokingFilter);
+            $availableRooms = $bookingManager->getFreeRooms($hotelId, new \DateTime('now'), new \DateTime('now'));
+
+            return $this->render(
+                'hotel-management/rooms-table.html.twig',
+                [
+                    'user' => $loggedUser,
+                    'rooms' => $roomDtos,
+                    'nrPages' => $nrPages,
+                    'currentPage' => $pageNumber,
+                    'availableRooms' => $availableRooms,
+                    'nrRooms' => count($roomDtos),
+                    'sortBy' => [
+                        $column => $sort,
+                    ],
+                    'filters' => [
+                        'petFilter' => RoomConfig::ALLOWED[$petFilter],
+                        'smokingFilter' => RoomConfig::ALLOWED[$smokingFilter],
+                    ],
+                ]
+            );
+
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (HotelNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/hotel-management/filter-rooms", name="filter-rooms")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function filterRoomsAction(Request $request)
+    {
+        $loggedUser = $this->getUser();
+        $hotelManagementManager = $this->get('app.hotel-management.manager');
+        $bookingManager = $this->get('app.bookings.manager');
+
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
+        try {
+            list($hotelId, $pageNumber, $petFilter, $smokingFilter) = $this->getFilterParameters($request);
+            $nrPages = $hotelManagementManager->getRoomsPagesNumber($hotelId, $petFilter, $smokingFilter);
+
+            $roomDtos = $hotelManagementManager->paginateAndSortRooms($hotelId, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, null, null, $petFilter, $smokingFilter);
+            $availableRooms = $bookingManager->getFreeRooms($hotelId, new \DateTime('now'), new \DateTime('now'));
+
+            return $this->render(
+                'hotel-management/rooms-table.html.twig',
+                [
+                    'user' => $loggedUser,
+                    'rooms' => $roomDtos,
+                    'nrPages' => $nrPages,
+                    'currentPage' => $pageNumber,
+                    'availableRooms' => $availableRooms,
+                    'nrRooms' => count($roomDtos),
+                    'sortBy' => [],
+                    'filters' => [
+                        'petFilter' => RoomConfig::ALLOWED[$petFilter],
+                        'smokingFilter' => RoomConfig::ALLOWED[$smokingFilter],
+                    ],
+                ]
+            );
+
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (HotelNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
     }
 
     /**
@@ -225,11 +329,32 @@ class HotelManagementController extends Controller
      */
     private function getPaginationParameters(Request $request)
     {
+        $hotelId = $request->query->get('hotelId');
         $pageNumber = $request->query->get('pageNumber');
         $column = $request->query->get('column');
         $sort = $request->query->get('sort');
         $paginate = $request->query->get('paginate');
+        $petFilter = $request->query->get('petFilter');
+        $smokingFilter = $request->query->get('smokingFilter');
+        $petFilter = RoomConfig::CONVERT[$petFilter];
+        $smokingFilter = RoomConfig::CONVERT[$smokingFilter];
 
-        return array($pageNumber, $column, $sort, $paginate);
+        return array($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter);
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    private function getFilterParameters(Request $request)
+    {
+        $hotelId = $request->query->get('hotelId');
+        $pageNumber = $request->query->get('pageNumber');
+        $petFilter = $request->query->get('petFilter');
+        $smokingFilter = $request->query->get('smokingFilter');
+        $petFilter = RoomConfig::CONVERT[$petFilter];
+        $smokingFilter = RoomConfig::CONVERT[$smokingFilter];
+
+        return array($hotelId, $pageNumber, $petFilter, $smokingFilter);
     }
 }

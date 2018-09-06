@@ -15,17 +15,14 @@
                             <div class="filters-open">
                                 <div class="col-md-4 col-sm-6 col-xs-12 input-wrapper">
                                     <div class="styled-input">
-                                        <select class="selectpicker">
+                                        <select class="selectpicker" id="hotels">
                                             {% if is_granted('ROLE_OWNER') %}
-                                                <option disabled="disabled" selected="selected">Please choose Hotel</option>
                                                 {% for hotel in hotels %}
-                                                    <option data-action="{{ path('paginate-and-sort-rooms') }}" data-role="owner"
-                                                            data-page="{{ currentPage }}"
-                                                            value="{{ hotel.hotelId }}"> {{ hotel.name }} </option>
+                                                    <option value="{{ hotel.hotelId }}" {% if hotel.hotelId == firstHotel %}selected="selected{% endif %}">
+                                                        {{ hotel.name }} </option>
                                                 {% endfor %}
                                             {% elseif is_granted('ROLE_MANAGER') %}
-                                                <option data-action="{{ path('paginate-and-sort-rooms') }}" data-role="manager"
-                                                        data-page="{{ currentPage }}" disabled="disabled"
+                                                <option disabled="disabled" selected="selected"
                                                         value="{{ user.hotel[hotelId] }}"> {{ user.hotel[name] }} </option>
                                             {% endif %}
                                         </select>
@@ -33,23 +30,23 @@
                                 </div>
                                 <div class="col-md-3 col-sm-6 col-xs-12 input-wrapper">
                                     <div class="styled-input">
-                                        <select class="selectpicker">
+                                        <select class="selectpicker" id="smokingFilter">
                                             <option selected="selected" disabled="disabled">Smoking</option>
-                                            <option data-action="{{ path('paginate-and-sort-rooms') }}" data-page="{{ currentPage }}" value="Y">Yes</option>
-                                            <option data-action="{{ path('paginate-and-sort-rooms') }}" data-page="{{ currentPage }}" value="N">No</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-6 col-xs-12 input-wrapper">
                                     <div class="styled-input">
-                                        <select class="selectpicker">
+                                        <select class="selectpicker" id="petFilter">
                                             <option disabled="disabled" selected="selected">Dogs</option>
-                                            <option data-action="{{ path('paginate-and-sort-rooms') }}" data-page="{{ currentPage }}" value="Y">Yes</option>
-                                            <option data-action="{{ path('paginate-and-sort-rooms') }}" data-page="{{ currentPage }}" value="N">No</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
                                         </select>
                                     </div>
                                 </div>
-                                <button class="btn submit">Filter</button>
+                                <button class="btn submit" data-action="{{ path('filter-rooms') }}" data-page="{{ currentPage }}">Filter</button>
                                 <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                                     <a href="#" class="reset-filters"><i class="fa fa-close"></i>Reset filters</a>
                                 </div>
@@ -66,5 +63,6 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script src="{{ asset('js/hotel-management/room-management.js') }}"></script>
     <script src="{{ asset('js/paginateAndSort.js') }}"></script>
 {% endblock %}
