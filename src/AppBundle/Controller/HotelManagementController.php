@@ -134,7 +134,7 @@ class HotelManagementController extends Controller
             );
         }
         try {
-            list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+            list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters($request);
             $pages = $hotelManagementManager->getHotelPagesNumber($loggedUser);
 
             list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
@@ -155,7 +155,6 @@ class HotelManagementController extends Controller
                     ],
                 ]
             );
-
         } catch (NoRoleException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         } catch (InappropriateUserRoleException $ex) {
@@ -263,7 +262,6 @@ class HotelManagementController extends Controller
                     ],
                 ]
             );
-
         } catch (NoRoleException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         } catch (InappropriateUserRoleException $ex) {
