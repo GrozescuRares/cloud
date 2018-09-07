@@ -9,12 +9,12 @@
 namespace AppBundle\Service;
 
 use AppBundle\Adapter\ReservationAdapter;
+use AppBundle\Dto\HotelDto;
 use AppBundle\Dto\ReservationDto;
-use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Reservation;
-use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
 use AppBundle\Exception\HotelNotFoundException;
+use AppBundle\Exception\ReservationNotFoundException;
 use AppBundle\Exception\RoomNotFoundException;
 use AppBundle\Helper\GetEntitiesAndDtosHelper;
 use AppBundle\Helper\ValidateUserHelper;
@@ -22,6 +22,7 @@ use AppBundle\Helper\ValidateUserHelper;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\OptimisticLockException;
 
 /**
  * Class ReservationService
@@ -129,6 +130,7 @@ class ReservationService
 
     /**
      * @param array $hotelDtos
+     *
      * @return float
      */
     public function getReservationsPagesNumberForAllHotels(array $hotelDtos)
@@ -154,7 +156,33 @@ class ReservationService
     }
 
     /**
+     * @param array $hotels
+     * @param mixed $reservationId
+     * @throws OptimisticLockException
+     */
+    public function deleteReservation(array $hotels, $reservationId)
+    {
+        $reservation = $this->getEntitiesAndDtosHelper->getReservationById($reservationId);
+        $flag = false;
+        /** @var HotelDto $hotel */
+        foreach ($hotels as $hotel) {
+            if ($hotel->hotelId === $reservation->getHotel()->getHotelId()) {
+                $flag = true;
+                break;
+            }
+        }
+
+        if (!$flag) {
+            throw new ReservationNotFoundException('You have no right to delete the reservation with id: '.$reservationId);
+        }
+
+        $this->em->remove($reservation);
+        $this->em->flush();
+    }
+
+    /**
      * @param array $hotelDtos
+     *
      * @return array
      */
     private function convertToEntities(array $hotelDtos)

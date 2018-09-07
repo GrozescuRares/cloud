@@ -122,18 +122,12 @@ class HotelManagementController extends BaseController
      */
     public function paginateAndSortHotelsAction(Request $request)
     {
+        $this->checkIfItsAjaxRequest($request);
+
         $loggedUser = $this->getUser();
         $hotelManagementManager = $this->get('app.hotel-management.manager');
         $bookingManager = $this->get('app.bookings.manager');
 
-        if (!$request->isXmlHttpRequest()) {
-            return $this->render(
-                'error.html.twig',
-                [
-                    'error' => 'Stay out of here.',
-                ]
-            );
-        }
         try {
             list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
                 $request
@@ -234,18 +228,12 @@ class HotelManagementController extends BaseController
      */
     public function paginateAndSortRoomsAction(Request $request)
     {
+        $this->checkIfItsAjaxRequest($request);
+
         $loggedUser = $this->getUser();
         $hotelManagementManager = $this->get('app.hotel-management.manager');
         $bookingManager = $this->get('app.bookings.manager');
 
-        if (!$request->isXmlHttpRequest()) {
-            return $this->render(
-                'error.html.twig',
-                [
-                    'error' => 'Stay out of here.',
-                ]
-            );
-        }
         try {
             list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
                 $request

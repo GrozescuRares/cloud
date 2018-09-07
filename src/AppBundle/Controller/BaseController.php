@@ -14,6 +14,7 @@ use AppBundle\Enum\RoomConfig;
 use AppBundle\Helper\ValidateReservationHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class BaseController
@@ -59,5 +60,21 @@ class BaseController extends Controller
         }
 
         return $reservationDto;
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    protected function checkIfItsAjaxRequest(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
     }
 }

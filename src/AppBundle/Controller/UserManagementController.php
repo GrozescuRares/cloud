@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class UserManagementController
  */
-class UserManagementController extends Controller
+class UserManagementController extends BaseController
 {
 
     /**
@@ -189,17 +189,11 @@ class UserManagementController extends Controller
      */
     public function paginateAndSortAction(Request $request)
     {
+        $this->checkIfItsAjaxRequest($request);
+        
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
 
-        if (!$request->isXmlHttpRequest()) {
-            return $this->render(
-                'error.html.twig',
-                [
-                    'error' => 'Stay out of here.',
-                ]
-            );
-        }
         $type = $request->query->get('type');
         try {
             if ($type === 'manager') {

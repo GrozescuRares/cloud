@@ -6,5 +6,17 @@ $(document).ready(function () {
 
 function deleteReservation(event, element)
 {
-    console.log(element);
+    event.preventDefault();
+
+    $.ajax({
+        url: $(element).attr('href'),
+        type: 'GET',
+        dataType: 'html',
+        success: function (data, status) {
+            $('#reload').html(data);
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            alert('Ajax request failed.')
+        }
+    });
 }

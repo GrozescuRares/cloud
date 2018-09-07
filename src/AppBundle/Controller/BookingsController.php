@@ -64,14 +64,7 @@ class BookingsController extends BaseController
      */
     public function loadData(Request $request)
     {
-        if (!$request->isXmlHttpRequest()) {
-            return $this->render(
-                'error.html.twig',
-                [
-                    'error' => 'Stay out of here.',
-                ]
-            );
-        }
+        $this->checkIfItsAjaxRequest($request);
 
         $reservationDto = $this->handleReservation($request);
         $bookingsManager = $this->get('app.bookings.manager');
@@ -209,18 +202,12 @@ class BookingsController extends BaseController
      */
     public function paginateAndSortReservations(Request $request)
     {
+        $this->checkIfItsAjaxRequest($request);
+
         $loggedUser = $this->getUser();
         $hotelManagementManager = $this->get('app.hotel-management.manager');
         $bookingManager = $this->get('app.bookings.manager');
 
-        if (!$request->isXmlHttpRequest()) {
-            return $this->render(
-                'error.html.twig',
-                [
-                    'error' => 'Stay out of here.',
-                ]
-            );
-        }
         try {
             list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
                 $request
@@ -294,6 +281,5 @@ class BookingsController extends BaseController
      */
     public function deleteReservation($reservationId)
     {
-
     }
 }

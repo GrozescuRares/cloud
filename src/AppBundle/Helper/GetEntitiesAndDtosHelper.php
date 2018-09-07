@@ -10,9 +10,11 @@ namespace AppBundle\Helper;
 
 use AppBundle\Adapter\HotelAdapter;
 use AppBundle\Entity\Hotel;
+use AppBundle\Entity\Reservation;
 use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
 use AppBundle\Exception\HotelNotFoundException;
+use AppBundle\Exception\ReservationNotFoundException;
 use AppBundle\Exception\RoomNotFoundException;
 use Doctrine\ORM\EntityManager;
 
@@ -72,5 +74,24 @@ class GetEntitiesAndDtosHelper
         }
 
         return $room;
+    }
+
+    /**
+     * @param mixed $reservationId
+     * @return Reservation|null|object
+     */
+    public function getReservationById($reservationId)
+    {
+        $reservation = $this->em->getRepository(Reservation::class)->findOneBy(
+            [
+                'reservationId' => $reservationId,
+            ]
+        );
+
+        if (empty($reservationId)) {
+            throw new ReservationNotFoundException('There is no reservation with id: '.$reservationId);
+        }
+
+        return $reservation;
     }
 }
