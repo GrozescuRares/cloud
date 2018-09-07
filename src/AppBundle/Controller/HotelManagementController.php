@@ -317,6 +317,8 @@ class HotelManagementController extends Controller
      * @param mixed   $hotelId
      * @param Request $request
      *
+     * @throws OptimisticLockException
+     *
      * @return Response
      */
     public function editHotelInformationAction($hotelId, Request $request)
@@ -339,6 +341,7 @@ class HotelManagementController extends Controller
                     ]
                 );
             }
+            $hotelService->updateHotel($hotelDto);
             $this->addFlash('success', 'Hotel information updated successfully !');
 
             return $this->redirectToRoute('edit-hotel-information', ['hotelId' => $hotelId]);

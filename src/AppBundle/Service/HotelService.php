@@ -9,6 +9,7 @@
 namespace AppBundle\Service;
 
 use AppBundle\Adapter\HotelAdapter;
+use AppBundle\Dto\HotelDto;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
@@ -17,6 +18,7 @@ use AppBundle\Exception\NoRoleException;
 use AppBundle\Helper\ValidateUserHelper;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
 
 /**
  * Class HotelService
@@ -131,9 +133,14 @@ class HotelService
      */
     public function getHotelById($hotelId)
     {
-        return $this->em->getRepository(Hotel::class)->findOneBy([
+        $hotel = $this->em->getRepository(Hotel::class)->findOneBy([
             'hotelId' => $hotelId,
         ]);
+        if (empty($hotel)) {
+            throw new HotelNotFoundException('There is no hotel with id: '.$hotelId.' and owner: '.$loggedUser->getFirstName());
+        }
+
+        return $hotel;
     }
 
     /**
@@ -182,5 +189,19 @@ class HotelService
         ValidateUserHelper::checkIfUserHasRoleAndIsOwner($loggedUser);
 
         return $this->em->getRepository(Hotel::class)->getHotelsPagesNumber($loggedUser);
+    }
+
+    /**
+     * @param HotelDto $hotelDto
+     *
+     * @throws OptimisticLockException
+     */
+    public function updateHotel(HotelDto $hotelDto)
+    {
+        $hotel = $this->getHotelById($hotelDto->hotelId);
+        $hotel = $this->hotelAdapter->convertToEntity($hotelDto, $hotel);
+
+        $this->em->persist($hotel);
+        $this->em->flush();
     }
 }

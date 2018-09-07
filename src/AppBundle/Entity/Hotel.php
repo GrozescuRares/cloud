@@ -288,6 +288,20 @@ class Hotel implements \Serializable
     }
 
     /**
+     * Set id
+     *
+     * @param mixed $hotelId
+     *
+     * @return Hotel
+     */
+    public function setHotelId($hotelId)
+    {
+        $this->hotelId = $hotelId;
+
+        return $this;
+    }
+
+    /**
      * Set name
      *
      * @param string $name

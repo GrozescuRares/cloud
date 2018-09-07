@@ -19,12 +19,10 @@ class ReservationDto
     public $user;
     /**
      * @Assert\NotBlank(message="constraints.blank-hotel")
-     * @Assert\Regex("/^\d*[1-9]\d*$/", message="constraints.price")
      */
     public $hotel;
     /**
      * @Assert\NotBlank(message="constraints.blank-room")
-     * @Assert\Regex("/^\d*[1-9]\d*$/", message="constraints.price")
      */
     public $room;
     /**

@@ -15,3 +15,7 @@ constraints:
   blank-date: 'The date field should not be blank.'
   blank-hotel: 'Please choose a hotel.'
   blank-room: 'Please choose a room.'
+  blank-hotel-name: 'The name field should not be blank.'
+  blank-location: 'The location field should not be blank.'
+  blank-facilities: 'The facilities field should not be blank.'
+  blank-description: 'The description field should not be blank.'
