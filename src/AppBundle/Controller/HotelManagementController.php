@@ -495,7 +495,7 @@ class HotelManagementController extends Controller
                     'reservations' => $reservationDtos,
                     'nrPages' => $nrPages,
                     'currentPage' => $pageNumber,
-                    'nrRooms' => count($reservationDtos),
+                    'nrReservations' => count($reservationDtos),
                     'sortBy' => [
                         $column => $sort,
                     ],
