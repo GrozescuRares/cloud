@@ -5,9 +5,9 @@
         <div class="container-fluid">
             <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                 <div class="wrapper">
-                    <a href="{{ path('hotels-information') }}">{{ 'page.hotel-management.reservation-management.back'| trans }}</a>
+                    <a href="{{ path('dashboard') }}">{{ 'page.hotel-management.reservation-management.back'| trans }}</a>
                     <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
-                        <h1 class="text-center">{{ 'page.hotel-management.reservation-management.to'| trans }}</h1>
+                        <h1 class="text-center" id="managerHotelId" data-hotel="{{ firstHotel }}">{{ 'page.hotel-management.reservation-management.to'| trans }}</h1>
                     </div>
                     {% if is_granted('ROLE_OWNER') %}
                         <div class="col-md-12 col-xs-12 no-lr-padding text-center search">

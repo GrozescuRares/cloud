@@ -59,11 +59,11 @@
                         <div id="reload">
                             {{ include('hotel-management/rooms-table.html.twig') }}
                         </div>
+                        <div class='col-md-12 col-xs-12 no-lr-padding'>
                         {% if is_granted('ROLE_OWNER') %}
-                            <div class='col-md-12 col-xs-12 no-lr-padding'>
-                                <a href='{{ path('add-room') }}' class='submit btn pull-right'>{{ 'page.hotel-management.room-management.add_new_rom'| trans }}</a>
-                            </div>
+                            <a href='{{ path('add-room') }}' class='submit btn pull-right'>{{ 'page.hotel-management.room-management.add_new_rom'| trans }}</a>
                         {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>

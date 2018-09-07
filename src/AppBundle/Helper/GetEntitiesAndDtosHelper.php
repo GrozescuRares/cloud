@@ -49,7 +49,7 @@ class GetEntitiesAndDtosHelper
             'hotelId' => $hotelId,
         ]);
         if (empty($hotel)) {
-            throw new HotelNotFoundException('There is no hotel with id: '.$hotelId.' and owner: '.$loggedUser->getFirstName());
+            throw new HotelNotFoundException('There is no hotel with id: '.$hotelId);
         }
 
         return $hotel;

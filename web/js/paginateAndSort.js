@@ -19,6 +19,10 @@ function paginateAndSort(event, element) {
     let petFilter = $('.table').attr('data-filter-pet');
     let smokingFilter = $('.table').attr('data-filter-smoking');
 
+    if (hotelId == null) {
+        hotelId = $('#managerHotelId').attr('data-hotel');
+    }
+
     $.ajax({
         url: $(element).attr('data-action'),
         type: 'GET',
