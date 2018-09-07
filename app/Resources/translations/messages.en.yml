@@ -107,7 +107,6 @@ page:
     edit-hotel-information:
       back: 'Back'
       title: 'Edit Hotel Information'
-
     room-management:
       to: 'Room Management'
       add_new_rom: 'Add New Room'
@@ -122,6 +121,14 @@ page:
       price: 'Price'
       no_rooms: 'Sorry, but there are no rooms.'
       items: '%nrRooms% item(s)'
+    reservation-management:
+      to: 'Reservations Management'
+      back: 'Back'
+      search: 'Search reservations by hotel'
+      start_date: 'Start date'
+      end_date: 'End date'
+      delete: 'Delete'
+      no_reservations: 'Sorry, but there are no reservations for this hotel.'
 
   my-account:
     back: 'Back'

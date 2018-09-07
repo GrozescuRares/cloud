@@ -14,6 +14,7 @@
                         {{ include('hotel-management/hotels-table.html.twig') }}
                     </div>
                     <div class="col-md-12 col-xs-12 no-lr-padding">
+                        <a href="{{ path('reservation-management') }}" class="btn submit pull-right">{{ 'page.hotel-management.reservation-management.to'| trans }}</a>
                         <a href="{{ path('room-management') }}" class="btn submit pull-right">{{ 'page.hotel-management.room-management.to'| trans }}</a>
                     </div>
                 </div>

@@ -5,14 +5,13 @@
         <div class="container-fluid">
             <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                 <div class="wrapper">
-                    <a href="{{ path('hotels-information') }}">Back</a>
+                    <a href="{{ path('hotels-information') }}">{{ 'page.hotel-management.reservation-management.back'| trans }}</a>
                     <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
-                        <h1 class="text-center">Room management</h1>
+                        <h1 class="text-center">{{ 'page.hotel-management.reservation-management.to'| trans }}</h1>
                     </div>
                     {% if is_granted('ROLE_OWNER') %}
                         <div class="col-md-12 col-xs-12 no-lr-padding text-center search">
-
-                            <span>Search by hotel all reservations</span>
+                            <span>{{ 'page.hotel-management.reservation-management.search'| trans }}</span>
                             <div class="styled-input">
                                 <select class="selectpicker" id="hotels">
                                     <option data-action="{{ path('paginate-and-sort-reservations') }}" data-page="{{ currentPage }}"

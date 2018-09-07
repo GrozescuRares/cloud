@@ -7,20 +7,20 @@
                     <th class="columns" data-action="{{ path('paginate-and-sort-reservations') }}"
                         data-sort="{% if sortBy is empty or sortBy.hotel is not defined %}ASC{% else %}{{ sortBy.hotel }}{% endif %}"
                         data-column="hotel"
-                        data-page="{{ currentPage }}">Hotel<span class="sort-icon"></span></th>
+                        data-page="{{ currentPage }}">{{ 'form.label.hotel'| trans }}<span class="sort-icon"></span></th>
                     <th class="columns" data-action="{{ path('paginate-and-sort-reservations') }}"
                         data-sort="{% if sortBy is empty or sortBy.room is not defined %}ASC{% else %}{{ sortBy.room }}{% endif %}"
                         data-column="room"
-                        data-page="{{ currentPage }}">Room<span class="sort-icon"></span></th>
+                        data-page="{{ currentPage }}">{{ 'form.label.room'| trans }}<span class="sort-icon"></span></th>
                     <th class="columns" data-action="{{ path('paginate-and-sort-reservations') }}"
                         data-sort="{% if sortBy is empty or sortBy.startDate is not defined %}ASC{% else %}{{ sortBy.startDate }}{% endif %}"
                         data-column="startDate"
-                        data-page="{{ currentPage }}">Start date<span class="sort-icon"></span></th>
+                        data-page="{{ currentPage }}">{{ 'page.hotel-management.reservation-management.start_date'| trans }}<span class="sort-icon"></span></th>
                     <th class="columns" data-action="{{ path('paginate-and-sort-reservations') }}"
                         data-sort="{% if sortBy is empty or sortBy.endDate is not defined %}ASC{% else %}{{ sortBy.endDate }}{% endif %}"
                         data-column="endDate"
-                        data-page="{{ currentPage }}">End date<span class="sort-icon"></span></th>
-                    <th class="text-center">Delete</th>
+                        data-page="{{ currentPage }}">{{ 'page.hotel-management.reservation-management.end_date'| trans }}<span class="sort-icon"></span></th>
+                    <th class="text-center">{{ 'page.hotel-management.reservation-management.delete'| trans }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -36,7 +36,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="table-items">{{ 'page.user-management.user-management.items'|trans({'%users%': nrRooms}) }}</div>
+        <div class="table-items">{{ 'page.user-management.user-management.items'|trans({'%users%': nrReservations}) }}</div>
         <nav class="table-pagination">
             <ul class="pagination">
                 {% if currentPage != 1 %}
@@ -78,5 +78,5 @@
         </nav>
     </div>
 {% else %}
-    <h1>Sorry, but there are no reservations for this hotel.</h1>
+    <h1>{{ 'page.hotel-management.reservation-management.no_reservations'| trans }}</h1>
 {% endif %}
