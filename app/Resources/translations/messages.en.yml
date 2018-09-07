@@ -30,6 +30,10 @@ form:
     birth_date: 'Birth date'
     registration_date: 'Registration date'
     room: 'Room'
+    hotel_name: 'Hotel Name'
+    location: 'Location'
+    description: 'Description'
+    facilities: 'Facilities'
 
 page:
   activation-account:
@@ -100,6 +104,9 @@ page:
       title: 'Hotel Information'
       back: 'Back'
       edit: 'Edit'
+    edit-hotel-information:
+      back: 'Back'
+      title: 'Edit Hotel Information'
 
     room-management:
       to: 'Room Management'

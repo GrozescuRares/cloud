@@ -14,6 +14,7 @@ use AppBundle\Enum\RoomConfig;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
+use AppBundle\Form\HotelTypeForm;
 use AppBundle\Form\RoomTypeForm;
 use AppBundle\Helper\PaginateAndSortHelper;
 
@@ -301,6 +302,47 @@ class HotelManagementController extends Controller
                     'earnings' => $earnings.RoomConfig::CURRENCY,
                 ]
             );
+        } catch (HotelNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/hotel-management/edit-hotel-information/{hotelId}", name="edit-hotel-information")
+     *
+     * @param mixed   $hotelId
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function editHotelInformationAction($hotelId, Request $request)
+    {
+        $loggedUser = $this->getUser();
+        $hotelService = $this->get('app.hotel.service');
+        try {
+            $hotelDto = $hotelService->getHotelDtoByIdAndOwner($loggedUser, $hotelId);
+
+            $form = $this->createForm(HotelTypeForm::class, $hotelDto);
+
+            $form->handleRequest($request);
+
+            if (!($form->isSubmitted() && $form->isValid())) {
+                return $this->render(
+                    'hotel-management/edit-hotel-information.html.twig',
+                    [
+                        'edit_form' => $form->createView(),
+                        'hotel' => $hotelDto,
+                    ]
+                );
+            }
+            $this->addFlash('success', 'Hotel information updated successfully !');
+
+            return $this->redirectToRoute('edit-hotel-information', ['hotelId' => $hotelId]);
+
         } catch (HotelNotFoundException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         } catch (NoRoleException $ex) {

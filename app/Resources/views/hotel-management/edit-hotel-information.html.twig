@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="row">
+                    <div class="wrapper">
+                        <a href="{{ path('show-hotel-information', {'hotelId': hotel.hotelId}) }}" >{{'page.hotel-management.edit-hotel-information.back' | trans }}</a>
+                        <div class="col-md-12 col-xs-12 no-lr-padding text-center title">
+                            <h1 class="text-center">{{ 'page.hotel-management.edit-hotel-information.title'| trans }}</h1>
+                        </div>
+                        <form action="{{ path('edit-my-account') }} " method="post">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(edit_form.name) }}
+                                        <div class="rel">
+                                            {{ form_errors(edit_form.name) }}
+                                            {{ form_widget(edit_form.name) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                       {{ form_label(edit_form.description) }}
+                                        <div class="rel">
+                                            {{ form_errors(edit_form.description) }}
+                                            {{ form_widget(edit_form.description) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(edit_form.location) }}
+                                        <div class="rel">
+                                            {{ form_errors(edit_form.location) }}
+                                            {{ form_widget(edit_form.location) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(edit_form.facilities) }}
+                                        <div class="rel">
+                                            {{ form_errors(edit_form.facilities) }}
+                                            {{ form_widget(edit_form.facilities) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form_row(edit_form._token) }}
+                            <div class="col-md-12 col-xs-12">
+                                <button type="submit" class="btn submit pull-right margin-top-large">{{ 'form.label.save'| trans }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
