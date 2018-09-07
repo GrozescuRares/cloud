@@ -7,6 +7,10 @@ $(document).ready(function () {
     $(document).on('click', 'th.columns', {}, function (event) {
         paginateAndSort(event, this);
     });
+
+    $(document).on('change', '#reservation-hotels', {}, function(event){
+        paginateAndSort(event, $('select option:selected'));
+    });
 });
 
 function paginateAndSort(event, element) {

@@ -105,11 +105,11 @@ class ReservationService
      * @param mixed $hotelId
      * @return float
      */
-    public function getReservationsPagesNumber($hotelId)
+    public function getReservationsPagesNumberByHotel($hotelId)
     {
         $hotel = $this->getEntitiesAndDtosHelper->getHotelById($hotelId);
 
-        return $this->em->getRepository(Reservation::class)->getReservationsPagesNumber($hotel);
+        return $this->em->getRepository(Reservation::class)->getReservationsPagesNumberByHotel($hotel);
     }
 
     /**
@@ -119,11 +119,51 @@ class ReservationService
      * @param mixed $sort
      * @return array
      */
-    public function paginateAndSortReservations($hotelId, $offset, $column = null, $sort = null)
+    public function paginateAndSortReservationsByHotel($hotelId, $offset, $column = null, $sort = null)
     {
         $hotel = $this->getEntitiesAndDtosHelper->getHotelById($hotelId);
-        $reservations = $this->em->getRepository(Reservation::class)->paginateAndSortReservations($hotel, $offset, $column, $sort);
+        $reservations = $this->em->getRepository(Reservation::class)->paginateAndSortReservationsByHotel($hotel, $offset, $column, $sort);
 
         return $this->reservationAdapter->convertToReservationDtos($reservations);
+    }
+
+    /**
+     * @param array $hotelDtos
+     * @return float
+     */
+    public function getReservationsPagesNumberForAllHotels(array $hotelDtos)
+    {
+        $hotels = $this->convertToEntities($hotelDtos);
+
+        return $this->em->getRepository(Reservation::class)->getReservationsPagesNumberForAllHotels($hotels);
+    }
+
+    /**
+     * @param array $hotelDtos
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @return array
+     */
+    public function paginateAndSortReservationsForAllHotels(array $hotelDtos, $offset, $column = null, $sort = null)
+    {
+        $hotels = $this->convertToEntities($hotelDtos);
+        $reservations = $this->em->getRepository(Reservation::class)->paginateAndSortReservationsForAllHotels($hotels, $offset, $column, $sort);
+
+        return $this->reservationAdapter->convertToReservationDtos($reservations);
+    }
+
+    /**
+     * @param array $hotelDtos
+     * @return array
+     */
+    private function convertToEntities(array $hotelDtos)
+    {
+        $hotels = [];
+        foreach ($hotelDtos as $hotelDto) {
+            $hotels[] = $this->getEntitiesAndDtosHelper->getHotelById($hotelDto->hotelId);
+        }
+
+        return $hotels;
     }
 }

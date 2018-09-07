@@ -1,0 +1,82 @@
+{% if reservations|length > 0 %}
+    <div class="table-paginated">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th class="columns" data-action="{{ path('paginate-and-sort-reservations') }}"
+                        data-sort="{% if sortBy is empty or sortBy.hotel is not defined %}ASC{% else %}{{ sortBy.hotel }}{% endif %}"
+                        data-column="hotel"
+                        data-page="{{ currentPage }}">Hotel<span class="sort-icon"></span></th>
+                    <th class="columns" data-action="{{ path('paginate-and-sort-reservations') }}"
+                        data-sort="{% if sortBy is empty or sortBy.room is not defined %}ASC{% else %}{{ sortBy.room }}{% endif %}"
+                        data-column="room"
+                        data-page="{{ currentPage }}">Room<span class="sort-icon"></span></th>
+                    <th class="columns" data-action="{{ path('paginate-and-sort-reservations') }}"
+                        data-sort="{% if sortBy is empty or sortBy.startDate is not defined %}ASC{% else %}{{ sortBy.startDate }}{% endif %}"
+                        data-column="startDate"
+                        data-page="{{ currentPage }}">Start date<span class="sort-icon"></span></th>
+                    <th class="columns" data-action="{{ path('paginate-and-sort-reservations') }}"
+                        data-sort="{% if sortBy is empty or sortBy.endDate is not defined %}ASC{% else %}{{ sortBy.endDate }}{% endif %}"
+                        data-column="endDate"
+                        data-page="{{ currentPage }}">End date<span class="sort-icon"></span></th>
+                    <th class="text-center">Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for re in reservations %}
+                    <tr>
+                        <td>{{ re.hotel }}</td>
+                        <td>{{ re.room }}</td>
+                        <td>{{ re.startDate | date('Y-m-d') }}</td>
+                        <td>{{ re.endDate | date('Y-m-d') }}</td>
+                        <td class="text-center"><a><i class="fa fa-trash"></i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-items">{{ 'page.user-management.user-management.items'|trans({'%users%': nrRooms}) }}</div>
+        <nav class="table-pagination">
+            <ul class="pagination">
+                {% if currentPage != 1 %}
+                    <li class="prev">
+                        <a data-action="{{ path('paginate-and-sort-reservations') }}"
+                           data-page="{{ currentPage -1 }}"
+                           data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                           data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
+                           data-paginate="true"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo; {{ 'page.user-management.user-management.previous'|trans }}</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% if nrPages > 1 %}
+                    {% for page in 1..nrPages %}
+                        <li {% if currentPage == page %} class="active" {% endif %}><a
+                                    data-action="{{ path('paginate-and-sort-reservations') }}"
+                                    data-page="{{ page }}"
+                                    data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                                    data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
+                                    data-paginate="true">{{ 'page.user-management.user-management.page-number'| trans({'%page%': page}) }}</a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+                {% if currentPage != nrPages %}
+                    <li class="next">
+                        <a data-action="{{ path('paginate-and-sort-reservations') }}"
+                           data-page="{{ currentPage + 1 }}"
+                           data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                           data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
+                           data-paginate="true"
+                           aria-label="Next">
+                            <span aria-hidden="true">{{ 'page.user-management.user-management.next'|trans }} &raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+{% else %}
+    <h1>Sorry, but there are no reservations for this hotel.</h1>
+{% endif %}

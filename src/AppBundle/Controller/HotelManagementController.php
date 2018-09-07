@@ -82,11 +82,9 @@ class HotelManagementController extends Controller
     /**
      * @Route("hotel-management/hotels-information", name="hotels-information")
      *
-     * @param Request $request
-     *
      * @return Response
      */
-    public function hotelInformationAction(Request $request)
+    public function hotelInformationAction()
     {
         $loggedUser = $this->getUser();
         $hotelManagementManager = $this->get('app.hotel-management.manager');
@@ -138,11 +136,18 @@ class HotelManagementController extends Controller
             );
         }
         try {
-            list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters($request);
+            list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
+                $request
+            );
             $pages = $hotelManagementManager->getHotelPagesNumber($loggedUser);
 
             list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
-            $hotelsDto = $hotelManagementManager->paginateAndSortHotels($loggedUser, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType);
+            $hotelsDto = $hotelManagementManager->paginateAndSortHotels(
+                $loggedUser,
+                $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS,
+                $column,
+                $sortType
+            );
             $availableHotels = $bookingManager->getFreeHotels(new \DateTime('now'), new \DateTime('now'));
 
             return $this->render(
@@ -243,10 +248,19 @@ class HotelManagementController extends Controller
             );
         }
         try {
-            list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters($request);
+            list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
+                $request
+            );
             $nrPages = $hotelManagementManager->getRoomsPagesNumber($hotelId, $petFilter, $smokingFilter);
             list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
-            $roomDtos = $hotelManagementManager->paginateAndSortRooms($hotelId, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType, $petFilter, $smokingFilter);
+            $roomDtos = $hotelManagementManager->paginateAndSortRooms(
+                $hotelId,
+                $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS,
+                $column,
+                $sortType,
+                $petFilter,
+                $smokingFilter
+            );
             $availableRooms = $bookingManager->getFreeRooms($hotelId, new \DateTime('now'), new \DateTime('now'));
 
             return $this->render(
@@ -295,7 +309,11 @@ class HotelManagementController extends Controller
         $bookingManager = $this->get('app.bookings.manager');
         try {
             $hotelDto = $hotelService->getHotelDtoByIdAndOwner($loggedUser, $hotelId);
-            $earnings = $reservationService->getAnnualEarnings($hotelId, ValidateReservationHelper::convertToDateTime(date('Y').'-1-1'), ValidateReservationHelper::convertToDateTime(date('Y').'-12-31'));
+            $earnings = $reservationService->getAnnualEarnings(
+                $hotelId,
+                ValidateReservationHelper::convertToDateTime(date('Y').'-1-1'),
+                ValidateReservationHelper::convertToDateTime(date('Y').'-12-31')
+            );
             $availableHotels = $bookingManager->getFreeHotels(new \DateTime('now'), new \DateTime('now'));
             $availability = !empty($availableHotels[$hotelDto->name]) ? true : false;
 
@@ -362,11 +380,10 @@ class HotelManagementController extends Controller
     /**
      * @Route("/hotel-management/reservation-management", name="reservation-management")
      *
-     * @param Request $request
      *
      * @return Response
      */
-    public function reservationManagementAction(Request $request)
+    public function reservationManagementAction()
     {
         $loggedUser = $this->getUser();
         $hotelManagementManager = $this->get('app.hotel-management.manager');
@@ -376,11 +393,13 @@ class HotelManagementController extends Controller
         try {
             if (empty($hotels)) {
                 $hotelId = $loggedUser->getHotel()->getHotelId();
+                $nrPages = $bookingManager->getReservationsPagesNumberByHotel($hotelId);
+                $reservationDtos = $bookingManager->paginateAndSortReservationsByHotel($hotelId, 0);
             } else {
                 $hotelId = reset($hotels)->hotelId;
+                $nrPages = $bookingManager->getReservationsPagesNumberForAllHotels($hotels);
+                $reservationDtos = $bookingManager->paginateAndSortReservationsForAllHotels($hotels, 0);
             }
-            $nrPages = $bookingManager->getReservationsPagesNumber($hotelId);
-            $reservationDtos = $bookingManager->paginateAndSortReservations($hotelId, 0);
 
             return $this->render(
                 'hotel-management/reservation-management.html.twig',
@@ -393,6 +412,93 @@ class HotelManagementController extends Controller
                     'currentPage' => 1,
                     'nrRooms' => count($reservationDtos),
                     'sortBy' => [],
+                ]
+            );
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (HotelNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/hotel-management/paginate-and-sort-reservations", name="paginate-and-sort-reservations")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function paginateAndSortReservations(Request $request)
+    {
+        $loggedUser = $this->getUser();
+        $hotelManagementManager = $this->get('app.hotel-management.manager');
+        $bookingManager = $this->get('app.bookings.manager');
+
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
+        try {
+            list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
+                $request
+            );
+
+            list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
+            $hotels = $hotelManagementManager->getOwnedHotels($loggedUser);
+
+            if ($hotelId === 'all') {
+                $nrPages = $bookingManager->getReservationsPagesNumberForAllHotels($hotels);
+                $reservationDtos = $bookingManager->paginateAndSortReservationsForAllHotels(
+                    $hotels,
+                    $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS,
+                    $column,
+                    $sortType
+                );
+
+                return $this->render(
+                    'hotel-management/reservations-table.html.twig',
+                    [
+                        'firstHotel' => $hotelId,
+                        'hotels' => $hotels,
+                        'user' => $loggedUser,
+                        'reservations' => $reservationDtos,
+                        'nrPages' => $nrPages,
+                        'currentPage' => $pageNumber,
+                        'nrRooms' => count($reservationDtos),
+                        'sortBy' => [
+                            $column => $sort,
+                        ],
+                    ]
+                );
+            }
+
+            $nrPages = $bookingManager->getReservationsPagesNumberByHotel($hotelId);
+            $reservationDtos = $bookingManager->paginateAndSortReservationsByHotel(
+                $hotelId,
+                $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS,
+                $column,
+                $sortType
+            );
+
+            return $this->render(
+                'hotel-management/reservations-table.html.twig',
+                [
+                    'firstHotel' => $hotelId,
+                    'hotels' => $hotels,
+                    'user' => $loggedUser,
+                    'reservations' => $reservationDtos,
+                    'nrPages' => $nrPages,
+                    'currentPage' => $pageNumber,
+                    'nrRooms' => count($reservationDtos),
+                    'sortBy' => [
+                        $column => $sort,
+                    ],
                 ]
             );
         } catch (NoRoleException $ex) {

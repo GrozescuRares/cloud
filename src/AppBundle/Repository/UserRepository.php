@@ -70,7 +70,9 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
      */
     public function paginateAndSortUsersFromManagerHotel(User $loggedUser, $offset, $column, $sort)
     {
-        $users = $this->createQueryBuilder('user')
+        $qb = $this->createQueryBuilder('user');
+        $qb
+            ->innerJoin('user.role', 'role')
             ->where('user.hotel = :managerHotel')
             ->andWhere('user.userId != :managerId')
             ->setParameter('managerHotel', $loggedUser->getHotel())
@@ -78,14 +80,16 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
             ->setMaxResults(PaginationConfig::ITEMS)
             ->setFirstResult($offset);
 
-        if (!empty($column) and !empty($sort)) {
-            $result = $users->orderBy('user.'.$column, $sort)
-                ->getQuery()->execute();
+        if ($column == 'role') {
+            $qb->orderBy('role.description', $sort);
 
-            return $result;
+            return $qb->getQuery()->getResult();
+        }
+        if (!empty($column) and !empty($sort)) {
+            $qb->orderBy('user.'.$column, $sort);
         }
 
-        return $users->getQuery()->execute();
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -118,8 +122,10 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
      */
     public function paginateAndSortUsersFromOwnerHotel(User $loggedUser, $offset, $column, $sort, $hotelId)
     {
-        $users = $this->createQueryBuilder('user')
+        $qb = $this->createQueryBuilder('user');
+        $qb
             ->innerJoin('user.hotel', 'hotel')
+            ->innerJoin('user.role', 'role')
             ->where('hotel.owner = :owner')
             ->andWhere('hotel.hotelId = :hotelId')
             ->setParameter('owner', $loggedUser)
@@ -127,14 +133,17 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
             ->setFirstResult($offset)
             ->setMaxResults(PaginationConfig::ITEMS);
 
-        if (!empty($column) && !empty($sort)) {
-            $result = $users->orderBy('user.'.$column, $sort)
-                ->getQuery()->execute();
+        if ($column == 'role') {
+            $qb->orderBy('role.description', $sort);
 
-            return $result;
+            return $qb->getQuery()->getResult();
         }
 
-        return $users->getQuery()->execute();
+        if (!empty($column) && !empty($sort)) {
+            $qb->orderBy('user.'.$column, $sort);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

@@ -48,8 +48,16 @@ class RoomDto
     /**
      * @return string
      */
+    public function getRoomDetails()
+    {
+        return "Number: ".$this->roomId." Capacity: ".$this->capacity." Price: ".$this->price." Smoking: ".RoomConfig::ALLOWED[$this->smoking]." Pet: ".RoomConfig::ALLOWED[$this->pet];
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        return "Id: ".$this->roomId." Capacity: ".$this->capacity." Price: ".$this->price." Smoking: ".RoomConfig::ALLOWED[$this->smoking]." Pet: ".RoomConfig::ALLOWED[$this->pet];
+        return (string)$this->roomId;
     }
 }

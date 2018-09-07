@@ -101,9 +101,9 @@ class BookingsManager
      * @param mixed $hotelId
      * @return float
      */
-    public function getReservationsPagesNumber($hotelId)
+    public function getReservationsPagesNumberByHotel($hotelId)
     {
-        return $this->reservationService->getReservationsPagesNumber($hotelId);
+        return $this->reservationService->getReservationsPagesNumberByHotel($hotelId);
     }
 
     /**
@@ -113,8 +113,29 @@ class BookingsManager
      * @param mixed|null $sort
      * @return array
      */
-    public function paginateAndSortReservations($hotelId, $offset, $column = null, $sort = null)
+    public function paginateAndSortReservationsByHotel($hotelId, $offset, $column = null, $sort = null)
     {
-        return $this->reservationService->paginateAndSortReservations($hotelId, $offset, $sort);
+        return $this->reservationService->paginateAndSortReservationsByHotel($hotelId, $offset, $column, $sort);
+    }
+
+    /**
+     * @param array $hotelDtos
+     * @return float
+     */
+    public function getReservationsPagesNumberForAllHotels(array $hotelDtos)
+    {
+        return $this->reservationService->getReservationsPagesNumberForAllHotels($hotelDtos);
+    }
+
+    /**
+     * @param array $hotelDtos
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @return array
+     */
+    public function paginateAndSortReservationsForAllHotels(array $hotelDtos, $offset, $column = null, $sort = null)
+    {
+        return $this->reservationService->paginateAndSortReservationsForAllHotels($hotelDtos, $offset, $column, $sort);
     }
 }

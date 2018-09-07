@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="wrapper">
+                    <a href="{{ path('hotels-information') }}">Back</a>
+                    <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                        <h1 class="text-center">Room management</h1>
+                    </div>
+                    {% if is_granted('ROLE_OWNER') %}
+                        <div class="col-md-12 col-xs-12 no-lr-padding text-center search">
+
+                            <span>Search by hotel all reservations</span>
+                            <div class="styled-input">
+                                <select class="selectpicker" id="hotels">
+                                    <option data-action="{{ path('paginate-and-sort-reservations') }}" data-page="{{ currentPage }}"
+                                            value="all" selected="selected">All hotels</option>
+                                    {% for name, hotel in hotels %}
+                                        <option data-action="{{ path('paginate-and-sort-reservations') }}"
+                                                data-page="{{ currentPage }}"
+                                                value="{{ hotel.hotelId }}"> {{ name }} </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                        </div>
+                    {% endif %}
+                    <div id="reload">
+                        {{ include('hotel-management/reservations-table.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/paginateAndSort.js') }}"></script>
+    <script src="{{ asset('js/user_management/user-management.js') }}"></script>
+{% endblock %}

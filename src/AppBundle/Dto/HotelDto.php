@@ -38,4 +38,12 @@ class HotelDto
      * @Assert\Type("string")
      */
     public $facilities;
+
+    /**
+     * @return mixed
+     */
+    public function __toString()
+    {
+        return $this->name;
+    }
 }
