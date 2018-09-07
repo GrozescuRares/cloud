@@ -16,9 +16,12 @@ use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\RoomNotFoundException;
+use AppBundle\Helper\GetEntitiesAndDtosHelper;
 use AppBundle\Helper\ValidateUserHelper;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 /**
  * Class ReservationService
@@ -30,16 +33,19 @@ class ReservationService
     protected $em;
     /** @var ReservationAdapter */
     protected $reservationAdapter;
-
+    /** @var GetEntitiesAndDtosHelper */
+    protected $getEntitiesAndDtosHelper;
     /**
      * ReservationService constructor.
-     * @param EntityManager      $em
-     * @param ReservationAdapter $reservationAdapter
+     * @param EntityManager            $em
+     * @param ReservationAdapter       $reservationAdapter
+     * @param GetEntitiesAndDtosHelper $getEntitiesAndDtosHelper
      */
-    public function __construct(EntityManager $em, ReservationAdapter $reservationAdapter)
+    public function __construct(EntityManager $em, ReservationAdapter $reservationAdapter, GetEntitiesAndDtosHelper $getEntitiesAndDtosHelper)
     {
         $this->em = $em;
         $this->reservationAdapter = $reservationAdapter;
+        $this->getEntitiesAndDtosHelper = $getEntitiesAndDtosHelper;
     }
 
     /**
@@ -54,8 +60,8 @@ class ReservationService
         ValidateUserHelper::checkIfUserHasRole($userRole);
         ValidateUserHelper::checkIfUserHasRoleClient($userRole);
 
-        $hotel = $this->getHotelById($reservationDto->hotel);
-        $room = $this->getRoomById($reservationDto->room);
+        $hotel = $this->getEntitiesAndDtosHelper->getHotelById($reservationDto->hotel);
+        $room = $this->getEntitiesAndDtosHelper->getRoomById($reservationDto->room);
 
         if (empty($hotel)) {
             throw new HotelNotFoundException('There is no hotel with id: '.$reservationDto->hotel);
@@ -82,38 +88,42 @@ class ReservationService
      * @param mixed     $hotelId
      * @param \DateTime $startYear
      * @param \DateTime $endYear
+     *
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     *
      * @return mixed
      */
     public function getAnnualEarnings($hotelId, \DateTime $startYear, \DateTime $endYear)
     {
-        $hotel = $this->getHotelById($hotelId);
+        $hotel = $this->getEntitiesAndDtosHelper->getHotelById($hotelId);
 
         return $this->em->getRepository(Reservation::class)->getAnnualEarnings($hotel, $startYear, $endYear);
     }
 
     /**
      * @param mixed $hotelId
-     * @return Hotel|null|object
+     * @return float
      */
-    private function getHotelById($hotelId)
+    public function getReservationsPagesNumber($hotelId)
     {
-        return $this->em->getRepository(Hotel::class)->findOneBy(
-            [
-                'hotelId' => $hotelId,
-            ]
-        );
+        $hotel = $this->getEntitiesAndDtosHelper->getHotelById($hotelId);
+
+        return $this->em->getRepository(Reservation::class)->getReservationsPagesNumber($hotel);
     }
 
     /**
-     * @param mixed $roomId
-     * @return Room|null|object
+     * @param mixed $hotelId
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @return array
      */
-    private function getRoomById($roomId)
+    public function paginateAndSortReservations($hotelId, $offset, $column = null, $sort = null)
     {
-        return $this->em->getRepository(Room::class)->findOneBy(
-            [
-                'roomId' => $roomId,
-            ]
-        );
+        $hotel = $this->getEntitiesAndDtosHelper->getHotelById($hotelId);
+        $reservations = $this->em->getRepository(Reservation::class)->paginateAndSortReservations($hotel, $offset, $column, $sort);
+
+        return $this->reservationAdapter->convertToReservationDtos($reservations);
     }
 }

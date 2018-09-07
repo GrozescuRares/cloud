@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Hotel;
+use AppBundle\Enum\PaginationConfig;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 
@@ -36,5 +37,43 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('endYear', $endYear);
 
         return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @param Hotel $hotel
+     *
+     * @return float
+     */
+    public function getReservationsPagesNumber(Hotel $hotel)
+    {
+        $qb = $this->createQueryBuilder('reservation');
+        $qb ->where('reservation.hotel = :hotel')
+            ->setParameter('hotel', $hotel);
+
+        $reservations = $qb->getQuery()->getResult();
+
+        return ceil(count($reservations) / PaginationConfig::ITEMS);
+    }
+
+    /**
+     * @param Hotel $hotel
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @return array
+     */
+    public function paginateAndSortReservations(Hotel $hotel, $offset, $column, $sort)
+    {
+        $qb = $this->createQueryBuilder('reservation');
+        $qb ->where('reservation.hotel = :hotel')
+            ->setParameter('hotel', $hotel)
+            ->setMaxResults(PaginationConfig::ITEMS)
+            ->setFirstResult($offset);
+
+        if (!empty($column) and !empty($sort)) {
+            $qb->orderBy('reservation.'.$column, $sort);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

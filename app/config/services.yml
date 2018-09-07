@@ -78,6 +78,7 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@app.hotel.adapter'
+            - '@app.get_entities_and_dtos.helper'
         public: true
 
     AppBundle\Service\HotelService: '@app.hotel.service'
@@ -112,6 +113,7 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@app.room.adapter'
             - '@app.hotel.adapter'
+            - '@app.get_entities_and_dtos.helper'
         public: true
 
     AppBundle\Service\RoomService: '@app.room.service'
@@ -154,6 +156,16 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@app.reservation.adapter'
+            - '@app.get_entities_and_dtos.helper'
         public: true
 
     AppBundle\Service\ReservationService: '@app.reservation.service'
+
+    app.get_entities_and_dtos.helper:
+        class: AppBundle\Helper\GetEntitiesAndDtosHelper
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@app.hotel.adapter'
+        public: true
+
+    AppBundle\Helper\GetEntitiesAndDtosHelper: '@app.get_entities_and_dtos.helper'

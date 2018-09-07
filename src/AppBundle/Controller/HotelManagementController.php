@@ -19,6 +19,8 @@ use AppBundle\Form\RoomTypeForm;
 use AppBundle\Helper\PaginateAndSortHelper;
 
 use AppBundle\Helper\ValidateReservationHelper;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -280,6 +282,9 @@ class HotelManagementController extends Controller
      *
      * @param mixed $hotelId
      *
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     *
      * @return Response
      */
     public function showHotelInformationAction($hotelId)
@@ -345,12 +350,56 @@ class HotelManagementController extends Controller
             $this->addFlash('success', 'Hotel information updated successfully !');
 
             return $this->redirectToRoute('edit-hotel-information', ['hotelId' => $hotelId]);
-
         } catch (HotelNotFoundException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         } catch (NoRoleException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/hotel-management/reservation-management", name="reservation-management")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function reservationManagementAction(Request $request)
+    {
+        $loggedUser = $this->getUser();
+        $hotelManagementManager = $this->get('app.hotel-management.manager');
+        $bookingManager = $this->get('app.bookings.manager');
+        $hotels = $hotelManagementManager->getOwnedHotels($loggedUser);
+
+        try {
+            if (empty($hotels)) {
+                $hotelId = $loggedUser->getHotel()->getHotelId();
+            } else {
+                $hotelId = reset($hotels)->hotelId;
+            }
+            $nrPages = $bookingManager->getReservationsPagesNumber($hotelId);
+            $reservationDtos = $bookingManager->paginateAndSortReservations($hotelId, 0);
+
+            return $this->render(
+                'hotel-management/reservation-management.html.twig',
+                [
+                    'firstHotel' => $hotelId,
+                    'hotels' => $hotels,
+                    'user' => $loggedUser,
+                    'reservations' => $reservationDtos,
+                    'nrPages' => $nrPages,
+                    'currentPage' => 1,
+                    'nrRooms' => count($reservationDtos),
+                    'sortBy' => [],
+                ]
+            );
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (HotelNotFoundException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         }
     }

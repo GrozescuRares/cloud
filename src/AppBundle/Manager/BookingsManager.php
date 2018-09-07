@@ -96,4 +96,25 @@ class BookingsManager
             'emails/booking.html.twig'
         );
     }
+
+    /**
+     * @param mixed $hotelId
+     * @return float
+     */
+    public function getReservationsPagesNumber($hotelId)
+    {
+        return $this->reservationService->getReservationsPagesNumber($hotelId);
+    }
+
+    /**
+     * @param mixed      $hotelId
+     * @param mixed      $offset
+     * @param mixed|null $column
+     * @param mixed|null $sort
+     * @return array
+     */
+    public function paginateAndSortReservations($hotelId, $offset, $column = null, $sort = null)
+    {
+        return $this->reservationService->paginateAndSortReservations($hotelId, $offset, $sort);
+    }
 }

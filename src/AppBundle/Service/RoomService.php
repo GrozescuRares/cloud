@@ -16,6 +16,7 @@ use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Room;
 
 use AppBundle\Exception\HotelNotFoundException;
+use AppBundle\Helper\GetEntitiesAndDtosHelper;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -30,19 +31,23 @@ class RoomService
     protected $roomAdapter;
     /** @var HotelAdapter  */
     protected $hotelAdapter;
+    /** @var GetEntitiesAndDtosHelper */
+    protected $getEntitiesAndDtosHelper;
 
     /**
      * RoomService constructor.
      *
-     * @param EntityManager $em
-     * @param RoomAdapter   $roomAdapter
-     * @param HotelAdapter  $hotelAdapter
+     * @param EntityManager            $em
+     * @param RoomAdapter              $roomAdapter
+     * @param HotelAdapter             $hotelAdapter
+     * @param GetEntitiesAndDtosHelper $getEntitiesAndDtosHelper
      */
-    public function __construct(EntityManager $em, RoomAdapter $roomAdapter, HotelAdapter $hotelAdapter)
+    public function __construct(EntityManager $em, RoomAdapter $roomAdapter, HotelAdapter $hotelAdapter, GetEntitiesAndDtosHelper $getEntitiesAndDtosHelper)
     {
         $this->em = $em;
         $this->roomAdapter = $roomAdapter;
         $this->hotelAdapter = $hotelAdapter;
+        $this->getEntitiesAndDtosHelper = $getEntitiesAndDtosHelper;
     }
 
     /**
@@ -87,7 +92,7 @@ class RoomService
      */
     public function getPagesNumberForRooms($hotelId, $petFilter = null, $smokingFilter = null)
     {
-        $hotel = $this->getHotelById($hotelId);
+        $hotel = $this->getEntitiesAndDtosHelper->getHotelById($hotelId);
 
         return $this->em->getRepository(Room::class)->getRoomsPagesNumber($hotel, $petFilter, $smokingFilter);
     }
@@ -103,7 +108,7 @@ class RoomService
      */
     public function paginateAndSortRooms($hotelId, $offset, $column = null, $sort = null, $petFilter = null, $smokingFilter = null)
     {
-        $hotel = $this->getHotelById($hotelId);
+        $hotel = $this->getEntitiesAndDtosHelper->getHotelById($hotelId);
         $rooms = $this->em->getRepository(Room::class)->paginateAndSortRooms($hotel, $offset, $column, $sort, $petFilter, $smokingFilter);
 
         return $this->roomAdapter->convertToRoomDtos($rooms);
@@ -121,22 +126,5 @@ class RoomService
             'location' => $hotelDto->location,
             'description' => $hotelDto->description,
         ]);
-    }
-
-    /**
-     * @param $hotelId
-     * @return Hotel|null|object
-     */
-    private function getHotelById($hotelId)
-    {
-        $hotel = $this->em->getRepository(Hotel::class)->findOneBy([
-            'hotelId' => $hotelId,
-        ]);
-
-        if (empty($hotel)) {
-            throw new HotelNotFoundException('The hotel with id: '.$hotelId.' doesn\'t exist.');
-        }
-
-        return $hotel;
     }
 }

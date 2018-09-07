@@ -16,6 +16,7 @@ use AppBundle\Enum\RepositoryConfig;
 use AppBundle\Enum\UserConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
+use AppBundle\Helper\GetEntitiesAndDtosHelper;
 use AppBundle\Service\HotelService;
 use AppBundle\Entity\User;
 
@@ -29,6 +30,8 @@ class HotelServiceTest extends EntityManagerMock
     protected $hotelService;
     /** @var HotelAdapter | \PHPUnit_Framework_MockObject_MockObject */
     protected $hotelAdapterMock;
+    /** @var GetEntitiesAndDtosHelper | \PHPUnit_Framework_MockObject_MockObject */
+    protected $getEntitiesAndDtosHelperMock;
 
     /**
      * HotelServiceTest constructor.
@@ -54,7 +57,8 @@ class HotelServiceTest extends EntityManagerMock
         parent::setUp();
 
         $this->hotelAdapterMock = $this->createMock(HotelAdapter::class);
-        $this->hotelService = new HotelService($this->emMock, $this->hotelAdapterMock);
+        $this->getEntitiesAndDtosHelperMock = $this->createMock(GetEntitiesAndDtosHelper::class);
+        $this->hotelService = new HotelService($this->emMock, $this->hotelAdapterMock, $this->getEntitiesAndDtosHelperMock);
     }
 
     /**

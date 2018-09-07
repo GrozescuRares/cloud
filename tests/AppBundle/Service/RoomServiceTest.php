@@ -16,6 +16,7 @@ use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Room;
 use AppBundle\Enum\EntityConfig;
 use AppBundle\Enum\RepositoryConfig;
+use AppBundle\Helper\GetEntitiesAndDtosHelper;
 use AppBundle\Service\RoomService;
 
 /**
@@ -30,6 +31,8 @@ class RoomServiceTest extends EntityManagerMock
     protected $roomAdapterMock;
     /** @var HotelAdapter| \PHPUnit_Framework_MockObject_MockObject */
     protected $hotelAdapterMock;
+    /** @var GetEntitiesAndDtosHelper | \PHPUnit_Framework_MockObject_MockObject */
+    protected $getEntitiesAndDtosHelperMock;
 
     /**
      * RoomServiceTest constructor.
@@ -56,7 +59,8 @@ class RoomServiceTest extends EntityManagerMock
 
         $this->roomAdapterMock = $this->createMock(RoomAdapter::class);
         $this->hotelAdapterMock = $this->createMock(HotelAdapter::class);
-        $this->roomService = new RoomService($this->emMock, $this->roomAdapterMock, $this->hotelAdapterMock);
+        $this->getEntitiesAndDtosHelperMock = $this->createMock(GetEntitiesAndDtosHelper::class);
+        $this->roomService = new RoomService($this->emMock, $this->roomAdapterMock, $this->hotelAdapterMock, $this->getEntitiesAndDtosHelperMock);
     }
 
     /**

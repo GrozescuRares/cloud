@@ -15,6 +15,7 @@ use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\NoRoleException;
+use AppBundle\Helper\GetEntitiesAndDtosHelper;
 use AppBundle\Helper\ValidateUserHelper;
 
 use Doctrine\ORM\EntityManager;
@@ -30,17 +31,21 @@ class HotelService
     protected $em;
     /** @var HotelAdapter */
     protected $hotelAdapter;
+    /** @var GetEntitiesAndDtosHelper */
+    protected $getEntitiesAndDtosHelper;
 
     /**
      * HotelService constructor.
      *
-     * @param EntityManager $em
-     * @param HotelAdapter  $hotelAdapter
+     * @param EntityManager            $em
+     * @param HotelAdapter             $hotelAdapter
+     * @param GetEntitiesAndDtosHelper $getEntitiesAndDtosHelper
      */
-    public function __construct(EntityManager $em, HotelAdapter $hotelAdapter)
+    public function __construct(EntityManager $em, HotelAdapter $hotelAdapter, GetEntitiesAndDtosHelper $getEntitiesAndDtosHelper)
     {
         $this->em = $em;
         $this->hotelAdapter = $hotelAdapter;
+        $this->getEntitiesAndDtosHelper = $getEntitiesAndDtosHelper;
     }
 
     /**
@@ -127,45 +132,6 @@ class HotelService
     }
 
     /**
-     * @param int $hotelId
-     *
-     * @return Hotel|null|object
-     */
-    public function getHotelById($hotelId)
-    {
-        $hotel = $this->em->getRepository(Hotel::class)->findOneBy([
-            'hotelId' => $hotelId,
-        ]);
-        if (empty($hotel)) {
-            throw new HotelNotFoundException('There is no hotel with id: '.$hotelId.' and owner: '.$loggedUser->getFirstName());
-        }
-
-        return $hotel;
-    }
-
-    /**
-     * @param User  $loggedUser
-     * @param mixed $hotelId
-     *
-     * @return \AppBundle\Dto\HotelDto|null
-     */
-    public function getHotelDtoByIdAndOwner(User $loggedUser, $hotelId)
-    {
-        ValidateUserHelper::checkIfUserHasRoleAndIsOwner($loggedUser);
-
-        $hotel = $this->em->getRepository(Hotel::class)->findOneBy([
-            'hotelId' => $hotelId,
-            'owner' => $loggedUser,
-        ]);
-
-        if (empty($hotel)) {
-            throw new HotelNotFoundException('There is no hotel with id: '.$hotelId.' and owner: '.$loggedUser->getFirstName());
-        }
-
-        return $this->hotelAdapter->convertToDto($hotel);
-    }
-
-    /**
      * @param User  $loggedUser
      * @param mixed $offset
      * @param mixed $column
@@ -198,10 +164,32 @@ class HotelService
      */
     public function updateHotel(HotelDto $hotelDto)
     {
-        $hotel = $this->getHotelById($hotelDto->hotelId);
+        $hotel = $this->getEntitiesAndDtosHelper->getHotelById($hotelDto->hotelId);
         $hotel = $this->hotelAdapter->convertToEntity($hotelDto, $hotel);
 
         $this->em->persist($hotel);
         $this->em->flush();
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $hotelId
+     *
+     * @return \AppBundle\Dto\HotelDto|null
+     */
+    public function getHotelDtoByIdAndOwner(User $loggedUser, $hotelId)
+    {
+        ValidateUserHelper::checkIfUserHasRoleAndIsOwner($loggedUser);
+
+        $hotel = $this->em->getRepository(Hotel::class)->findOneBy([
+            'hotelId' => $hotelId,
+            'owner' => $loggedUser,
+        ]);
+
+        if (empty($hotel)) {
+            throw new HotelNotFoundException('There is no hotel with id: '.$hotelId.' and owner: '.$loggedUser->getFirstName());
+        }
+
+        return $this->hotelAdapter->convertToDto($hotel);
     }
 }
