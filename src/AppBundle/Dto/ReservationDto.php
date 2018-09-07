@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ReservationDto
 {
+    public $reservationId;
     public $user;
     /**
      * @Assert\NotBlank(message="constraints.blank-hotel")

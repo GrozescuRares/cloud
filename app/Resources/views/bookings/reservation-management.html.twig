@@ -27,7 +27,7 @@
                         </div>
                     {% endif %}
                     <div id="reload">
-                        {{ include('hotel-management/reservations-table.html.twig') }}
+                        {{ include('bookings/reservations-table.html.twig') }}
                     </div>
                 </div>
             </div>
@@ -38,4 +38,5 @@
 {% block javascripts %}
     <script src="{{ asset('js/paginateAndSort.js') }}"></script>
     <script src="{{ asset('js/loadDataByHotels.js') }}"></script>
+    <script src="{{ asset('js/bookings/reservation-management.js') }}"></script>
 {% endblock %}

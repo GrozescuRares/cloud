@@ -30,7 +30,7 @@
                         <td>{{ re.room }}</td>
                         <td>{{ re.startDate | date('Y-m-d') }}</td>
                         <td>{{ re.endDate | date('Y-m-d') }}</td>
-                        <td class="text-center"><a><i class="fa fa-trash"></i></a></td>
+                        <td class="text-center"><a href="{{ path('delete-reservation', {'reservationId': re.reservationId}) }}" class="delete-reservation"><i class="fa fa-trash"></i></a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
