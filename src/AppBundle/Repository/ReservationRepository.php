@@ -150,7 +150,9 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('reservation');
         $qb ->innerJoin('reservation.hotel', 'hotel')
             ->where('reservation.user = :client')
-            ->setParameter('client', $client);
+            ->setParameter('client', $client)
+            ->setMaxResults(PaginationConfig::ITEMS)
+            ->setFirstResult($offset);
 
         if ($column == 'hotel') {
             $qb->orderBy('hotel.name', $sort);
@@ -161,9 +163,6 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
         if (!empty($client) && !empty($sort)) {
             $qb->addOrderBy('reservation.'.$column, $sort);
         }
-
-        $qb->setMaxResults(PaginationConfig::ITEMS);
-        $qb->setFirstResult($offset);
 
         return $qb->getQuery()->getResult();
     }
