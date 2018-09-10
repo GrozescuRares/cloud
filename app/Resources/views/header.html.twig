@@ -29,8 +29,8 @@
                             </a>
                         </li>
                     {% endif %}
-                    <li {% if ((is_granted('ROLE_MANAGER') and app.request.get('_route') == "reservation-management")) or (is_granted('ROLE_CLIENT') and app.request.get('_route') == "create-booking")%} class="active" {% endif %}>
-                        <a href="{% if is_granted('ROLE_MANAGER') %}{{ path('reservation-management') }}{% else %}{{ path('create-booking') }}{% endif %}" class="navigation-item">{{ 'navigation.bookings'| trans }}</a>
+                    <li {% if ((is_granted('ROLE_MANAGER') and app.request.get('_route') == "reservation-management")) or (is_granted('ROLE_CLIENT') and app.request.get('_route') == "my-bookings")%} class="active" {% endif %}>
+                        <a href="{% if is_granted('ROLE_MANAGER') %}{{ path('reservation-management') }}{% else %}{{ path('my-bookings') }}{% endif %}" class="navigation-item">{{ 'navigation.bookings'| trans }}</a>
                     </li>
                     <li>
                         <a href="{{ path('logout') }}" class="btn success">{{ 'navigation.logout'| trans }}</a>

@@ -157,6 +157,13 @@ page:
       title: 'Create New Booking'
       date: 'From when till when?'
       to: 'TO'
+    my-bookings:
+      back: 'Back'
+      title: 'My Bookings Management'
+      days: 'Days'
+      edit: 'Edit'
+      delete: 'Delete'
+      no_bookings: "Sorry, but you don't have any booking."
 
 emails:
   to_activate: 'To activate the account, go to:'

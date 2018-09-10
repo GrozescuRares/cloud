@@ -18,14 +18,14 @@
                     <th class="columns" data-action="{{ path('paginate-and-sort-bookings') }}"
                         data-sort="{% if sortBy is empty or sortBy.days is not defined %}ASC{% else %}{{ sortBy.days }}{% endif %}"
                         data-column="days"
-                        data-page="{{ currentPage }}">Days<span class="sort-icon"></span></th>
+                        data-page="{{ currentPage }}">{{ 'page.bookings.my-bookings.days'| trans }}<span class="sort-icon"></span></th>
                     <th class="columns" data-action="{{ path('paginate-and-sort-bookings') }}"
                         data-sort="{% if sortBy is empty or sortBy.endDate is not defined %}ASC{% else %}{{ sortBy.endDate }}{% endif %}"
                         data-column="endDate"
                         data-page="{{ currentPage }}">{{ 'page.hotel-management.reservation-management.end_date'| trans }}
                         <span class="sort-icon"></span></th>
-                    <th class="text-center">Edit</th>
-                    <th class="text-center">Delete</th>
+                    <th class="text-center">{{ 'page.bookings.my-bookings.edit'| trans }}</th>
+                    <th class="text-center">{{ 'page.bookings.my-bookings.delete'| trans }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -90,7 +90,7 @@
                 </ul>
             </nav>
         {% else %}
-            <h1>Sorry, but you don't have any booking.</h1>
+            <h1>{{ 'page.bookings.my-bookings.no_bookings'| trans }}</h1>
         {% endif %}
     </div>
 </div>
