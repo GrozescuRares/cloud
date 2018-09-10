@@ -95,4 +95,16 @@ class ValidateUserHelper
 
         return ValidateUserHelper::checkIfUserHasRoleOwner($userRole);
     }
+    
+    /**
+     * @param User $loggedUser
+     * @return mixed
+     */
+    public static function checkIfUserHasRoleAndIsClient(User $loggedUser)
+    {
+        $userRole = $loggedUser->getRoles();
+        ValidateUserHelper::checkIfUserHasRole($userRole);
+
+        return ValidateUserHelper::checkIfUserHasRoleClient($userRole);
+    }
 }
