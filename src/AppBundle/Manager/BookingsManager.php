@@ -159,4 +159,25 @@ class BookingsManager
     {
         $this->reservationService->deleteReservationByManager($hotelId, $reservationId);
     }
+
+    /**
+     * @param User $client
+     * @return float
+     */
+    public function getUserReservationsPagesNumber(User $client)
+    {
+        return $this->reservationService->getUserReservationsPagesNumber($client);
+    }
+
+    /**
+     * @param User  $client
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @return array
+     */
+    public function paginateAndSortUserReservations(User $client, $offset, $column = null, $sort = null)
+    {
+        return $this->reservationService->paginateAndSortUserReservations($client, $offset, $column, $sort);
+    }
 }
