@@ -16,20 +16,20 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right" id="navigation">
-                    <li {% if app.request.get('_route') == "my-account" %} class="active" {% endif %}>
+                    <li {% if app.request.get('_route') in constant('AppBundle\\Enum\\RoutesConfig::MY_ACCOUNT_ROUTES') %} class="active" {% endif %}>
                         <a href="{{ path('my-account') }}" class="navigation-item">{{ 'navigation.my_account'| trans }}</a>
                     </li>
 
                     {% if is_granted('ROLE_MANAGER') %}
-                        <li {% if app.request.get('_route') == "user-management" %} class="active" {% endif %}>
+                        <li {% if app.request.get('_route') in constant('AppBundle\\Enum\\RoutesConfig::USER_MANAGEMENT_ROUTES') %} class="active" {% endif %}>
                             <a href="{{ path('user-management') }}" class="navigation-item">{{ 'navigation.user_management'| trans }}</a>
                         </li>
-                        <li {% if app.request.get('_route') == "hotels-information" %} class="active" {% endif %}>
+                        <li {% if app.request.get('_route') in constant('AppBundle\\Enum\\RoutesConfig::HOTEL_MANAGEMENT_ROUTES') %} class="active" {% endif %}>
                             <a href="{% if is_granted('ROLE_OWNER') %}{{ path('hotels-information') }}{% else %}{{ path('room-management') }}{% endif %}" class="navigation-item">{{ 'navigation.hotel_management'| trans }}
                             </a>
                         </li>
                     {% endif %}
-                    <li {% if ((is_granted('ROLE_MANAGER') and app.request.get('_route') == "reservation-management")) or (is_granted('ROLE_CLIENT') and app.request.get('_route') == "my-bookings")%} class="active" {% endif %}>
+                    <li {% if app.request.get('_route') in constant('AppBundle\\Enum\\RoutesConfig::BOOKING_ROUTES') %} class="active" {% endif %}>
                         <a href="{% if is_granted('ROLE_MANAGER') %}{{ path('reservation-management') }}{% else %}{{ path('my-bookings') }}{% endif %}" class="navigation-item">{{ 'navigation.bookings'| trans }}</a>
                     </li>
                     <li>
