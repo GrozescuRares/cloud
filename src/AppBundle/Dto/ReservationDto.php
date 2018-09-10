@@ -36,4 +36,5 @@ class ReservationDto
      * @Assert\DateTime()
      */
     public $endDate;
+    public $days;
 }
