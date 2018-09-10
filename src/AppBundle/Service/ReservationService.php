@@ -77,7 +77,8 @@ class ReservationService
             ->setHotel($hotel)
             ->setRoom($room)
             ->setStartDate($reservationDto->startDate)
-            ->setEndDate($reservationDto->endDate);
+            ->setEndDate($reservationDto->endDate)
+            ->setDays($reservationDto->endDate->diff($reservationDto->startDate)->format('%a'));
 
         $this->em->persist($reservation);
         $this->em->flush();

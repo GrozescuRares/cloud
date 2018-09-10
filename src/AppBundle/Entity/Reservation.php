@@ -200,4 +200,3 @@ class Reservation
         return $this->endDate;
     }
 }
-
