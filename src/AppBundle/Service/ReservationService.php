@@ -160,7 +160,7 @@ class ReservationService
      * @param mixed $reservationId
      * @throws OptimisticLockException
      */
-    public function deleteReservation(array $hotels, $reservationId)
+    public function deleteReservationByOwner(array $hotels, $reservationId)
     {
         $reservation = $this->getEntitiesAndDtosHelper->getReservationById($reservationId);
         $flag = false;
@@ -173,6 +173,23 @@ class ReservationService
         }
 
         if (!$flag) {
+            throw new ReservationNotFoundException('You have no right to delete the reservation with id: '.$reservationId);
+        }
+
+        $this->em->remove($reservation);
+        $this->em->flush();
+    }
+
+    /**
+     * @param mixed $hotelId
+     * @param mixed $reservationId
+     * @throws OptimisticLockException
+     */
+    public function deleteReservationByManager($hotelId, $reservationId)
+    {
+        $reservation = $this->getEntitiesAndDtosHelper->getReservationById($reservationId);
+
+        if ($reservation->getHotel()->getHotelId() !== $hotelId) {
             throw new ReservationNotFoundException('You have no right to delete the reservation with id: '.$reservationId);
         }
 

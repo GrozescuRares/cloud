@@ -190,7 +190,7 @@ class UserManagementController extends BaseController
     public function paginateAndSortAction(Request $request)
     {
         $this->checkIfItsAjaxRequest($request);
-        
+
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
 

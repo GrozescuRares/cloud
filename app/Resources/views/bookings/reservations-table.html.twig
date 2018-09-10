@@ -1,6 +1,7 @@
 {% if reservations|length > 0 %}
     <div class="table-paginated">
         <div class="table-responsive">
+            {{ include('flash-messages.html.twig') }}
             <table class="table">
                 <thead>
                 <tr>
@@ -30,7 +31,15 @@
                         <td>{{ re.room }}</td>
                         <td>{{ re.startDate | date('Y-m-d') }}</td>
                         <td>{{ re.endDate | date('Y-m-d') }}</td>
-                        <td class="text-center"><a href="{{ path('delete-reservation', {'reservationId': re.reservationId}) }}" class="delete-reservation"><i class="fa fa-trash"></i></a></td>
+                        <td class="text-center">
+                            <a  data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                                data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
+                                data-page="{{ currentPage }}"
+                                data-paginate="true"
+                                href="{{ path('delete-reservation', {'reservationId': re.reservationId}) }}" class="delete-reservation">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>

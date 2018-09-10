@@ -15,6 +15,7 @@ use AppBundle\Helper\MailInterface;
 use AppBundle\Service\HotelService;
 use AppBundle\Service\ReservationService;
 use AppBundle\Service\RoomService;
+use Doctrine\ORM\OptimisticLockException;
 
 /**
  * Class BookingsManager
@@ -137,5 +138,25 @@ class BookingsManager
     public function paginateAndSortReservationsForAllHotels(array $hotelDtos, $offset, $column = null, $sort = null)
     {
         return $this->reservationService->paginateAndSortReservationsForAllHotels($hotelDtos, $offset, $column, $sort);
+    }
+
+    /**
+     * @param array $hotels
+     * @param mixed $reservationId
+     * @throws OptimisticLockException
+     */
+    public function deleteReservationByOwner(array $hotels, $reservationId)
+    {
+        $this->reservationService->deleteReservationByOwner($hotels, $reservationId);
+    }
+
+    /**
+     * @param mixed $hotelId
+     * @param mixed $reservationId
+     * @throws OptimisticLockException
+     */
+    public function deleteReservationByManager($hotelId, $reservationId)
+    {
+        $this->reservationService->deleteReservationByManager($hotelId, $reservationId);
     }
 }

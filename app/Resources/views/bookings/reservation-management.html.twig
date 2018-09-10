@@ -7,15 +7,18 @@
                 <div class="wrapper">
                     <a href="{{ path('dashboard') }}">{{ 'page.hotel-management.reservation-management.back'| trans }}</a>
                     <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
-                        <h1 class="text-center" id="managerHotelId" data-hotel="{{ firstHotel }}">{{ 'page.hotel-management.reservation-management.to'| trans }}</h1>
+                        <h1 class="text-center" id="managerHotelId"
+                            data-hotel="{{ firstHotel }}">{{ 'page.hotel-management.reservation-management.to'| trans }}</h1>
                     </div>
                     {% if is_granted('ROLE_OWNER') %}
                         <div class="col-md-12 col-xs-12 no-lr-padding text-center search">
                             <span>{{ 'page.hotel-management.reservation-management.search'| trans }}</span>
                             <div class="styled-input">
                                 <select class="selectpicker" id="hotels">
-                                    <option data-action="{{ path('paginate-and-sort-reservations') }}" data-page="{{ currentPage }}"
-                                            value="all" selected="selected">All hotels</option>
+                                    <option data-action="{{ path('paginate-and-sort-reservations') }}"
+                                            data-page="{{ currentPage }}"
+                                            value="all" selected="selected">All hotels
+                                    </option>
                                     {% for name, hotel in hotels %}
                                         <option data-action="{{ path('paginate-and-sort-reservations') }}"
                                                 data-page="{{ currentPage }}"
