@@ -95,7 +95,7 @@ class ValidateUserHelper
 
         return ValidateUserHelper::checkIfUserHasRoleOwner($userRole);
     }
-    
+
     /**
      * @param User $loggedUser
      * @return mixed

@@ -199,6 +199,32 @@ class ReservationService
     }
 
     /**
+     * @param User $client
+     * @return float
+     */
+    public function getUserReservationsPagesNumber(User $client)
+    {
+        ValidateUserHelper::checkIfUserHasRoleAndIsClient($client);
+
+        return $this->em->getRepository(Reservation::class)->getUserReservationPagesNumber($client);
+    }
+
+    /**
+     * @param User  $client
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @return array
+     */
+    public function paginateAndSortUserReservations(User $client, $offset, $column = null, $sort = null)
+    {
+        ValidateUserHelper::checkIfUserHasRoleAndIsClient($client);
+        $reservations = $this->em->getRepository(Reservation::class)->paginateAndSortUsersReservations($client, $offset, $column, $sort);
+
+        return $this->reservationAdapter->convertToReservationDtos($reservations);
+    }
+
+    /**
      * @param array $hotelDtos
      *
      * @return array
