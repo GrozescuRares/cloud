@@ -87,5 +87,10 @@
         </nav>
     </div>
 {% else %}
-    <h1>{{ 'page.hotel-management.reservation-management.no_reservations'| trans }}</h1>
+    <div class="table-paginated">
+        <div class="table-responsive">
+            {{ include('flash-messages.html.twig') }}
+            <h1>{{ 'page.hotel-management.reservation-management.no_reservations'| trans }}</h1>
+        </div>
+    </div>
 {% endif %}
