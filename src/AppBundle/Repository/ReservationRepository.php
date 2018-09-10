@@ -148,8 +148,15 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
     public function paginateAndSortUsersReservations(User $client, $offset, $column = null, $sort = null)
     {
         $qb = $this->createQueryBuilder('reservation');
-        $qb ->where('reservation.user = :client')
+        $qb ->innerJoin('reservation.hotel', 'hotel')
+            ->where('reservation.user = :client')
             ->setParameter('client', $client);
+
+        if ($column == 'hotel') {
+            $qb->orderBy('hotel.name', $sort);
+
+            return $qb->getQuery()->getResult();
+        }
 
         if (!empty($client) && !empty($sort)) {
             $qb->addOrderBy('reservation.'.$column, $sort);
