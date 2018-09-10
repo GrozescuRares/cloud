@@ -29,9 +29,11 @@
                             </a>
                         </li>
                     {% endif %}
+                    {% if app.user.role.description != 'ROLE_EMPLOYEE' %}
                     <li {% if app.request.get('_route') in constant('AppBundle\\Enum\\RoutesConfig::BOOKING_ROUTES') %} class="active" {% endif %}>
-                        <a href="{% if is_granted('ROLE_MANAGER') %}{{ path('reservation-management') }}{% else %}{{ path('my-bookings') }}{% endif %}" class="navigation-item">{{ 'navigation.bookings'| trans }}</a>
+                        <a href="{% if is_granted('ROLE_MANAGER') %}{{ path('reservation-management') }}{% elseif is_granted('ROLE_CLIENT') %}{{ path('my-bookings') }}{% endif %}" class="navigation-item">{{ 'navigation.bookings'| trans }}</a>
                     </li>
+                    {% endif %}
                     <li>
                         <a href="{{ path('logout') }}" class="btn success">{{ 'navigation.logout'| trans }}</a>
                     </li>
