@@ -14,6 +14,7 @@ use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
 use AppBundle\Exception\HotelNotFoundException;
+use AppBundle\Exception\InvalidDateException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Helper\GetEntitiesAndDtosHelper;
 use AppBundle\Helper\ValidateUserHelper;
@@ -106,7 +107,11 @@ class HotelService
     public function getAvailableHotels(\DateTime $startDate, \DateTime $endDate)
     {
         if ($startDate > $endDate) {
-            return [];
+            throw new InvalidDateException('Invalid period');
+        }
+
+        if ($startDate < new \DateTime('now')) {
+            throw new InvalidDateException('Invalid period');
         }
 
         $bookedRoomsInPeriod = $this->em->getRepository(Room::class)->getBookedRooms($startDate, $endDate);

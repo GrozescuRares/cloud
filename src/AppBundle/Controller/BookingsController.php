@@ -12,6 +12,7 @@ use AppBundle\Dto\ReservationDto;
 use AppBundle\Enum\PaginationConfig;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InappropriateUserRoleException;
+use AppBundle\Exception\InvalidDateException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Exception\ReservationNotFoundException;
 use AppBundle\Exception\RoomNotFoundException;
@@ -70,11 +71,26 @@ class BookingsController extends BaseController
 
         $reservationDto = $this->handleReservation($request);
         $bookingsManager = $this->get('app.bookings.manager');
-        $availableHotels = $bookingsManager->getFreeHotels($reservationDto->startDate, $reservationDto->endDate);
         $availableRooms = [];
         $showHotel = true;
         $showRooms = false;
         $showSave = false;
+
+        try {
+            $availableHotels = $bookingsManager->getFreeHotels($reservationDto->startDate, $reservationDto->endDate);
+        } catch (InvalidDateException $ex) {
+            $this->addFlash('danger', $ex->getMessage());
+
+            return $this->render(
+                'bookings/reservation-form.html.twig',
+                [
+                    'booking_form' => $this->createForm(ReservationTypeForm::class, new ReservationDto())->createView(),
+                    'showHotels' => false,
+                    'showRooms' => false,
+                    'showSave' => false,
+                ]
+            );
+        }
 
         if (!empty($reservationDto->hotel)) {
             $availableRooms = $bookingsManager->getFreeRooms(
@@ -358,7 +374,12 @@ class BookingsController extends BaseController
         );
         list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
 
-        $reservationDtos = $bookingsManager->paginateAndSortUserReservations($loggedUser, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType);
+        $reservationDtos = $bookingsManager->paginateAndSortUserReservations(
+            $loggedUser,
+            $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS,
+            $column,
+            $sortType
+        );
         $nrPages = $bookingsManager->getUserReservationsPagesNumber($loggedUser);
 
         return $this->render(
