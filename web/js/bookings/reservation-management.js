@@ -7,6 +7,12 @@ $(document).ready(function () {
 function deleteReservation(event, element)
 {
     event.preventDefault();
+
+    let confirmation = confirm('Are you sure that you want to delete this reservation?');
+    if (!confirmation) {
+        return false;
+    }
+
     let hotelId = $('#hotels').val();
 
     if (hotelId == null) {

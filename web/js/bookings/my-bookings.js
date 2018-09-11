@@ -8,6 +8,11 @@ function deleteReservation(event, element)
 {
     event.preventDefault();
 
+    let confirmation = confirm('Are you sure that you want to delete this reservation?');
+    if (!confirmation) {
+        return false;
+    }
+    
     $.ajax({
         url: $(element).attr('href'),
         type: 'GET',
