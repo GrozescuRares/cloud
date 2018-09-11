@@ -180,4 +180,14 @@ class BookingsManager
     {
         return $this->reservationService->paginateAndSortUserReservations($client, $offset, $column, $sort);
     }
+
+    /**
+     * @param User  $client
+     * @param mixed $reservationId
+     * @throws OptimisticLockException
+     */
+    public function deleteBooking(User $client, $reservationId)
+    {
+        $this->reservationService->deleteBooking($client, $reservationId);
+    }
 }

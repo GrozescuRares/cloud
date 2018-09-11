@@ -41,6 +41,7 @@
                                data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
                                data-page="{{ currentPage }}"
                                data-paginate="true"
+                               href="{{ path('delete-booking', {'reservationId': re.reservationId}) }}"
                                class="delete-reservation">
                                 <i class="fa fa-trash"></i>
                             </a>

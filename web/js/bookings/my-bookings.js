@@ -7,11 +7,6 @@ $(document).ready(function () {
 function deleteReservation(event, element)
 {
     event.preventDefault();
-    let hotelId = $('#hotels').val();
-
-    if (hotelId == null) {
-        hotelId = $('#managerHotelId').attr('data-hotel');
-    }
 
     $.ajax({
         url: $(element).attr('href'),
@@ -22,7 +17,6 @@ function deleteReservation(event, element)
             'column': $(element).attr('data-column'),
             'sort': $(element).attr('data-sort'),
             'paginate': $(element).attr('data-paginate'),
-            'hotelId': hotelId,
         },
         success: function (data, status) {
             $('#reload').html(data);

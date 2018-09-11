@@ -225,6 +225,24 @@ class ReservationService
     }
 
     /**
+     * @param User  $client
+     * @param mixed $reservationId
+     * @throws OptimisticLockException
+     */
+    public function deleteBooking(User $client, $reservationId)
+    {
+        ValidateUserHelper::checkIfUserHasRoleAndIsClient($client);
+        $reservation = $this->getEntitiesAndDtosHelper->getReservationById($reservationId);
+
+        if ($reservation->getUser() !== $client) {
+            throw new ReservationNotFoundException('You have no right to delete this booking !');
+        }
+
+        $this->em->remove($reservation);
+        $this->em->flush();
+    }
+
+    /**
      * @param array $hotelDtos
      *
      * @return array
