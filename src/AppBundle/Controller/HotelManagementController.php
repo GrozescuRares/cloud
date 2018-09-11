@@ -134,10 +134,10 @@ class HotelManagementController extends BaseController
             );
             $pages = $hotelManagementManager->getHotelPagesNumber($loggedUser);
 
-            list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
+            list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
             $hotelsDto = $hotelManagementManager->paginateAndSortHotels(
                 $loggedUser,
-                $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS,
+                $offset,
                 $column,
                 $sortType
             );
@@ -239,10 +239,10 @@ class HotelManagementController extends BaseController
                 $request
             );
             $nrPages = $hotelManagementManager->getRoomsPagesNumber($hotelId, $petFilter, $smokingFilter);
-            list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
+            list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
             $roomDtos = $hotelManagementManager->paginateAndSortRooms(
                 $hotelId,
-                $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS,
+                $offset,
                 $column,
                 $sortType,
                 $petFilter,

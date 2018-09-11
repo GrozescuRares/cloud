@@ -13,6 +13,7 @@ use AppBundle\Dto\HotelDto;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
+use AppBundle\Enum\ReservationConfig;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InvalidDateException;
 use AppBundle\Exception\NoRoleException;
@@ -106,11 +107,14 @@ class HotelService
      */
     public function getAvailableHotels(\DateTime $startDate, \DateTime $endDate)
     {
+        $nowDate = new \DateTime('now');
+        $nowDate->modify(ReservationConfig::ECART);
+
         if ($startDate > $endDate) {
             throw new InvalidDateException('Invalid period');
         }
 
-        if ($startDate < new \DateTime('now')) {
+        if ($startDate < $nowDate) {
             throw new InvalidDateException('Invalid period');
         }
 

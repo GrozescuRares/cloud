@@ -372,11 +372,11 @@ class BookingsController extends BaseController
         list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
             $request
         );
-        list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
+        list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
 
         $reservationDtos = $bookingsManager->paginateAndSortUserReservations(
             $loggedUser,
-            $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS,
+            $offset,
             $column,
             $sortType
         );
@@ -406,13 +406,13 @@ class BookingsController extends BaseController
         list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
             $request
         );
-        list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
+        list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
 
         if ($hotelId === 'all') {
             $nrPages = $bookingsManager->getReservationsPagesNumberForAllHotels($hotels);
             $reservationDtos = $bookingsManager->paginateAndSortReservationsForAllHotels(
                 $hotels,
-                $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS,
+                $offset,
                 $column,
                 $sortType
             );
@@ -437,7 +437,7 @@ class BookingsController extends BaseController
         $nrPages = $bookingsManager->getReservationsPagesNumberByHotel($hotelId);
         $reservationDtos = $bookingsManager->paginateAndSortReservationsByHotel(
             $hotelId,
-            $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS,
+            $offset,
             $column,
             $sortType
         );

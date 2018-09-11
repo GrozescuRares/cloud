@@ -9,6 +9,7 @@
 namespace AppBundle\Helper;
 
 use AppBundle\Enum\OrderConfig;
+use AppBundle\Enum\PaginationConfig;
 
 /**
  * Class PaginateAndSortHelper
@@ -23,17 +24,20 @@ class PaginateAndSortHelper
      *
      * @return array
      */
-    public static function configPaginationFilters($column, $sort, $paginate)
+    public static function configPaginationFilters($column, $sort, $paginate, $pageNumber)
     {
+        $offset = PaginationConfig::ITEMS * $pageNumber - PaginationConfig::ITEMS;
         if (!empty($column) && !empty($sort) && !empty($paginate)) {
             $sortType = OrderConfig::TYPE[$sort];
         } else {
             $sortType = $sort;
             if (!empty($column) && !empty($sort)) {
                 $sort = OrderConfig::TYPE[$sort];
+                $offset = 0;
+                $pageNumber = 1;
             }
         }
 
-        return array($sortType, $sort);
+        return array($sortType, $sort, $offset, $pageNumber);
     }
 }

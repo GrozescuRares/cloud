@@ -200,8 +200,8 @@ class UserManagementController extends BaseController
                 list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
                 $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
 
-                list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
-                $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType);
+                list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
+                $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $offset, $column, $sortType);
 
                 return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
             }
@@ -210,8 +210,9 @@ class UserManagementController extends BaseController
                 list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
                 $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
 
-                list($sortType, $sort) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate);
-                $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $pageNumber * PaginationConfig::ITEMS - PaginationConfig::ITEMS, $column, $sortType, $hotelId);
+                list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
+                $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $offset, $column, $sortType, $hotelId);
+
 
                 return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
             }
