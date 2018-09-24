@@ -9,7 +9,6 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Dto\ReservationDto;
-use AppBundle\Enum\PaginationConfig;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\InvalidDateException;
