@@ -15,6 +15,7 @@ use AppBundle\Helper\MailInterface;
 use AppBundle\Service\HotelService;
 use AppBundle\Service\ReservationService;
 use AppBundle\Service\RoomService;
+use Doctrine\ORM\OptimisticLockException;
 
 /**
  * Class BookingsManager
@@ -95,5 +96,98 @@ class BookingsManager
             ],
             'emails/booking.html.twig'
         );
+    }
+
+    /**
+     * @param mixed $hotelId
+     * @return float
+     */
+    public function getReservationsPagesNumberByHotel($hotelId)
+    {
+        return $this->reservationService->getReservationsPagesNumberByHotel($hotelId);
+    }
+
+    /**
+     * @param mixed      $hotelId
+     * @param mixed      $offset
+     * @param mixed|null $column
+     * @param mixed|null $sort
+     * @return array
+     */
+    public function paginateAndSortReservationsByHotel($hotelId, $offset, $column = null, $sort = null)
+    {
+        return $this->reservationService->paginateAndSortReservationsByHotel($hotelId, $offset, $column, $sort);
+    }
+
+    /**
+     * @param array $hotelDtos
+     * @return float
+     */
+    public function getReservationsPagesNumberForAllHotels(array $hotelDtos)
+    {
+        return $this->reservationService->getReservationsPagesNumberForAllHotels($hotelDtos);
+    }
+
+    /**
+     * @param array $hotelDtos
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @return array
+     */
+    public function paginateAndSortReservationsForAllHotels(array $hotelDtos, $offset, $column = null, $sort = null)
+    {
+        return $this->reservationService->paginateAndSortReservationsForAllHotels($hotelDtos, $offset, $column, $sort);
+    }
+
+    /**
+     * @param array $hotels
+     * @param mixed $reservationId
+     * @throws OptimisticLockException
+     */
+    public function deleteReservationByOwner(array $hotels, $reservationId)
+    {
+        $this->reservationService->deleteReservationByOwner($hotels, $reservationId);
+    }
+
+    /**
+     * @param mixed $hotelId
+     * @param mixed $reservationId
+     * @throws OptimisticLockException
+     */
+    public function deleteReservationByManager($hotelId, $reservationId)
+    {
+        $this->reservationService->deleteReservationByManager($hotelId, $reservationId);
+    }
+
+    /**
+     * @param User $client
+     * @return float
+     */
+    public function getUserReservationsPagesNumber(User $client)
+    {
+        return $this->reservationService->getUserReservationsPagesNumber($client);
+    }
+
+    /**
+     * @param User  $client
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @return array
+     */
+    public function paginateAndSortUserReservations(User $client, $offset, $column = null, $sort = null)
+    {
+        return $this->reservationService->paginateAndSortUserReservations($client, $offset, $column, $sort);
+    }
+
+    /**
+     * @param User  $client
+     * @param mixed $reservationId
+     * @throws OptimisticLockException
+     */
+    public function deleteBooking(User $client, $reservationId)
+    {
+        $this->reservationService->deleteBooking($client, $reservationId);
     }
 }

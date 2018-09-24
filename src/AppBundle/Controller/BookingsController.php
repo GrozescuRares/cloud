@@ -9,14 +9,17 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Dto\ReservationDto;
+use AppBundle\Enum\PaginationConfig;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InappropriateUserRoleException;
+use AppBundle\Exception\InvalidDateException;
 use AppBundle\Exception\NoRoleException;
+use AppBundle\Exception\ReservationNotFoundException;
 use AppBundle\Exception\RoomNotFoundException;
 use AppBundle\Form\ReservationTypeForm;
-use AppBundle\Helper\ValidateReservationHelper;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Helper\PaginateAndSortHelper;
+use AppBundle\Manager\BookingsManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +32,7 @@ use Twig_Error_Loader;
 /**
  * Class BookingsController
  */
-class BookingsController extends Controller
+class BookingsController extends BaseController
 {
     /**
      * @Route("/bookings/create-booking", name="create-booking")
@@ -62,27 +65,39 @@ class BookingsController extends Controller
      *
      * @return Response
      */
-    public function loadData(Request $request)
+    public function loadDataAction(Request $request)
     {
-        if (!$request->isXmlHttpRequest()) {
-            return $this->render(
-                'error.html.twig',
-                [
-                    'error' => 'Stay out of here.',
-                ]
-            );
-        }
+        $this->checkIfItsAjaxRequest($request);
 
         $reservationDto = $this->handleReservation($request);
         $bookingsManager = $this->get('app.bookings.manager');
-        $availableHotels = $bookingsManager->getFreeHotels($reservationDto->startDate, $reservationDto->endDate);
         $availableRooms = [];
         $showHotel = true;
         $showRooms = false;
         $showSave = false;
 
+        try {
+            $availableHotels = $bookingsManager->getFreeHotels($reservationDto->startDate, $reservationDto->endDate);
+        } catch (InvalidDateException $ex) {
+            $this->addFlash('danger', $ex->getMessage());
+
+            return $this->render(
+                'bookings/reservation-form.html.twig',
+                [
+                    'booking_form' => $this->createForm(ReservationTypeForm::class, new ReservationDto())->createView(),
+                    'showHotels' => false,
+                    'showRooms' => false,
+                    'showSave' => false,
+                ]
+            );
+        }
+
         if (!empty($reservationDto->hotel)) {
-            $availableRooms = $bookingsManager->getFreeRooms($reservationDto->hotel, $reservationDto->startDate, $reservationDto->endDate);
+            $availableRooms = $bookingsManager->getFreeRooms(
+                $reservationDto->hotel,
+                $reservationDto->startDate,
+                $reservationDto->endDate
+            );
             $showRooms = true;
             $showSave = true;
         }
@@ -96,7 +111,7 @@ class BookingsController extends Controller
             $reservationDto,
             [
                 'hotels' => $availableHotels,
-                'rooms'  => $availableRooms,
+                'rooms' => $availableRooms,
             ]
         );
 
@@ -122,7 +137,7 @@ class BookingsController extends Controller
      * @throws Twig_Error_Loader
      * @throws Twig_Error_Runtime
      */
-    public function handleBookFormSubmission(Request $request)
+    public function handleBookFormSubmissionAction(Request $request)
     {
         $validator = $this->get('validator');
         $reservationDto = $this->handleReservation($request);
@@ -153,24 +168,294 @@ class BookingsController extends Controller
         return $this->redirectToRoute('create-booking');
     }
 
-    private function handleReservation(Request $request)
+
+    /**
+     * @Route("/bookings/reservation-management", name="reservation-management")
+     *
+     *
+     * @return Response
+     */
+    public function reservationManagementAction()
     {
-        $reservation = $request->request->get('appbundle_reservationDto');
-        $reservationDto = new ReservationDto();
+        $loggedUser = $this->getUser();
+        $hotelManagementManager = $this->get('app.hotel-management.manager');
+        $bookingManager = $this->get('app.bookings.manager');
+        $hotels = $hotelManagementManager->getOwnedHotels($loggedUser);
 
-        if (!empty($reservation['startDate'])) {
-            $reservationDto->startDate = ValidateReservationHelper::convertToDateTime($reservation['startDate']);
+        try {
+            if (empty($hotels)) {
+                $hotelId = $loggedUser->getHotel()->getHotelId();
+                $nrPages = $bookingManager->getReservationsPagesNumberByHotel($hotelId);
+                $reservationDtos = $bookingManager->paginateAndSortReservationsByHotel($hotelId, 0);
+            } else {
+                $hotelId = reset($hotels)->hotelId;
+                $nrPages = $bookingManager->getReservationsPagesNumberForAllHotels($hotels);
+                $reservationDtos = $bookingManager->paginateAndSortReservationsForAllHotels($hotels, 0);
+            }
+
+            return $this->render(
+                'bookings/reservation-management.html.twig',
+                [
+                    'firstHotel' => $hotelId,
+                    'hotels' => $hotels,
+                    'user' => $loggedUser,
+                    'reservations' => $reservationDtos,
+                    'nrPages' => $nrPages,
+                    'currentPage' => 1,
+                    'nrReservations' => count($reservationDtos),
+                    'sortBy' => [],
+                ]
+            );
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (HotelNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         }
-        if (!empty($reservation['endDate'])) {
-            $reservationDto->endDate = ValidateReservationHelper::convertToDateTime($reservation['endDate']);
+    }
+
+    /**
+     * @Route("/bookings/paginate-and-sort-reservations", name="paginate-and-sort-reservations")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function paginateAndSortReservationsAction(Request $request)
+    {
+        $this->checkIfItsAjaxRequest($request);
+
+        $loggedUser = $this->getUser();
+        $hotelManagementManager = $this->get('app.hotel-management.manager');
+        $bookingManager = $this->get('app.bookings.manager');
+
+        try {
+            $hotels = $hotelManagementManager->getOwnedHotels($loggedUser);
+
+            return $this->paginateFilterAndSortReservations($loggedUser, $hotels, $bookingManager, $request);
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (HotelNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         }
-        if (!empty($reservation['hotel'])) {
-            $reservationDto->hotel = $reservation['hotel'];
+    }
+
+    /**
+     * @Route("/bookings/delete-reservation/{reservationId}", name="delete-reservation")
+     *
+     * @param mixed   $reservationId
+     * @param Request $request
+     *
+     * @throws OptimisticLockException
+     *
+     * @return Response
+     */
+    public function deleteReservationAction($reservationId, Request $request)
+    {
+        $this->checkIfItsAjaxRequest($request);
+        $loggedUser = $this->getUser();
+        $hotelManagementManager = $this->get('app.hotel-management.manager');
+        $bookingManager = $this->get('app.bookings.manager');
+        try {
+            $hotels = $hotelManagementManager->getOwnedHotels($loggedUser);
+            if (empty($hotels)) {
+                $bookingManager->deleteReservationByManager($loggedUser->getHotel()->getHotelId(), $reservationId);
+            } else {
+                $bookingManager->deleteReservationByOwner($hotels, $reservationId);
+            }
+            $this->addFlash('success', 'Reservation successfully deleted.');
+
+            return $this->paginateFilterAndSortReservations($loggedUser, $hotels, $bookingManager, $request);
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (ReservationNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         }
-        if (!empty($reservation['room'])) {
-            $reservationDto->room = $reservation['room'];
+    }
+
+    /**
+     * @Route("/bookings/my-bookings", name="my-bookings")
+     *
+     * @return Response
+     */
+    public function myBookingsAction()
+    {
+        $loggedUser = $this->getUser();
+        $bookingsManager = $this->get('app.bookings.manager');
+
+        try {
+            $reservationDtos = $bookingsManager->paginateAndSortUserReservations($loggedUser, 0);
+            $nrPages = $bookingsManager->getUserReservationsPagesNumber($loggedUser);
+
+            return $this->render(
+                'bookings/my-bookings.html.twig',
+                [
+                    'user' => $loggedUser,
+                    'reservations' => $reservationDtos,
+                    'currentPage' => 1,
+                    'nrPages' => $nrPages,
+                    'nrReservations' => count($reservationDtos),
+                    'sortBy' => [],
+                ]
+            );
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (ReservationNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/bookings/paginate-and-sort-bookings", name="paginate-and-sort-bookings")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function paginateAndSortBookingsAction(Request $request)
+    {
+        $this->checkIfItsAjaxRequest($request);
+
+        $loggedUser = $this->getUser();
+        $bookingsManager = $this->get('app.bookings.manager');
+
+        try {
+            return $this->paginateAndSortBookings($loggedUser, $bookingsManager, $request);
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (ReservationNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/bookings/delete-booking/{reservationId}", name="delete-booking")
+     *
+     * @param mixed   $reservationId
+     * @param Request $request
+     *
+     * @throws OptimisticLockException
+     *
+     * @return Response
+     */
+    public function deleteBookingAction($reservationId, Request $request)
+    {
+        $this->checkIfItsAjaxRequest($request);
+        $loggedUser = $this->getUser();
+        $bookingManager = $this->get('app.bookings.manager');
+
+        try {
+            $bookingManager->deleteBooking($loggedUser, $reservationId);
+            $this->addFlash('success', 'Booking successfully deleted.');
+
+            return $this->paginateAndSortBookings($loggedUser, $bookingManager, $request);
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (ReservationNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    private function paginateAndSortBookings($loggedUser, BookingsManager $bookingsManager, Request $request)
+    {
+        list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
+            $request
+        );
+        list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
+
+        $reservationDtos = $bookingsManager->paginateAndSortUserReservations(
+            $loggedUser,
+            $offset,
+            $column,
+            $sortType
+        );
+        $nrPages = $bookingsManager->getUserReservationsPagesNumber($loggedUser);
+
+        return $this->render(
+            'bookings/bookings-table.html.twig',
+            [
+                'user' => $loggedUser,
+                'reservations' => $reservationDtos,
+                'currentPage' => $pageNumber,
+                'nrPages' => $nrPages,
+                'nrReservations' => count($reservationDtos),
+                'sortBy' => [
+                    $column => $sort,
+                ],
+            ]
+        );
+    }
+
+    private function paginateFilterAndSortReservations(
+        $loggedUser,
+        $hotels,
+        BookingsManager $bookingsManager,
+        Request $request
+    ) {
+        list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
+            $request
+        );
+        list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
+
+        if ($hotelId === 'all') {
+            $nrPages = $bookingsManager->getReservationsPagesNumberForAllHotels($hotels);
+            $reservationDtos = $bookingsManager->paginateAndSortReservationsForAllHotels(
+                $hotels,
+                $offset,
+                $column,
+                $sortType
+            );
+
+            return $this->render(
+                'bookings/reservations-table.html.twig',
+                [
+                    'firstHotel' => $hotelId,
+                    'hotels' => $hotels,
+                    'user' => $loggedUser,
+                    'reservations' => $reservationDtos,
+                    'nrPages' => $nrPages,
+                    'currentPage' => $pageNumber,
+                    'nrReservations' => count($reservationDtos),
+                    'sortBy' => [
+                        $column => $sort,
+                    ],
+                ]
+            );
         }
 
-        return $reservationDto;
+        $nrPages = $bookingsManager->getReservationsPagesNumberByHotel($hotelId);
+        $reservationDtos = $bookingsManager->paginateAndSortReservationsByHotel(
+            $hotelId,
+            $offset,
+            $column,
+            $sortType
+        );
+
+        return $this->render(
+            'bookings/reservations-table.html.twig',
+            [
+                'firstHotel' => $hotelId,
+                'hotels' => $hotels,
+                'user' => $loggedUser,
+                'reservations' => $reservationDtos,
+                'nrPages' => $nrPages,
+                'currentPage' => $pageNumber,
+                'nrReservations' => count($reservationDtos),
+                'sortBy' => [
+                    $column => $sort,
+                ],
+            ]
+        );
     }
 }

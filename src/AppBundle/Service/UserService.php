@@ -173,8 +173,12 @@ class UserService
         if ($userRole === UserConfig::ROLE_MANAGER) {
             $user->setHotel($loggedUser->getHotel());
         }
-
         $this->em->persist($user);
+
+        $hotel = $user->getHotel();
+        $hotel->setEmployees($hotel->getEmployees()+1);
+
+        $this->em->persist($hotel);
         $this->em->flush();
     }
 
@@ -322,6 +326,15 @@ class UserService
         $editedUser->setRole($this->getRoleFromDto($userDto->role));
         $this->em->persist($editedUser);
         $this->em->flush();
+    }
+
+    /**
+     * @param User $loggedUser
+     * @return UserDto
+     */
+    public function getUserDto(User $loggedUser)
+    {
+        return $this->userAdapter->convertToDto($loggedUser);
     }
 
     /**

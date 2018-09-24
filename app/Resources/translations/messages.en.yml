@@ -24,12 +24,16 @@ form:
     no: 'No'
     save: 'Save'
     people: 'People'
-    price: 'Price \ night'
+    price: 'Price \ night in dollars'
     smoking: 'Smoking'
     pet: 'Pet'
     birth_date: 'Birth date'
     registration_date: 'Registration date'
     room: 'Room'
+    hotel_name: 'Hotel Name'
+    location: 'Location'
+    description: 'Description'
+    facilities: 'Facilities'
 
 page:
   activation-account:
@@ -76,20 +80,55 @@ page:
       back: 'Back'
       title: 'User Management'
       search: 'Search by hotel all users'
+      no_users: "Sorry, but this hotel doesn't have any user."
 
   hotel-management:
     add-room:
       title: 'Add New Room'
       back: 'Back'
-    user-management:
-      items: '%users% item(s)'
+    hotel-information:
+      items: '%hotels% item(s)'
       previous: 'Previous'
       next: 'Next'
       page-number: '%page%'
-      add_new_user: 'Add New User'
       back: 'Back'
-      title: 'User Management'
-      search: 'Search by hotel all users'
+      title: 'Hotels Information'
+      hotel: 'Hotel Name'
+      location: 'Location'
+      employees: 'Number of employees'
+      availability: 'Availability'
+      edit: 'Edit'
+      no_hotels: "Sorry, but you don't have any hotel."
+    show-hotel-information:
+      message: 'The %name% hotel is located in %location%. It is a %description%. %employees% employees are working at this hotel. In this moment %name% %availability% available. This year the hotel earned %earnings%. Some facilities: %facilities%.'
+      title: 'Hotel Information'
+      back: 'Back'
+      edit: 'Edit'
+    edit-hotel-information:
+      back: 'Back'
+      title: 'Edit Hotel Information'
+    room-management:
+      to: 'Room Management'
+      add_new_rom: 'Add New Room'
+      smoking: 'Smoking'
+      pets: 'Pets'
+      yes: 'Yes'
+      no: 'No'
+      filter: 'Filter'
+      reset: 'Reset filters'
+      number: 'Number'
+      people: 'People'
+      price: 'Price'
+      no_rooms: 'Sorry, but there are no rooms.'
+      items: '%nrRooms% item(s)'
+    reservation-management:
+      to: 'Reservations Management'
+      back: 'Back'
+      search: 'Search reservations by hotel'
+      start_date: 'Start date'
+      end_date: 'End date'
+      delete: 'Delete'
+      no_reservations: 'Sorry, but there are no reservations for this hotel.'
 
   my-account:
     back: 'Back'
@@ -118,6 +157,13 @@ page:
       title: 'Create New Booking'
       date: 'From when till when?'
       to: 'TO'
+    my-bookings:
+      back: 'Back'
+      title: 'My Bookings Management'
+      days: 'Days'
+      edit: 'Edit'
+      delete: 'Delete'
+      no_bookings: "Sorry, but you don't have any booking."
 
 emails:
   to_activate: 'To activate the account, go to:'

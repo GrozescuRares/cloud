@@ -79,4 +79,19 @@ class RoomAdapter
 
         return $result;
     }
+
+    /**
+     * @param array $rooms
+     * @return array
+     */
+    public function convertToRoomDtos(array $rooms)
+    {
+        $result = [];
+        /** @var Room $room */
+        foreach ($rooms as $room) {
+            $result[] = $this->convertToDto($room);
+        }
+
+        return $result;
+    }
 }

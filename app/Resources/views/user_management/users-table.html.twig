@@ -1,35 +1,36 @@
+{% if users|length > 0 %}
 <div class="table-paginated">
     <div class="table-responsive">
         <table class="table">
             <thead>
             <tr>
                 <th class="columns" data-action="{{ path('paginate-and-sort') }}"
-                    data-sort="{% if filters is empty or filters.firstName is not defined %}ASC{% else %}{{ filters.firstName }}{% endif %}"
+                    data-sort="{% if sortBy is empty or sortBy.firstName is not defined %}ASC{% else %}{{ sortBy.firstName }}{% endif %}"
                     data-column="firstName"
                     data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
                     data-page="{{ currentPage }}">{{ 'form.label.firstName'| trans }}<span class="sort-icon"></span></th>
                 <th class="columns" data-action="{{ path('paginate-and-sort') }}"
-                    data-sort="{% if filters is empty or filters.lastName is not defined %}ASC{% else %}{{ filters.lastName }}{% endif %}"
+                    data-sort="{% if sortBy is empty or sortBy.lastName is not defined %}ASC{% else %}{{ sortBy.lastName }}{% endif %}"
                     data-column="lastName"
                     data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
                     data-page="{{ currentPage }}">{{ 'form.label.lastName'| trans }}<span class="sort-icon"></span></th>
                 <th class="columns" data-action="{{ path('paginate-and-sort') }}"
-                    data-sort="{% if filters is empty or filters.role is not defined %}ASC{% else %}{{ filters.role }}{% endif %}"
+                    data-sort="{% if sortBy is empty or sortBy.role is not defined %}ASC{% else %}{{ sortBy.role }}{% endif %}"
                     data-column="role"
                     data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
                     data-page="{{ currentPage }}">{{ 'form.label.role'| trans }}<span class="sort-icon"></span></th>
                 <th class="columns" data-action="{{ path('paginate-and-sort') }}"
-                    data-sort="{% if filters is empty or filters.email is not defined %}ASC{% else %}{{ filters.email }}{% endif %}"
+                    data-sort="{% if sortBy is empty or sortBy.email is not defined %}ASC{% else %}{{ sortBy.email }}{% endif %}"
                     data-column="email"
                     data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
                     data-page="{{ currentPage }}">{{ 'form.label.email'| trans }}<span class="sort-icon"></span></th>
                 <th class="columns" data-action="{{ path('paginate-and-sort') }}"
-                    data-sort="{% if filters is empty or filters.dateOfBirth is not defined %}ASC{% else %}{{ filters.dateOfBirth }}{% endif %}"
+                    data-sort="{% if sortBy is empty or sortBy.dateOfBirth is not defined %}ASC{% else %}{{ sortBy.dateOfBirth }}{% endif %}"
                     data-column="dateOfBirth"
                     data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
                     data-page="{{ currentPage }}">{{ 'form.label.birth_date'| trans }}<span class="sort-icon"></span></th>
                 <th class="columns" data-action="{{ path('paginate-and-sort') }}"
-                    data-sort="{% if filters is empty or filters.expirationDate is not defined %}ASC{% else %}{{ filters.expirationDate }}{% endif %}"
+                    data-sort="{% if sortBy is empty or sortBy.expirationDate is not defined %}ASC{% else %}{{ sortBy.expirationDate }}{% endif %}"
                     data-column="expirationDate"
                     data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
                     data-page="{{ currentPage }}">{{ 'form.label.registration_date'| trans }}<span class="sort-icon"></span></th>
@@ -62,8 +63,8 @@
                     <a data-action="{{ path('paginate-and-sort') }}"
                        data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
                        data-page="{{ currentPage -1 }}"
-                       data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
-                       data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
+                       data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                       data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
                        data-paginate="true"
                        aria-label="Previous">
                         <span aria-hidden="true">&laquo; {{ 'page.user-management.user-management.previous'|trans }}</span>
@@ -76,8 +77,8 @@
                                 data-action="{{ path('paginate-and-sort') }}"
                                 data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
                                 data-page="{{ page }}"
-                                data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
-                                data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
+                                data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                                data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
                                 data-paginate="true">{{ 'page.user-management.user-management.page-number'| trans({'%page%': page}) }}</a>
                     </li>
                 {% endfor %}
@@ -87,8 +88,8 @@
                     <a data-action="{{ path('paginate-and-sort') }}"
                        data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
                        data-page="{{ currentPage + 1 }}"
-                       data-column="{% if filters is not empty %}{% for key,value in filters %}{{ key }}{% endfor %}{% endif %}"
-                       data-sort="{% if filters is not empty %}{% for key,value in filters %}{{ value }}{% endfor %}{% endif %}"
+                       data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                       data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
                        data-paginate="true"
                        aria-label="Next">
                         <span aria-hidden="true">{{ 'page.user-management.user-management.next'|trans }} &raquo;</span>
@@ -97,7 +98,7 @@
             {% endif %}
         </ul>
     </nav>
-    <div class="col-md-12 col-xs-12 no-lr-padding">
-        <a href="{{ path('add-user') }}" class="btn submit pull-right">{{ 'page.user-management.user-management.add_new_user'| trans }}</a>
-    </div>
 </div>
+{% else %}
+    <h1>{{ 'page.user-management.user-management.no_users'| trans }}</h1>
+{% endif %}

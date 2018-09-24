@@ -89,7 +89,7 @@ class LoggedUserListener
             if ($userRole !== UserConfig::ROLE_CLIENT) {
                 return in_array(
                     $currentRoute,
-                    ['create-booking']
+                    ['create-booking', 'my-bookings']
                 );
             }
         }

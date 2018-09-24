@@ -37,5 +37,21 @@ class RoomConfig
     const ALLOWED = [
         true => self::YES,
         false => self::NO,
+        "" => "",
     ];
+    const IS = 'is';
+    const IS_NOT = 'is not';
+
+    const AVAILABILITY = [
+        true => self::IS,
+        false => self::IS_NOT,
+    ];
+
+    const CONVERT = [
+        self::YES => true,
+        self::NO => false,
+        "" => "",
+    ];
+
+    const CURRENCY = ' $';
 }

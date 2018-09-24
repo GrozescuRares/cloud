@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="wrapper">
+                    <a href="{{ path('dashboard') }}">{{ 'page.bookings.my-bookings.back'| trans }}</a>
+                    <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                        <h1 class="text-center">{{ 'page.bookings.my-bookings.title'| trans }}</h1>
+                    </div>
+                    <div id="reload">
+                        {{ include('bookings/bookings-table.html.twig') }}
+                    </div>
+                    <div class="col-md-12 col-xs-12 no-lr-padding">
+                        <a href="{{ path('create-booking') }}" class="btn submit pull-right">{{ 'page.bookings.create-booking.title'| trans }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/paginateAndSort.js') }}"></script>
+    <script src="{{ asset('js/bookings/my-bookings.js') }}"></script>
+{% endblock %}

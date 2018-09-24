@@ -9,13 +9,19 @@
 namespace AppBundle\Service;
 
 use AppBundle\Adapter\HotelAdapter;
+use AppBundle\Dto\HotelDto;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
+use AppBundle\Enum\ReservationConfig;
+use AppBundle\Exception\HotelNotFoundException;
+use AppBundle\Exception\InvalidDateException;
 use AppBundle\Exception\NoRoleException;
+use AppBundle\Helper\GetEntitiesAndDtosHelper;
 use AppBundle\Helper\ValidateUserHelper;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
 
 /**
  * Class HotelService
@@ -27,17 +33,21 @@ class HotelService
     protected $em;
     /** @var HotelAdapter */
     protected $hotelAdapter;
+    /** @var GetEntitiesAndDtosHelper */
+    protected $getEntitiesAndDtosHelper;
 
     /**
      * HotelService constructor.
      *
-     * @param EntityManager $em
-     * @param HotelAdapter  $hotelAdapter
+     * @param EntityManager            $em
+     * @param HotelAdapter             $hotelAdapter
+     * @param GetEntitiesAndDtosHelper $getEntitiesAndDtosHelper
      */
-    public function __construct(EntityManager $em, HotelAdapter $hotelAdapter)
+    public function __construct(EntityManager $em, HotelAdapter $hotelAdapter, GetEntitiesAndDtosHelper $getEntitiesAndDtosHelper)
     {
         $this->em = $em;
         $this->hotelAdapter = $hotelAdapter;
+        $this->getEntitiesAndDtosHelper = $getEntitiesAndDtosHelper;
     }
 
     /**
@@ -97,12 +107,19 @@ class HotelService
      */
     public function getAvailableHotels(\DateTime $startDate, \DateTime $endDate)
     {
+        $nowDate = new \DateTime('now');
+        $nowDate->modify(ReservationConfig::ECART);
+
         if ($startDate > $endDate) {
-            return [];
+            throw new InvalidDateException('Invalid period');
+        }
+
+        if ($startDate < $nowDate) {
+            throw new InvalidDateException('Invalid period');
         }
 
         $bookedRoomsInPeriod = $this->em->getRepository(Room::class)->getBookedRooms($startDate, $endDate);
-        $hotels = $this->em->getRepository(Hotel::class)->getHotelsWithReservations();
+        $hotels = $this->em->getRepository(Hotel::class)->findAll();
         $freeHotels = [];
 
         /** @var Hotel $hotel */
@@ -124,30 +141,62 @@ class HotelService
     }
 
     /**
-     * @param int $hotelId
-     *
-     * @return Hotel|null|object
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @return array
      */
-    public function getHotelById($hotelId)
+    public function paginateAndSortHotels(User $loggedUser, $offset, $column, $sort)
     {
-        return $this->em->getRepository(Hotel::class)->findOneBy([
-            'hotelId' => $hotelId,
-        ]);
+        ValidateUserHelper::checkIfUserHasRoleAndIsOwner($loggedUser);
+        $hotels = $this->em->getRepository(Hotel::class)->paginateAndSortHotels($loggedUser, $offset, $column, $sort);
+
+        return $this->hotelAdapter->convertHotelsToHotelDtos($hotels);
     }
 
     /**
+     * @param User $loggedUser
+     * @return float
+     */
+    public function getHotelsPageNumber(User $loggedUser)
+    {
+        ValidateUserHelper::checkIfUserHasRoleAndIsOwner($loggedUser);
+
+        return $this->em->getRepository(Hotel::class)->getHotelsPagesNumber($loggedUser);
+    }
+
+    /**
+     * @param HotelDto $hotelDto
+     *
+     * @throws OptimisticLockException
+     */
+    public function updateHotel(HotelDto $hotelDto)
+    {
+        $hotel = $this->getEntitiesAndDtosHelper->getHotelById($hotelDto->hotelId);
+        $hotel = $this->hotelAdapter->convertToEntity($hotelDto, $hotel);
+
+        $this->em->persist($hotel);
+        $this->em->flush();
+    }
+
+    /**
+     * @param User  $loggedUser
      * @param mixed $hotelId
      *
      * @return \AppBundle\Dto\HotelDto|null
      */
-    public function getHotelDtoById($hotelId)
+    public function getHotelDtoByIdAndOwner(User $loggedUser, $hotelId)
     {
+        ValidateUserHelper::checkIfUserHasRoleAndIsOwner($loggedUser);
+
         $hotel = $this->em->getRepository(Hotel::class)->findOneBy([
             'hotelId' => $hotelId,
+            'owner' => $loggedUser,
         ]);
 
         if (empty($hotel)) {
-            return null;
+            throw new HotelNotFoundException('There is no hotel with id: '.$hotelId.' and owner: '.$loggedUser->getFirstName());
         }
 
         return $this->hotelAdapter->convertToDto($hotel);

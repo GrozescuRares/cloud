@@ -48,4 +48,59 @@ class HotelManagementManager
     {
         $this->roomService->addRoom($roomDto);
     }
+
+    /**
+     * @param User $loggedUser
+     * @return float
+     */
+    public function getHotelPagesNumber(User $loggedUser)
+    {
+        return $this->hotelService->getHotelsPageNumber($loggedUser);
+    }
+
+    /**
+     * @param mixed $hotelId
+     * @param mixed $petFilter
+     * @param mixed $smokingFilter
+     * @return float
+     */
+    public function getRoomsPagesNumber($hotelId, $petFilter = null, $smokingFilter = null)
+    {
+        return $this->roomService->getPagesNumberForRooms($hotelId, $petFilter, $smokingFilter);
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @return array
+     */
+    public function paginateAndSortHotels(User $loggedUser, $offset, $column, $sort)
+    {
+        return $this->hotelService->paginateAndSortHotels($loggedUser, $offset, $column, $sort);
+    }
+
+    /**
+     * @param mixed $hotelId
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @param mixed $petFilter
+     * @param mixed $smokingFilter
+     * @return array
+     */
+    public function paginateAndSortRooms($hotelId, $offset, $column = null, $sort = null, $petFilter = null, $smokingFilter = null)
+    {
+        return $this->roomService->paginateAndSortRooms($hotelId, $offset, $column, $sort, $petFilter, $smokingFilter);
+    }
+
+    /**
+     * @param User $loggedUser
+     * @return array
+     */
+    public function getOwnedHotels(User $loggedUser)
+    {
+        return $this->hotelService->getOwnerHotelsDto($loggedUser);
+    }
 }

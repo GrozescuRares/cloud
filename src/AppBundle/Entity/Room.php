@@ -243,6 +243,6 @@ class Room
      */
     public function __toString()
     {
-        return "Id: ".$this->getRoomId()." Capacity: ".$this->getCapacity()." Price: ".$this->getPrice()." Smoking: ".RoomConfig::ALLOWED[$this->isSmoking()]." Pet: ".RoomConfig::ALLOWED[$this->isPet()];
+        return "Number: ".$this->getRoomId()." Capacity: ".$this->getCapacity()." Price: ".$this->getPrice()." Smoking: ".RoomConfig::ALLOWED[$this->isSmoking()]." Pet: ".RoomConfig::ALLOWED[$this->isPet()];
     }
 }

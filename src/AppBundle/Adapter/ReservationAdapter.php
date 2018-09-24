@@ -86,4 +86,18 @@ class ReservationAdapter
 
         return $reservation;
     }
+
+    /**
+     * @param array $reservations
+     * @return array
+     */
+    public function convertToReservationDtos(array $reservations)
+    {
+        $reservationDtos = [];
+        foreach ($reservations as $reservation) {
+            $reservationDtos[] = $this->convertToDto($reservation);
+        }
+
+        return $reservationDtos;
+    }
 }

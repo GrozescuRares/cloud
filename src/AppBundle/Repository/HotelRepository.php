@@ -2,7 +2,9 @@
 
 namespace AppBundle\Repository;
 
-use Symfony\Component\Validator\Constraints\Date;
+use AppBundle\Entity\User;
+use AppBundle\Enum\PaginationConfig;
+use AppBundle\Enum\UserConfig;
 
 /**
  * HotelRepository
@@ -24,5 +26,42 @@ class HotelRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
 
         return $hotels;
+    }
+
+    /**
+     * @param User $owner
+     * @return float
+     */
+    public function getHotelsPagesNumber(User $owner)
+    {
+        $hotels = $this->createQueryBuilder('hotel')
+            ->where('hotel.owner = :owner')
+            ->setParameter('owner', $owner)
+            ->getQuery()
+            ->getResult();
+
+        return ceil(count($hotels) / PaginationConfig::ITEMS);
+    }
+
+    /**
+     * @param User  $owner
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @return mixed
+     */
+    public function paginateAndSortHotels(User $owner, $offset, $column = null, $sort = null)
+    {
+        $qb = $this->createQueryBuilder('hotel');
+        $qb ->where('hotel.owner =:owner')
+            ->setParameter('owner', $owner)
+            ->setMaxResults(PaginationConfig::ITEMS)
+            ->setFirstResult($offset);
+
+        if (!empty($column) and !empty($sort)) {
+            $qb->orderBy('hotel.'.$column, $sort);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

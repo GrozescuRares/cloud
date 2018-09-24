@@ -27,4 +27,46 @@ class RoutesConfig
     const PAGINATE_AND_SORT = 'user-management/paginate-and-sort';
     const REGISTRATION_CONFIRMATION = '/registration-confirmation';
     const CREATE_BOOKING_LOAD_HOTELS = '/bookings/create-booking/load-hotels';
+
+    const MY_ACCOUNT_ROUTE = "my-account";
+    const EDIT_MY_ACCOUNT_ROUTE = "edit-my-account";
+
+    const MY_ACCOUNT_ROUTES = [
+        self::MY_ACCOUNT_ROUTE,
+        self::EDIT_MY_ACCOUNT_ROUTE
+    ];
+
+    const ADD_USER_ROUTE = "add-user";
+    const EDIT_USER_ROUTE = "edit-user";
+    const USER_MANAGEMENT_ROUTE = "user-management";
+
+    const USER_MANAGEMENT_ROUTES = [
+        self::ADD_USER_ROUTE,
+        self::EDIT_USER_ROUTE,
+        self::USER_MANAGEMENT_ROUTE,
+    ];
+
+    const HOTELS_INFORMATION_ROUTE = 'hotels-information';
+    const HOTEL_INFORMATION_ROUTE = 'show-hotel-information';
+    const EDIT_HOTEL_INFORMATION_ROUTE = 'edit-hotel-information';
+    const ROOM_MANAGEMENT_ROUTE = 'room-management';
+    const ADD_ROOM_ROUTE = 'add-room';
+
+    const HOTEL_MANAGEMENT_ROUTES = [
+      self::HOTELS_INFORMATION_ROUTE,
+      self::HOTEL_INFORMATION_ROUTE,
+      self::EDIT_HOTEL_INFORMATION_ROUTE,
+      self::ROOM_MANAGEMENT_ROUTE,
+      self::ADD_ROOM_ROUTE,
+    ];
+
+    const RESERVATION_MANAGEMENT_ROUTE = 'reservation-management';
+    const MY_BOOKINGS_ROUTE = 'my-bookings';
+    const CREATE_BOOKING_ROUTE = 'create-booking';
+
+    const BOOKING_ROUTES = [
+      self::RESERVATION_MANAGEMENT_ROUTE,
+      self::MY_BOOKINGS_ROUTE,
+      self::CREATE_BOOKING_ROUTE,
+    ];
 }

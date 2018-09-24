@@ -44,6 +44,20 @@ class Hotel implements \Serializable
     private $description;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="facilities", type="string", length=255)
+     */
+    private $facilities;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="employees", type="integer", length=11)
+     */
+    private $employees;
+
+    /**
      * @ORM\OneToMany(targetEntity="User", mappedBy="hotel")
      */
     private $users;
@@ -78,6 +92,42 @@ class Hotel implements \Serializable
         $this->rooms = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->reservations = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFacilities()
+    {
+        return $this->facilities;
+    }
+
+    /**
+     * @param string $facilities
+     *
+     * @return Hotel
+     */
+    public function setFacilities($facilities)
+    {
+        $this->facilities = $facilities;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEmployees()
+    {
+        return $this->employees;
+    }
+
+    /**
+     * @param int $employees
+     */
+    public function setEmployees($employees)
+    {
+        $this->employees = $employees;
     }
 
     /**
@@ -235,6 +285,20 @@ class Hotel implements \Serializable
     public function getHotelId()
     {
         return $this->hotelId;
+    }
+
+    /**
+     * Set id
+     *
+     * @param mixed $hotelId
+     *
+     * @return Hotel
+     */
+    public function setHotelId($hotelId)
+    {
+        $this->hotelId = $hotelId;
+
+        return $this;
     }
 
     /**

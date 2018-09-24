@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="wrapper">
+                    <a href="{% if is_granted('ROLE_OWNER') %}{{ path('hotels-information') }}{% else %}{{ path('dashboard') }} {% endif %}">Back</a>
+                    <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                        <h1 class="text-center">{{ 'page.hotel-management.room-management.to'| trans }}</h1>
+                    </div>
+                    <div class="table-paginated table-filtered">
+                        <div class="filters">
+                            <a class="filters-toggle"><i class="fa fa-sliders"></i></a>
+                            <div class="filters-open">
+                                <div class="col-md-4 col-sm-6 col-xs-12 input-wrapper">
+                                    <div class="styled-input">
+                                        <select class="selectpicker" id="hotels">
+                                            {% if is_granted('ROLE_OWNER') %}
+                                                {% for hotel in hotels %}
+                                                    <option value="{{ hotel.hotelId }}"
+                                                            {% if hotel.hotelId == firstHotel %}selected="selected{% endif %}">
+                                                        {{ hotel.name }} </option>
+                                                {% endfor %}
+                                            {% elseif is_granted('ROLE_MANAGER') %}
+                                                <option selected="selected"
+                                                        value="{{ firstHotel }}"> {{ managerHotelName }} </option>
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 col-xs-12 input-wrapper">
+                                    <div class="styled-input">
+                                        <select class="selectpicker" id="smokingFilter">
+                                            <option selected="selected" disabled="disabled">{{ 'page.hotel-management.room-management.smoking'|trans }}</option>
+                                            <option value="Yes">{{ 'page.hotel-management.room-management.yes'| trans }}</option>
+                                            <option value="No">{{ 'page.hotel-management.room-management.no'| trans }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 col-xs-12 input-wrapper">
+                                    <div class="styled-input">
+                                        <select class="selectpicker" id="petFilter">
+                                            <option value="0" disabled="disabled" selected="selected">{{ 'page.hotel-management.room-management.pets'| trans }}</option>
+                                            <option value="Yes">{{ 'page.hotel-management.room-management.yes'| trans }}</option>
+                                            <option value="No">{{ 'page.hotel-management.room-management.no'| trans }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button class="btn submit" id="filter" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
+                                        data-page="{{ currentPage }}">{{ 'page.hotel-management.room-management.filter'| trans }}
+                                </button>
+                                <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                                    <a data-action="{{ path('paginate-filter-and-sort-rooms') }}" data-filter-reset="true"
+                                       data-page="{{ currentPage }}" class="reset-filters"><i class="fa fa-close"></i>{{ 'page.hotel-management.room-management.reset'| trans }}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="reload">
+                            {{ include('hotel-management/rooms-table.html.twig') }}
+                        </div>
+                        <div class='col-md-12 col-xs-12 no-lr-padding'>
+                        {% if is_granted('ROLE_OWNER') %}
+                            <a href='{{ path('add-room') }}' class='submit btn pull-right'>{{ 'page.hotel-management.room-management.add_new_rom'| trans }}</a>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/hotel-management/room-management.js') }}"></script>
+    <script src="{{ asset('js/paginateAndSort.js') }}"></script>
+{% endblock %}

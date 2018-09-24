@@ -65,6 +65,7 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(name="firstName", type="string", length=255)
      *
      * @Assert\NotBlank(groups={"register", "edit-my-account"}, message="constraints.first_name")
+     * @Assert\Type(type="alpha", groups={"register", "edit-my-account"})
      */
     private $firstName;
 
@@ -74,6 +75,7 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(name="lastName", type="string", length=255)
      *
      * @Assert\NotBlank(groups={"register", "edit-my-account"}, message="constraints.last_name")
+     * @Assert\Type(type="alpha", groups={"register", "edit-my-account"})
      */
     private $lastName;
 

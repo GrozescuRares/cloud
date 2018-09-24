@@ -15,6 +15,8 @@ use AppBundle\Dto\RoomDto;
 use AppBundle\Entity\Hotel;
 use AppBundle\Entity\Room;
 
+use AppBundle\Exception\HotelNotFoundException;
+use AppBundle\Helper\GetEntitiesAndDtosHelper;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -29,19 +31,23 @@ class RoomService
     protected $roomAdapter;
     /** @var HotelAdapter  */
     protected $hotelAdapter;
+    /** @var GetEntitiesAndDtosHelper */
+    protected $getEntitiesAndDtosHelper;
 
     /**
      * RoomService constructor.
      *
-     * @param EntityManager $em
-     * @param RoomAdapter   $roomAdapter
-     * @param HotelAdapter  $hotelAdapter
+     * @param EntityManager            $em
+     * @param RoomAdapter              $roomAdapter
+     * @param HotelAdapter             $hotelAdapter
+     * @param GetEntitiesAndDtosHelper $getEntitiesAndDtosHelper
      */
-    public function __construct(EntityManager $em, RoomAdapter $roomAdapter, HotelAdapter $hotelAdapter)
+    public function __construct(EntityManager $em, RoomAdapter $roomAdapter, HotelAdapter $hotelAdapter, GetEntitiesAndDtosHelper $getEntitiesAndDtosHelper)
     {
         $this->em = $em;
         $this->roomAdapter = $roomAdapter;
         $this->hotelAdapter = $hotelAdapter;
+        $this->getEntitiesAndDtosHelper = $getEntitiesAndDtosHelper;
     }
 
     /**
@@ -76,6 +82,36 @@ class RoomService
         $freeRooms = array_diff($reservedRooms, $bookedRoomsInPeriod);
 
         return $this->roomAdapter->convertToCustomArray($freeRooms);
+    }
+
+    /**
+     * @param mixed $hotelId
+     * @param mixed $petFilter
+     * @param mixed $smokingFilter
+     * @return float
+     */
+    public function getPagesNumberForRooms($hotelId, $petFilter = null, $smokingFilter = null)
+    {
+        $hotel = $this->getEntitiesAndDtosHelper->getHotelById($hotelId);
+
+        return $this->em->getRepository(Room::class)->getRoomsPagesNumber($hotel, $petFilter, $smokingFilter);
+    }
+
+    /**
+     * @param mixed $hotelId
+     * @param mixed $offset
+     * @param mixed $column
+     * @param mixed $sort
+     * @param mixed $petFilter
+     * @param mixed $smokingFilter
+     * @return array
+     */
+    public function paginateAndSortRooms($hotelId, $offset, $column = null, $sort = null, $petFilter = null, $smokingFilter = null)
+    {
+        $hotel = $this->getEntitiesAndDtosHelper->getHotelById($hotelId);
+        $rooms = $this->em->getRepository(Room::class)->paginateAndSortRooms($hotel, $offset, $column, $sort, $petFilter, $smokingFilter);
+
+        return $this->roomAdapter->convertToRoomDtos($rooms);
     }
 
     /**

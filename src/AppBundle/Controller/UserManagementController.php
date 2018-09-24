@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\User;
+use AppBundle\Enum\PaginationConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Enum\OrderConfig;
@@ -19,6 +20,7 @@ use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Form\EditUserTypeForm;
 use AppBundle\Form\UserTypeForm;
 
+use AppBundle\Helper\PaginateAndSortHelper;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -28,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class UserManagementController
  */
-class UserManagementController extends Controller
+class UserManagementController extends BaseController
 {
 
     /**
@@ -116,7 +118,7 @@ class UserManagementController extends Controller
                 'user_management/edit-user.html.twig',
                 [
                     'edit_user_form' => $form->createView(),
-                    'username'       => $username,
+                    'username' => $username,
                 ]
             );
         }
@@ -168,7 +170,7 @@ class UserManagementController extends Controller
                     'nrPages' => $nrPages,
                     'currentPage' => 1,
                     'nrUsers' => count($usersDto),
-                    'filters' => [],
+                    'sortBy' => [],
                 ]
             );
         } catch (NoRoleException $ex) {
@@ -187,44 +189,38 @@ class UserManagementController extends Controller
      */
     public function paginateAndSortAction(Request $request)
     {
+        $this->checkIfItsAjaxRequest($request);
+
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
 
-        if ($request->isXmlHttpRequest()) {
-            $type = $request->query->get('type');
-            try {
-                if ($type === 'manager') {
-                    list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
-                    $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
+        $type = $request->query->get('type');
+        try {
+            if ($type === 'manager') {
+                list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+                $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
 
-                    list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
-                    $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $pageNumber * 5 - 5, $column, $sortType);
+                list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
+                $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $offset, $column, $sortType);
 
-                    return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
-                }
-
-                if ($type === 'owner') {
-                    list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
-                    $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
-
-                    list($sortType, $sort) = $this->configPaginationFilters($column, $sort, $paginate);
-                    $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $pageNumber * 5 - 5, $column, $sortType, $hotelId);
-
-                    return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
-                }
-            } catch (NoRoleException $ex) {
-                return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
-            } catch (InappropriateUserRoleException $ex) {
-                return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+                return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
             }
-        }
 
-        return $this->render(
-            'error.html.twig',
-            [
-                'error' => 'Stay out of here.',
-            ]
-        );
+            if ($type === 'owner') {
+                list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+                $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
+
+                list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
+                $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $offset, $column, $sortType, $hotelId);
+
+
+                return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
+            }
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
     }
 
     /**
@@ -255,37 +251,16 @@ class UserManagementController extends Controller
     private function renderPaginatedTable($users, $nrPages, $pageNumber, $column, $sort)
     {
         return $this->render(
-            'user_management/table.html.twig',
+            'user_management/users-table.html.twig',
             [
                 'users' => $users,
                 'nrPages' => $nrPages,
                 'currentPage' => $pageNumber,
                 'nrUsers' => count($users),
-                'filters' => [
+                'sortBy' => [
                     $column => $sort,
                 ],
             ]
         );
-    }
-
-    /**
-     * @param $column
-     * @param $sort
-     * @param $paginate
-     *
-     * @return array
-     */
-    private function configPaginationFilters($column, $sort, $paginate)
-    {
-        if (!empty($column) && !empty($sort) && !empty($paginate)) {
-            $sortType = OrderConfig::TYPE[$sort];
-        } else {
-            $sortType = $sort;
-            if (!empty($column) && !empty($sort)) {
-                $sort = OrderConfig::TYPE[$sort];
-            }
-        }
-
-        return array($sortType, $sort);
     }
 }

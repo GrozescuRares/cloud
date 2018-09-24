@@ -5,18 +5,22 @@
         <div class="container-fluid">
             <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                 <div class="wrapper">
-                    <a href="{{ path('dashboard') }}">{{ 'page.user-management.user-management.back'| trans }}</a>
+                    <a href="{{ path('dashboard') }}">{{ 'page.hotel-management.reservation-management.back'| trans }}</a>
                     <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
-                        <h1 class="text-center">{{ 'page.user-management.user-management.title'| trans }}</h1>
+                        <h1 class="text-center" id="managerHotelId"
+                            data-hotel="{{ firstHotel }}">{{ 'page.hotel-management.reservation-management.to'| trans }}</h1>
                     </div>
                     {% if is_granted('ROLE_OWNER') %}
                         <div class="col-md-12 col-xs-12 no-lr-padding text-center search">
-
-                            <span>{{ 'page.user-management.user-management.search'| trans }}</span>
+                            <span>{{ 'page.hotel-management.reservation-management.search'| trans }}</span>
                             <div class="styled-input">
                                 <select class="selectpicker" id="hotels">
+                                    <option data-action="{{ path('paginate-and-sort-reservations') }}"
+                                            data-page="{{ currentPage }}"
+                                            value="all" selected="selected">All hotels
+                                    </option>
                                     {% for name, hotel in hotels %}
-                                        <option data-action="{{ path('paginate-and-sort') }}" data-role="owner"
+                                        <option data-action="{{ path('paginate-and-sort-reservations') }}"
                                                 data-page="{{ currentPage }}"
                                                 value="{{ hotel.hotelId }}"> {{ name }} </option>
                                     {% endfor %}
@@ -26,19 +30,16 @@
                         </div>
                     {% endif %}
                     <div id="reload">
-                        {{ include('user_management/users-table.html.twig') }}
-                    </div>
-                    <div class="col-md-12 col-xs-12 no-lr-padding">
-                        <a href="{{ path('add-user') }}" class="btn submit pull-right">{{ 'page.user-management.user-management.add_new_user'| trans }}</a>
+                        {{ include('bookings/reservations-table.html.twig') }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('js/loadDataByHotels.js') }}"></script>
     <script src="{{ asset('js/paginateAndSort.js') }}"></script>
+    <script src="{{ asset('js/loadDataByHotels.js') }}"></script>
+    <script src="{{ asset('js/bookings/reservation-management.js') }}"></script>
 {% endblock %}

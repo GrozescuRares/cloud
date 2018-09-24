@@ -36,6 +36,13 @@ class Reservation
     private $endDate;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="days", type="string")
+     */
+    private $days;
+
+    /**
      * @var User $user
      *
      * @ORM\ManyToOne(targetEntity="User", inversedBy="reservations")
@@ -58,6 +65,22 @@ class Reservation
      * @ORM\JoinColumn(name="room_id", referencedColumnName="roomId", nullable=true)
      */
     private $room;
+
+    /**
+     * @return string
+     */
+    public function getDays()
+    {
+        return $this->days;
+    }
+
+    /**
+     * @param string $days
+     */
+    public function setDays($days)
+    {
+        $this->days = $days;
+    }
 
     /**
      * @return User
@@ -177,4 +200,3 @@ class Reservation
         return $this->endDate;
     }
 }
-
