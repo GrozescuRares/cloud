@@ -122,7 +122,14 @@ class HotelManagementController extends BaseController
      */
     public function paginateAndSortHotelsAction(Request $request)
     {
-        $this->checkIfItsAjaxRequest($request);
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
 
         $loggedUser = $this->getUser();
         $hotelManagementManager = $this->get('app.hotel-management.manager');
@@ -228,7 +235,14 @@ class HotelManagementController extends BaseController
      */
     public function paginateAndSortRoomsAction(Request $request)
     {
-        $this->checkIfItsAjaxRequest($request);
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
 
         $loggedUser = $this->getUser();
         $hotelManagementManager = $this->get('app.hotel-management.manager');

@@ -55,8 +55,8 @@ class RegistrationControllerTest extends BaseWebTestCase
                 '[dateOfBirth][day]' => '1',
                 '[dateOfBirth][month]' => '2',
                 '[dateOfBirth][year]' => '1950',
-                '[firstName]' => $username."FirstName",
-                '[lastName]' => $username."LastName",
+                '[firstName]' => "FirstName",
+                '[lastName]' => "LastName",
             ]
         );
         $client->submit($form);
@@ -97,8 +97,8 @@ class RegistrationControllerTest extends BaseWebTestCase
                 '[dateOfBirth][day]' => '1',
                 '[dateOfBirth][month]' => '2',
                 '[dateOfBirth][year]' => '1950',
-                '[firstName]' => $username."FirstName",
-                '[lastName]' => $username."LastName",
+                '[firstName]' => "FirstName",
+                '[lastName]' => "LastName",
             ]
         );
         $crawler = $client->submit($form);
@@ -132,8 +132,8 @@ class RegistrationControllerTest extends BaseWebTestCase
                 '[dateOfBirth][day]' => '1',
                 '[dateOfBirth][month]' => '2',
                 '[dateOfBirth][year]' => '1950',
-                '[firstName]' => $username."FirstName",
-                '[lastName]' => $username."LastName",
+                '[firstName]' => "FirstName",
+                '[lastName]' => "LastName",
             ]
         );
         $crawler = $client->submit($form);
@@ -169,8 +169,8 @@ class RegistrationControllerTest extends BaseWebTestCase
                 '[dateOfBirth][day]' => '1',
                 '[dateOfBirth][month]' => '2',
                 '[dateOfBirth][year]' => '1950',
-                '[firstName]' => $username."FirstName",
-                '[lastName]' => $username."LastName",
+                '[firstName]' => "FirstName",
+                '[lastName]' => "LastName",
             ]
         );
         $crawler = $client->submit($form);
@@ -202,8 +202,8 @@ class RegistrationControllerTest extends BaseWebTestCase
                 '[dateOfBirth][day]' => '1',
                 '[dateOfBirth][month]' => '2',
                 '[dateOfBirth][year]' => '1950',
-                '[firstName]' => $username."FirstName",
-                '[lastName]' => $username."LastName",
+                '[firstName]' => "FirstName",
+                '[lastName]' => "LastName",
             ]
         );
 

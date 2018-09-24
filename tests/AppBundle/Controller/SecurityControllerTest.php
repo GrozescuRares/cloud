@@ -9,6 +9,7 @@
 namespace Tests\AppBundle\Controller;
 
 use AppBundle\Enum\RoutesConfig;
+use AppBundle\Enum\TestDataConfig;
 use Tests\AppBundle\BaseWebTestCase;
 
 /**
@@ -40,7 +41,7 @@ class SecurityControllerTest extends BaseWebTestCase
         $crawler = $client->request('GET', RoutesConfig::LOGIN);
 
         $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'client', '12345');
+        $form = $this->generateLoginForm($form, TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD);
         $client->submit($form);
 
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
@@ -96,7 +97,7 @@ class SecurityControllerTest extends BaseWebTestCase
         $crawler = $client->request('GET', RoutesConfig::LOGIN);
 
         $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'client', '12345');
+        $form = $this->generateLoginForm($form, TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD);
         $client->submit($form);
 
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
@@ -115,7 +116,7 @@ class SecurityControllerTest extends BaseWebTestCase
      */
     public function testThatLoggedUserCanNotAccessRegisterPage()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::REGISTER, 'client', '12345');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::REGISTER, TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD);
 
         $this->assertTrue(
             $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('dashboard'))
@@ -128,7 +129,7 @@ class SecurityControllerTest extends BaseWebTestCase
      */
     public function testThatLoggedUserCanNotAccessActivateAccountPage()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::ACTIVATE_ACCOUNT.'/dscsdcddsccds', 'client', '12345');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ACTIVATE_ACCOUNT.'/dscsdcddsccds', TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD);
 
         $this->assertTrue(
             $client->getResponse()->isRedirect($client->getContainer()->get('router')->generate('dashboard'))

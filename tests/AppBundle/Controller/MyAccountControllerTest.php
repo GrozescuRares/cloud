@@ -9,6 +9,7 @@
 namespace Tests\AppBundle\Controller;
 
 use AppBundle\Enum\RoutesConfig;
+use AppBundle\Enum\TestDataConfig;
 use Tests\AppBundle\BaseWebTestCase;
 
 /**
@@ -35,7 +36,7 @@ class MyAccountControllerTest extends BaseWebTestCase
      */
     public function testAccessingMyAccountRouteAfterLogin()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::MY_ACCOUNT, 'client', '12345');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::MY_ACCOUNT, TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD);
 
         $this->assertContains('My account', $crawler->filter('h1.text-center')->text());
     }
@@ -58,7 +59,7 @@ class MyAccountControllerTest extends BaseWebTestCase
      */
     public function testSuccessfulAccountEdit()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_MY_ACCOUNT, 'client', '12345');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_MY_ACCOUNT, TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD);
 
         $bio = 'bio'.substr(md5(time()), 0, 6);
 

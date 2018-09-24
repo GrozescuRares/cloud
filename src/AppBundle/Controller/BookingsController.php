@@ -9,7 +9,6 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Dto\ReservationDto;
-use AppBundle\Enum\PaginationConfig;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\InvalidDateException;
@@ -67,7 +66,14 @@ class BookingsController extends BaseController
      */
     public function loadDataAction(Request $request)
     {
-        $this->checkIfItsAjaxRequest($request);
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
 
         $reservationDto = $this->handleReservation($request);
         $bookingsManager = $this->get('app.bookings.manager');
@@ -224,7 +230,14 @@ class BookingsController extends BaseController
      */
     public function paginateAndSortReservationsAction(Request $request)
     {
-        $this->checkIfItsAjaxRequest($request);
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
 
         $loggedUser = $this->getUser();
         $hotelManagementManager = $this->get('app.hotel-management.manager');
@@ -255,7 +268,14 @@ class BookingsController extends BaseController
      */
     public function deleteReservationAction($reservationId, Request $request)
     {
-        $this->checkIfItsAjaxRequest($request);
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
         $loggedUser = $this->getUser();
         $hotelManagementManager = $this->get('app.hotel-management.manager');
         $bookingManager = $this->get('app.bookings.manager');
@@ -321,7 +341,14 @@ class BookingsController extends BaseController
      */
     public function paginateAndSortBookingsAction(Request $request)
     {
-        $this->checkIfItsAjaxRequest($request);
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
 
         $loggedUser = $this->getUser();
         $bookingsManager = $this->get('app.bookings.manager');
@@ -349,7 +376,14 @@ class BookingsController extends BaseController
      */
     public function deleteBookingAction($reservationId, Request $request)
     {
-        $this->checkIfItsAjaxRequest($request);
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
         $loggedUser = $this->getUser();
         $bookingManager = $this->get('app.bookings.manager');
 

@@ -9,6 +9,7 @@
 namespace Tests\AppBundle\Controller;
 
 use AppBundle\Enum\RoutesConfig;
+use AppBundle\Enum\TestDataConfig;
 use Tests\AppBundle\BaseWebTestCase;
 
 /**
@@ -35,7 +36,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testThatClientUserCanNotAccessAddUserRoute()
     {
-        $this->userCanNotAccessRoute(RoutesConfig::ADD_USER, 'rares', 'handstand');
+        $this->userCanNotAccessRoute(RoutesConfig::ADD_USER, TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD);
     }
 
     /**
@@ -53,7 +54,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testAddUserPageDesignWhenAccessedByOwner()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, 'owner', 'owner');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
 
         $this->assertEquals(5, $crawler->filter('div.second')->children()->count());
     }
@@ -64,7 +65,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testAddUserPageDesignWhenAccessedByManager()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, 'manager1', 'manager');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, TestDataConfig::MANAGER_USER, TestDataConfig::MANAGER_PASSWORD);
 
         $this->assertEquals(4, $crawler->filter('div.second')->children()->count());
     }
@@ -75,7 +76,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testSuccessfullyAddUserByOwner()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, 'owner', 'owner');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
@@ -92,8 +93,8 @@ class UserManagementControllerTest extends BaseWebTestCase
                 '[dateOfBirth][day]' => '1',
                 '[dateOfBirth][month]' => '2',
                 '[dateOfBirth][year]' => '1950',
-                '[firstName]' => $username."FirstName",
-                '[lastName]' => $username."LastName",
+                '[firstName]' => "FirstName",
+                '[lastName]' => "LastName",
             ]
         );
         $client->submit($form);
@@ -114,7 +115,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testSuccessfullyAddUserByManager()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, 'manager1', 'manager');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_USER, TestDataConfig::MANAGER_USER, TestDataConfig::MANAGER_PASSWORD);
 
         $username = 'user'.substr(md5(time()), 0, 6);
         $email = substr(md5(time()), 0, 6).'@ceva.com';
@@ -131,8 +132,8 @@ class UserManagementControllerTest extends BaseWebTestCase
                 '[dateOfBirth][day]' => '1',
                 '[dateOfBirth][month]' => '2',
                 '[dateOfBirth][year]' => '1950',
-                '[firstName]' => $username."FirstName",
-                '[lastName]' => $username."LastName",
+                '[firstName]' => "FirstName",
+                '[lastName]' => "LastName",
             ]
         );
         $client->submit($form);
@@ -165,7 +166,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testThatClientUserCanNotAccessEditUserRoute()
     {
-        $this->userCanNotAccessRoute(RoutesConfig::EDIT_USER.'/username', 'rares', 'handstand', ['username' => 'username']);
+        $this->userCanNotAccessRoute(RoutesConfig::EDIT_USER.'/username', TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD, ['username' => 'username']);
     }
 
     /**
@@ -174,7 +175,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testThatEmployeeUserCanNotAccessEditUserRoute()
     {
-        $this->userCanNotAccessRoute(RoutesConfig::EDIT_USER.'/username', 'employee', '12345', ['username' => 'username']);
+        $this->userCanNotAccessRoute(RoutesConfig::EDIT_USER.'/username', TestDataConfig::EMPLOYEE_USER, TestDataConfig::EMPLOYEE_PASSWORD, ['username' => 'username']);
     }
 
     /**
@@ -183,7 +184,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testEditUserPageDesignWhenAccessedByOwnerOrManager()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/username', 'owner', 'owner', ['username' => 'username']);
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/client', TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD, ['username' => 'client']);
 
         $this->assertContains('Edit', $crawler->filter('h1.text-center')->text());
     }
@@ -194,7 +195,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testEditUserRoleByOwner()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/edit-user', 'owner', 'owner', ['username' => 'edit-user']);
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/edit-user', TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD, ['username' => 'edit-user']);
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
         $form = $this->generateForm(
@@ -229,7 +230,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testEditUserRoleByManager()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/employee', 'manager1', 'manager', ['username' => 'employee']);
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/employee', TestDataConfig::MANAGER_USER, TestDataConfig::MANAGER_PASSWORD, ['username' => 'employee']);
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
         $form = $this->generateForm(
@@ -248,51 +249,9 @@ class UserManagementControllerTest extends BaseWebTestCase
     /**
      * @group edit-user
      */
-    public function testThatOwnerCanNotEditTheRoleOfAClient()
-    {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/rares', 'owner', 'owner', ['username' => 'rares']);
-
-        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateForm(
-            $form,
-            'appbundle_userDto',
-            [
-                '[role]' => 0,
-            ]
-        );
-        $client->submit($form);
-        $crawler = $client->followRedirect();
-
-        $this->assertContains('Can not edit users with', $crawler->filter('div.alert')->text());
-    }
-
-    /**
-     * @group edit-user
-     */
-    public function testThatManagerCanNotEditTheRoleOfAClient()
-    {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/rares', 'manager1', 'manager', ['username' => 'rares']);
-
-        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateForm(
-            $form,
-            'appbundle_userDto',
-            [
-                '[role]' => 0,
-            ]
-        );
-        $client->submit($form);
-        $crawler = $client->followRedirect();
-
-        $this->assertContains('Can not edit users with', $crawler->filter('div.alert')->text());
-    }
-
-    /**
-     * @group edit-user
-     */
     public function testThatOwnerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/ramadaUser1', 'owner', 'owner');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/ramadaUser1', TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
         $form = $this->generateForm(
@@ -313,7 +272,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testThatManagerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/ramadaUser1', 'manager1', 'manager', ['username' => 'client']);
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/ramadaUser1', TestDataConfig::MANAGER_USER, TestDataConfig::MANAGER_PASSWORD, ['username' => 'client']);
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
         $form = $this->generateForm(
@@ -345,7 +304,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testThatClientUserCanNotAccessUserManagementRoute()
     {
-        $this->userCanNotAccessRoute(RoutesConfig::USER_MANAGEMENT, 'rares', 'handstand');
+        $this->userCanNotAccessRoute(RoutesConfig::USER_MANAGEMENT, TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD);
     }
 
     /**
@@ -353,7 +312,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testThatEmployeeUserCanNotAccessUserManagementRoute()
     {
-        $this->userCanNotAccessRoute(RoutesConfig::USER_MANAGEMENT, 'employee', '12345');
+        $this->userCanNotAccessRoute(RoutesConfig::USER_MANAGEMENT, TestDataConfig::EMPLOYEE_USER, TestDataConfig::EMPLOYEE_PASSWORD);
     }
 
     /**
@@ -361,7 +320,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testUserManagementPageDesignWhenAccessedByManager()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::USER_MANAGEMENT, 'manager1', 'manager');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::USER_MANAGEMENT, TestDataConfig::MANAGER_USER, TestDataConfig::MANAGER_PASSWORD);
 
         $this->assertCount(0, $crawler->filter('div.search'));
     }
@@ -371,7 +330,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testUserManagementPageDesignWhenAccessedByOwner()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::USER_MANAGEMENT, 'owner', 'owner');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::USER_MANAGEMENT, TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
 
         $this->assertCount(1, $crawler->filter('div.search'));
     }
@@ -392,7 +351,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testThatClientUserCanNotAccessUserManagementPaginateAndSortRoute()
     {
-        $this->userCanNotAccessRoute(RoutesConfig::PAGINATE_AND_SORT, 'rares', 'handstand');
+        $this->userCanNotAccessRoute(RoutesConfig::PAGINATE_AND_SORT, TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD);
     }
 
     /**
@@ -400,7 +359,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testThatEmployeeUserCanNotAccessUserManagementPaginateAndSortRoute()
     {
-        $this->userCanNotAccessRoute(RoutesConfig::PAGINATE_AND_SORT, 'employee', '12345');
+        $this->userCanNotAccessRoute(RoutesConfig::PAGINATE_AND_SORT, TestDataConfig::EMPLOYEE_USER, TestDataConfig::EMPLOYEE_PASSWORD);
     }
 
     /**
@@ -408,7 +367,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testUserManagementPaginateAndSortRouteAccessedByOwner()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::PAGINATE_AND_SORT, 'owner', 'owner');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::PAGINATE_AND_SORT, TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
 
         $this->assertCount(1, $crawler->filter('div.error-template'));
         $this->assertContains('Stay out', $crawler->filter('h2')->text());
@@ -419,7 +378,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testUserManagementPaginateAndSortRouteAccessedByManager()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::PAGINATE_AND_SORT, 'manager1', 'manager');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::PAGINATE_AND_SORT, TestDataConfig::MANAGER_USER, TestDataConfig::MANAGER_PASSWORD);
 
         $this->assertCount(1, $crawler->filter('div.error-template'));
         $this->assertContains('Stay out', $crawler->filter('h2')->text());
@@ -436,7 +395,7 @@ class UserManagementControllerTest extends BaseWebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('submit')->form();
-        $form = $this->generateLoginForm($form, 'manager1', 'manager');
+        $form = $this->generateLoginForm($form, TestDataConfig::MANAGER_USER, TestDataConfig::MANAGER_PASSWORD);
         $client->submit($form);
 
         $this->assertRegExp('/\/$/', $client->getResponse()->headers->get('location'));
@@ -445,7 +404,7 @@ class UserManagementControllerTest extends BaseWebTestCase
         $crawler = $client->request(
             'GET',
             '/user-management/paginate-and-sort',
-            ['type' => 'manager', 'pageNumber' => 2, 'paginate' => 'true'],
+            ['type' => 'manager', 'pageNumber' => 1, 'paginate' => 'true'],
             [],
             ['HTTP_X-Requested-With' => 'XMLHttpRequest']
         );
@@ -458,7 +417,7 @@ class UserManagementControllerTest extends BaseWebTestCase
      */
     public function testPaginateAndSortRouteAccessedWithAjaxByOwner()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::PAGINATE_AND_SORT, 'owner', 'owner', ['type' => 'owner', 'pageNumber' => 2, 'paginate' => 'true'], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::PAGINATE_AND_SORT, TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD, ['type' => 'owner', 'pageNumber' => 1, 'paginate' => 'true'], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
         $this->assertCount(1, $crawler->filter('h1'));
     }

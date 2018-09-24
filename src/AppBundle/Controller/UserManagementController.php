@@ -189,7 +189,14 @@ class UserManagementController extends BaseController
      */
     public function paginateAndSortAction(Request $request)
     {
-        $this->checkIfItsAjaxRequest($request);
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
 
         $loggedUser = $this->getUser();
         $userService = $this->get('app.user.service');
