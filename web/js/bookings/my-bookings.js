@@ -12,7 +12,7 @@ function deleteReservation(event, element)
     if (!confirmation) {
         return false;
     }
-    
+
     $.ajax({
         url: $(element).attr('href'),
         type: 'GET',
