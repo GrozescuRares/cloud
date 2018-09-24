@@ -177,7 +177,9 @@ class ReservationService
             throw new ReservationNotFoundException('You have no right to delete the reservation with id: '.$reservationId);
         }
 
-        $this->em->remove($reservation);
+        $reservation->setDeletedAt(new \DateTime('now'));
+
+        $this->em->persist($reservation);
         $this->em->flush();
     }
 
@@ -193,8 +195,9 @@ class ReservationService
         if ($reservation->getHotel()->getHotelId() !== $hotelId) {
             throw new ReservationNotFoundException('You have no right to delete the reservation with id: '.$reservationId);
         }
+        $reservation->setDeletedAt(new \DateTime('now'));
 
-        $this->em->remove($reservation);
+        $this->em->persist($reservation);
         $this->em->flush();
     }
 
@@ -237,8 +240,9 @@ class ReservationService
         if ($reservation->getUser() !== $client) {
             throw new ReservationNotFoundException('You have no right to delete this booking !');
         }
+        $reservation->setDeletedAt(new \DateTime('now'));
 
-        $this->em->remove($reservation);
+        $this->em->persist($reservation);
         $this->em->flush();
     }
 
