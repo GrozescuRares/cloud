@@ -12,7 +12,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ReservationDto
- * @package AppBundle\Dto
  */
 class ReservationDto
 {
@@ -37,4 +36,5 @@ class ReservationDto
      */
     public $endDate;
     public $days;
+    public $deletedAt;
 }
