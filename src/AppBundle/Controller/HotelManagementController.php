@@ -205,8 +205,8 @@ class HotelManagementController extends BaseController
                     'nrRooms' => count($roomDtos),
                     'sortBy' => [],
                     'filters' => [
-                        'petFilter' => "",
-                        'smokingFilter' => "",
+                        'petFilter' => RoomConfig::ALL,
+                        'smokingFilter' => RoomConfig::ALL,
                     ],
                 ]
             );

@@ -33,11 +33,12 @@ class RoomConfig
 
     const YES = 'Yes';
     const NO = 'No';
+    const ALL = 'all';
 
     const ALLOWED = [
         true => self::YES,
         false => self::NO,
-        "" => "",
+        self::ALL => self::ALL,
     ];
     const IS = 'is';
     const IS_NOT = 'is not';
@@ -50,7 +51,7 @@ class RoomConfig
     const CONVERT = [
         self::YES => true,
         self::NO => false,
-        "" => "",
+        self::ALL => self::ALL,
     ];
 
     const CURRENCY = ' $';

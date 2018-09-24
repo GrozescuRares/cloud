@@ -110,8 +110,8 @@ page:
     room-management:
       to: 'Room Management'
       add_new_rom: 'Add New Room'
-      smoking: 'Smoking'
-      pets: 'Pets'
+      smoking: 'Smoking (Yes&No)'
+      pets: 'Pets (Yes&No)'
       yes: 'Yes'
       no: 'No'
       filter: 'Filter'
