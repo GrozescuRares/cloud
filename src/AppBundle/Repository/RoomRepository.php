@@ -71,12 +71,12 @@ class RoomRepository extends \Doctrine\ORM\EntityRepository
         $qb ->where('room.hotel =:hotel')
             ->setParameter('hotel', $hotel);
 
-        if (!empty($petFilter) || $petFilter === false) {
+        if ((!empty($petFilter) && $petFilter !== RoomConfig::ALL) || $petFilter === false) {
             $qb->andWhere('room.pet = :petFilter')
                 ->setParameter('petFilter', $petFilter);
         }
 
-        if (!empty($smokingFilter) || $smokingFilter === false) {
+        if ((!empty($smokingFilter) && $smokingFilter !== RoomConfig::ALL) || $smokingFilter === false) {
             $qb->andWhere('room.smoking = :smokingFilter')
                 ->setParameter('smokingFilter', $smokingFilter);
         }

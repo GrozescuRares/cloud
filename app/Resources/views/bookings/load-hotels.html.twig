@@ -1,7 +1,8 @@
 {% if showHotels %}
     <div class="col-md-12 col-xs-12 no-lr-padding">
         <div class="styled-input">
-            {{ form_row(booking_form.hotel, {'attr': {'class': 'selectpicker', 'data-action': path('load-data')}}) }}
+            {{ form_label(booking_form.hotel) }}
+            {{ form_widget(booking_form.hotel, {'attr': {'class': 'selectpicker', 'data-action': path('load-data')}}) }}
         </div>
     </div>
 {% endif %}
