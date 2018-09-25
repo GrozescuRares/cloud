@@ -17,7 +17,7 @@ function filterData(event, element)
     let resetFilters = $(element).attr('data-filter-reset');
 
     if (resetFilters) {
-        petFilter = smokingFilter = "";
+        petFilter = smokingFilter = "all";
         hotelId = $('#hotels option:first').val();
     }
 

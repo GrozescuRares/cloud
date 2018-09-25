@@ -20,7 +20,7 @@ class RegistrationAndActivationTest extends BaseWebTestCase
     /**
      * Tests successfully registration-activation-login flow
      */
-    public function testSuccesfullyRegistrationAccountActivationAndLogIn()
+    public function testSuccessfullyRegistrationAccountActivationAndLogIn()
     {
         /*
          * Registration
@@ -45,8 +45,8 @@ class RegistrationAndActivationTest extends BaseWebTestCase
                 '[dateOfBirth][day]' => '1',
                 '[dateOfBirth][month]' => '2',
                 '[dateOfBirth][year]' => '1950',
-                '[firstName]' => $username."FirstName",
-                '[lastName]' => $username."LastName",
+                '[firstName]' => "FirstName",
+                '[lastName]' => "LastName",
             ]
         );
         $client->submit($form);
@@ -106,8 +106,8 @@ class RegistrationAndActivationTest extends BaseWebTestCase
                 '[dateOfBirth][day]' => '1',
                 '[dateOfBirth][month]' => '2',
                 '[dateOfBirth][year]' => '1950',
-                '[firstName]' => $username."FirstName",
-                '[lastName]' => $username."LastName",
+                '[firstName]' => "FirstName",
+                '[lastName]' => "LastName",
             ]
         );
         $client->submit($form);
@@ -179,8 +179,8 @@ class RegistrationAndActivationTest extends BaseWebTestCase
                 '[dateOfBirth][day]' => '1',
                 '[dateOfBirth][month]' => '2',
                 '[dateOfBirth][year]' => '1950',
-                '[firstName]' => $username."FirstName",
-                '[lastName]' => $username."LastName",
+                '[firstName]' => "FirstName",
+                '[lastName]' => "LastName",
             ]
         );
         $client->submit($form);

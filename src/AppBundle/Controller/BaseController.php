@@ -62,6 +62,20 @@ class BaseController extends Controller
         return $reservationDto;
     }
 
+    protected function getDatesInStringFormat(Request $request)
+    {
+        $reservation = $request->request->get('appbundle_reservationDto');
+        $startDate = $endDate = "";
+        if (!empty($reservation['startDate'])) {
+            $startDate = $reservation['startDate'];
+        }
+        if (!empty($reservation['endDate'])) {
+            $endDate = $reservation['endDate'];
+        }
+
+        return array($startDate, $endDate);
+    }
+
     /**
      * @param Request $request
      * @return Response

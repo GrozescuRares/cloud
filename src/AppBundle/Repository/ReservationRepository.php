@@ -33,6 +33,7 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
             ->where('reservation.hotel = :hotel')
             ->andWhere('reservation.startDate >= :startYear')
             ->andWhere('reservation.startDate <= :endYear ')
+            ->andWhere($qb->expr()->isNull('reservation.deletedAt'))
             ->setParameter('hotel', $hotel)
             ->setParameter('startYear', $startYear)
             ->setParameter('endYear', $endYear);
@@ -49,6 +50,7 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->createQueryBuilder('reservation');
         $qb ->where('reservation.hotel = :hotel')
+            ->andWhere($qb->expr()->isNull('reservation.deletedAt'))
             ->setParameter('hotel', $hotel);
 
         $reservations = $qb->getQuery()->getResult();
@@ -68,6 +70,7 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('reservation');
         $qb ->innerJoin('reservation.hotel', 'hotel')
             ->where('reservation.hotel = :hotel')
+            ->andWhere($qb->expr()->isNull('reservation.deletedAt'))
             ->setParameter('hotel', $hotel)
             ->setMaxResults(PaginationConfig::ITEMS)
             ->setFirstResult($offset);
@@ -87,6 +90,7 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->createQueryBuilder('reservation');
         $qb->where('reservation.hotel IN (:hotels)')
+            ->andWhere($qb->expr()->isNull('reservation.deletedAt'))
             ->setParameter('hotels', $hotels);
 
         $reservations = $qb->getQuery()->getResult();
@@ -106,6 +110,7 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('reservation');
         $qb ->innerJoin('reservation.hotel', 'hotel')
             ->where('reservation.hotel IN (:hotels)')
+            ->andWhere($qb->expr()->isNull('reservation.deletedAt'))
             ->setParameter('hotels', $hotels)
             ->setMaxResults(PaginationConfig::ITEMS)
             ->setFirstResult($offset);
@@ -131,6 +136,7 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->createQueryBuilder('reservation');
         $qb ->where('reservation.user = :client')
+            ->andWhere($qb->expr()->isNull('reservation.deletedAt'))
             ->setParameter('client', $client);
 
         $reservations = $qb->getQuery()->getResult();
@@ -150,6 +156,7 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('reservation');
         $qb ->innerJoin('reservation.hotel', 'hotel')
             ->where('reservation.user = :client')
+            ->andWhere($qb->expr()->isNull('reservation.deletedAt'))
             ->setParameter('client', $client)
             ->setMaxResults(PaginationConfig::ITEMS)
             ->setFirstResult($offset);
@@ -160,7 +167,7 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
             return $qb->getQuery()->getResult();
         }
 
-        if (!empty($client) && !empty($sort)) {
+        if (!empty($column) && !empty($sort)) {
             $qb->addOrderBy('reservation.'.$column, $sort);
         }
 

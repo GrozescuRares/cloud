@@ -9,6 +9,7 @@
 namespace Tests\AppBundle\Controller;
 
 use AppBundle\Enum\RoutesConfig;
+use AppBundle\Enum\TestDataConfig;
 use Tests\AppBundle\BaseWebTestCase;
 
 /**
@@ -35,7 +36,7 @@ class DashboardControllerTest extends BaseWebTestCase
      */
     public function testDashboardPageDesignAfterOwnerLogIn()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::DASHBOARD, 'owner', 'owner');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::DASHBOARD, TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
 
         $this->assertCount(5, $crawler->filter('#navigation li'));
     }
@@ -46,7 +47,7 @@ class DashboardControllerTest extends BaseWebTestCase
      */
     public function testDashboardPageDesignAfterManagerLogIn()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::DASHBOARD, 'manager1', 'manager');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::DASHBOARD, TestDataConfig::MANAGER_USER, TestDataConfig::MANAGER_PASSWORD);
 
         $this->assertCount(5, $crawler->filter('#navigation li'));
     }
@@ -57,9 +58,9 @@ class DashboardControllerTest extends BaseWebTestCase
      */
     public function testDashboardPageDesignAfterEmployeeLogIn()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::DASHBOARD, 'employee', '12345');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::DASHBOARD, TestDataConfig::EMPLOYEE_USER, TestDataConfig::EMPLOYEE_PASSWORD);
 
-        $this->assertCount(3, $crawler->filter('#navigation li'));
+        $this->assertCount(2, $crawler->filter('#navigation li'));
     }
 
     /**
@@ -68,7 +69,7 @@ class DashboardControllerTest extends BaseWebTestCase
      */
     public function testDashboardPageDesignAfterClientLogIn()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::DASHBOARD, 'rares', 'handstand');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::DASHBOARD, TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD);
 
         $this->assertCount(3, $crawler->filter('#navigation li'));
     }
