@@ -57,9 +57,7 @@ class ReservationService
      */
     public function addReservation(User $client, ReservationDto $reservationDto)
     {
-        $userRole = $client->getRoles();
-        ValidateUserHelper::checkIfUserHasRole($userRole);
-        ValidateUserHelper::checkIfUserHasRoleClient($userRole);
+        ValidateUserHelper::checkIfUserHasRoleAndIsClient($client);
 
         $hotel = $this->getEntitiesAndDtosHelper->getHotelById($reservationDto->hotel);
         $room = $this->getEntitiesAndDtosHelper->getRoomById($reservationDto->room);

@@ -108,13 +108,13 @@ class HotelService
     public function getAvailableHotels(\DateTime $startDate, \DateTime $endDate)
     {
         $nowDate = new \DateTime('now');
-        $nowDate->modify(ReservationConfig::ECART);
+        $nowDate = $nowDate->format('Y-m-d');
 
         if ($startDate > $endDate) {
             throw new InvalidDateException('Invalid period');
         }
 
-        if ($startDate < $nowDate) {
+        if ($startDate->format('Y-m-d') < $nowDate) {
             throw new InvalidDateException('Invalid period');
         }
 
