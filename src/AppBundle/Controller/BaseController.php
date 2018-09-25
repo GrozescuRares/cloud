@@ -28,15 +28,28 @@ class BaseController extends Controller
      */
     protected function getRequestParameters(Request $request)
     {
-        $hotelId = $request->query->get('hotelId');
-        $pageNumber = $request->query->get('pageNumber');
-        $column = $request->query->get('column');
-        $sort = $request->query->get('sort');
-        $paginate = $request->query->get('paginate');
-        $petFilter = $request->query->get('petFilter');
-        $smokingFilter = $request->query->get('smokingFilter');
-        $petFilter = RoomConfig::CONVERT[$petFilter];
-        $smokingFilter = RoomConfig::CONVERT[$smokingFilter];
+        $hotelId = $pageNumber = $column = $sort = $paginate = $petFilter = $smokingFilter = "";
+        if (!empty($request->query->get('hotelId'))) {
+            $hotelId = $request->query->get('hotelId');
+        }
+        if (!empty($request->query->get('pageNumber'))) {
+            $pageNumber = $request->query->get('pageNumber');
+        }
+        if (!empty($request->query->get('column'))) {
+            $column = $request->query->get('column');
+        }
+        if (!empty($request->query->get('sort'))) {
+            $sort = $request->query->get('sort');
+        }
+        if (!empty($request->query->get('paginate'))) {
+            $paginate = $request->query->get('paginate');
+        }
+        if (!empty($request->query->get('petFilter'))) {
+            $petFilter = RoomConfig::CONVERT[$request->query->get('petFilter')];
+        }
+        if (!empty($request->query->get('smokingFilter'))) {
+            $smokingFilter = RoomConfig::CONVERT[$request->query->get('smokingFilter')];
+        }
 
         return array($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter);
     }
