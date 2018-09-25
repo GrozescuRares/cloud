@@ -124,6 +124,10 @@ class HotelService
 
         /** @var Hotel $hotel */
         foreach ($hotels as $hotel) {
+            if (count($hotel->getRooms()) === 0) {
+                continue;
+            }
+
             $bookedInHotel = 0;
             /** @var Room $room */
             foreach ($bookedRoomsInPeriod as $room) {
