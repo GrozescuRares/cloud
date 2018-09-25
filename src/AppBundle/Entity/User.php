@@ -110,7 +110,7 @@ class User implements UserInterface, \Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="bio", type="string", length=255, nullable=true)
+     * @ORM\Column(name="bio", type="text", nullable=true)
      */
     private $bio;
 

@@ -67,7 +67,7 @@
                                         <label>{{ 'page.my-account.labels.bio'| trans }}</label>
                                         <div class="rel">
                                             {% if user.bio %}
-                                                {{ user.bio }}
+                                                {{ user.bio | raw}}
                                             {% else %}
                                                 No bio configured
                                             {% endif %}
