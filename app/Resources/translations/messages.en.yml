@@ -100,7 +100,7 @@ page:
       edit: 'Edit'
       no_hotels: "Sorry, but you don't have any hotel."
     show-hotel-information:
-      message: 'The %name% hotel is located in %location%. It is a %description%. %employees% employees are working at this hotel. In this moment %name% %availability% available. This year the hotel earned %earnings%. Some facilities: %facilities%.'
+      message: "The %name% hotel is located in %location%. It is a %description% %employees% employees are working at this hotel. In this moment %name% %availability% available. This year the hotel earned %earnings%. Some facilities: %facilities%"
       title: 'Hotel Information'
       back: 'Back'
       edit: 'Edit'
