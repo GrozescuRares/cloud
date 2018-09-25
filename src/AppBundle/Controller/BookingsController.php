@@ -69,6 +69,7 @@ class BookingsController extends BaseController
         $this->checkIfItsAjaxRequest($request);
 
         $reservationDto = $this->handleReservation($request);
+        list($startDate, $endDate) = $this->getDatesInStringFormat($request);
         $bookingsManager = $this->get('app.bookings.manager');
         $availableRooms = [];
         $showHotel = true;
@@ -105,6 +106,8 @@ class BookingsController extends BaseController
             $this->addFlash('danger', 'There are no available hotels in that period.');
             $showHotel = false;
         }
+        $reservationDto->startDate = $startDate;
+        $reservationDto->endDate = $endDate;
         $form = $this->createForm(
             ReservationTypeForm::class,
             $reservationDto,

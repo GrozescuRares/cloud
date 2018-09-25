@@ -12,7 +12,7 @@ function searchHotelsByReservationDate(element)
 {
     let filed = true;
     $('.form-control').each(function () {
-        if (!this.valueAsDate) {
+        if (!this.value) {
             filed = false;
 
             return false;
@@ -30,6 +30,10 @@ function searchHotelsByReservationDate(element)
                 $('.wrapper').html(data);
                 $('#load-rooms').html("");
                 $('#appbundle_reservationDto_hotel').selectpicker('refresh');
+                $('.date-input input').datepicker({
+                    format: 'mm/dd/yyyy',
+                    startDate: '0d'
+                });
             },
             error: function (xhr, textStatus, errorThrown) {
                 alert('Ajax request failed.')
@@ -50,7 +54,10 @@ function searchRoomsByHotelAndReservationDate(element)
             $('.wrapper').html(data);
             $('#appbundle_reservationDto_hotel').selectpicker('refresh');
             $('#appbundle_reservationDto_room').selectpicker('refresh');
-
+            $('.date-input input').datepicker({
+                format: 'mm/dd/yyyy',
+                startDate: '0d'
+            });
         },
         error: function (xhr, textStatus, errorThrown) {
             alert('Ajax request failed.')
