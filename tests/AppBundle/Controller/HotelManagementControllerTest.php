@@ -9,6 +9,7 @@
 namespace Tests\AppBundle\Controller;
 
 use AppBundle\Enum\RoutesConfig;
+use AppBundle\Enum\TestDataConfig;
 use Tests\AppBundle\BaseWebTestCase;
 
 /**
@@ -33,7 +34,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testThatClientUserCanNotAccessAddRoomRoute()
     {
-        $this->userCanNotAccessRoute(RoutesConfig::ADD_ROOM, 'rares', 'handstand');
+        $this->userCanNotAccessRoute(RoutesConfig::ADD_ROOM, TestDataConfig::CLIENT_USER, TestDataConfig::CLIENT_PASSWORD);
     }
 
     /**
@@ -41,7 +42,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testThatEmployeeUserCanNotAccessAddRoomRoute()
     {
-        $this->userCanNotAccessRoute(RoutesConfig::ADD_ROOM, 'employee', '12345');
+        $this->userCanNotAccessRoute(RoutesConfig::ADD_ROOM, TestDataConfig::EMPLOYEE_USER, TestDataConfig::EMPLOYEE_PASSWORD);
     }
 
     /**
@@ -49,7 +50,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testThatManagerUserCanNotAccessAddRoomRoute()
     {
-        $this->userCanNotAccessRoute(RoutesConfig::ADD_ROOM, 'manager1', 'manager');
+        $this->userCanNotAccessRoute(RoutesConfig::ADD_ROOM, TestDataConfig::EMPLOYEE_USER, TestDataConfig::EMPLOYEE_PASSWORD);
     }
 
     /**
@@ -57,7 +58,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testSuccessfullyAddRoomByOwner()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM, 'owner', 'owner');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM, TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
 
         $form = $crawler->selectButton('appbundle_roomDto[save]')->form();
         $form = $this->generateForm($form, 'appbundle_roomDto', [
@@ -78,7 +79,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testAddRoomWithInvalidPrice()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM, 'owner', 'owner');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM, TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
 
         $form = $crawler->selectButton('appbundle_roomDto[save]')->form();
         $form = $this->generateForm($form, 'appbundle_roomDto', [
@@ -98,7 +99,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testAddRoomWithNoHotelSelected()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM, 'owner', 'owner');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM, TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
 
         $form = $crawler->selectButton('appbundle_roomDto[save]')->form();
         $form = $this->generateForm($form, 'appbundle_roomDto', [
@@ -117,7 +118,7 @@ class HotelManagementControllerTest extends BaseWebTestCase
      */
     public function testAddRoomWithNoCapacitySelected()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM, 'owner', 'owner');
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::ADD_ROOM, TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
 
         $form = $crawler->selectButton('appbundle_roomDto[save]')->form();
         $form = $this->generateForm($form, 'appbundle_roomDto', [
