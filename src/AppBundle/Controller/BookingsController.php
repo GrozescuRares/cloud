@@ -377,7 +377,10 @@ class BookingsController extends BaseController
      * @param Request $request
      *
      * @throws OptimisticLockException
-     *
+     * @throws OptimisticLockException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
      * @return Response
      */
     public function deleteBookingAction($reservationId, Request $request)
@@ -409,9 +412,13 @@ class BookingsController extends BaseController
 
     private function paginateAndSortBookings($loggedUser, BookingsManager $bookingsManager, Request $request)
     {
-        list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
+        list($hotelId, $pageNumber, $column, $sort, $paginate, $items, $petFilter, $smokingFilter) = $this->getRequestParameters(
             $request
         );
+
+        if ($items == 1) {
+            $pageNumber--;
+        }
         list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
 
         $reservationDtos = $bookingsManager->paginateAndSortUserReservations(
@@ -443,9 +450,12 @@ class BookingsController extends BaseController
         BookingsManager $bookingsManager,
         Request $request
     ) {
-        list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
+        list($hotelId, $pageNumber, $column, $sort, $paginate, $items, $petFilter, $smokingFilter) = $this->getRequestParameters(
             $request
         );
+        if ($items == 1) {
+            $pageNumber--;
+        }
         list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
 
         if ($hotelId === 'all') {

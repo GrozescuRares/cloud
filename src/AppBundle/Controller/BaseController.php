@@ -27,7 +27,7 @@ class BaseController extends Controller
      */
     protected function getRequestParameters(Request $request)
     {
-        $parametersName = ['hotelId', 'pageNumber', 'column', 'sort', 'paginate'];
+        $parametersName = ['hotelId', 'pageNumber', 'column', 'sort', 'paginate', 'items'];
         $requestParameters = [];
 
         foreach ($parametersName as $parameter) {

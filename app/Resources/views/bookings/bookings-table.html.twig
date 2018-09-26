@@ -1,7 +1,7 @@
 <div class="table-paginated">
     <div class="table-responsive">
         {{ include('flash-messages.html.twig') }}
-        {% if reservations|length > 0 %}
+        {% if nrPages > 0 %}
 
             <table class="table">
                 <thead>
@@ -41,6 +41,7 @@
                                data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
                                data-page="{{ currentPage }}"
                                data-paginate="true"
+                               data-items="{{ nrReservations }}"
                                href="{{ path('delete-booking', {'reservationId': re.reservationId}) }}"
                                class="delete-reservation">
                                 <i class="fa fa-trash"></i>

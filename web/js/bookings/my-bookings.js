@@ -22,6 +22,7 @@ function deleteReservation(event, element)
             'column': $(element).attr('data-column'),
             'sort': $(element).attr('data-sort'),
             'paginate': $(element).attr('data-paginate'),
+            'items' : $(element).attr('data-items'),
         },
         success: function (data, status) {
             $('#reload').html(data);
