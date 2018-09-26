@@ -46,8 +46,8 @@ class BaseController extends Controller
         $reservationDto = new ReservationDto();
         $reservationDto->startDate = !empty($reservation['startDate']) ? ValidateReservationHelper::convertToDateTime($reservation['startDate']) : null;
         $reservationDto->endDate = !empty($reservation['endDate']) ? ValidateReservationHelper::convertToDateTime($reservation['endDate']) : null;
-        $reservationDto->hotel = !empty($reservation['hotel']) ? $reservation['hotel'] : null;
-        $reservationDto->room = !empty($reservation['room']) ? $reservation['room'] : null;
+        $reservationDto->hotel = $reservation['hotel'] ?? null;
+        $reservationDto->room = $reservation['room'] ?? null;
 
         return $reservationDto;
     }
