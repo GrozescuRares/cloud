@@ -19,13 +19,13 @@ class HotelRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getHotelsWithReservations()
     {
-        $hotels = $this->createQueryBuilder('hotel')
+        $qb = $this->createQueryBuilder('hotel');
+        $qb
             ->innerJoin('hotel.reservations', 'reservations')
-            ->groupBy('hotel.hotelId')
-            ->getQuery()
-            ->getResult();
+            ->where($qb->expr()->isNull('reservation.deletedAt'))
+            ->groupBy('hotel.hotelId');
 
-        return $hotels;
+        return $qb->getQuery()->getResult();
     }
 
     /**

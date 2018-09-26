@@ -419,7 +419,7 @@ class BookingsController extends BaseController
             $request
         );
 
-        if ($items == 1) {
+        if ($items == 1 && $pageNumber > 1) {
             $pageNumber--;
         }
         list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
@@ -457,7 +457,7 @@ class BookingsController extends BaseController
         list($hotelId, $pageNumber, $column, $sort, $paginate, $items, $petFilter, $smokingFilter) = $this->getRequestParameters(
             $request
         );
-        if ($items == 1) {
+        if ($items == 1 && $pageNumber > 1) {
             $pageNumber--;
         }
         list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);

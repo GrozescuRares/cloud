@@ -27,6 +27,7 @@ class RoomRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('room.hotel', 'hotel')
             ->where('reservation.startDate <= :endDate')
             ->andWhere('reservation.endDate >= :startDate')
+            ->andWhere($qb->expr()->isNull('reservation.deletedAt'))
             ->groupBy('room.roomId')
             ->setParameter('endDate', $endDate)
             ->setParameter('startDate', $startDate);

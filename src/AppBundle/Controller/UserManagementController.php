@@ -259,7 +259,7 @@ class UserManagementController extends BaseController
         try {
             $userService->deleteUser($loggedUser, $username);
             list($hotelId, $pageNumber, $column, $sort, $paginate, $items) = $this->getPaginationParameters($request);
-            if ($items == 1) {
+            if ($items == 1 && $pageNumber > 1) {
                 $pageNumber--;
             }
             list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
