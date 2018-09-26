@@ -24,7 +24,6 @@
                         data-column="endDate"
                         data-page="{{ currentPage }}">{{ 'page.hotel-management.reservation-management.end_date'| trans }}
                         <span class="sort-icon"></span></th>
-                    <th class="text-center">{{ 'page.bookings.my-bookings.edit'| trans }}</th>
                     <th class="text-center">{{ 'page.bookings.my-bookings.delete'| trans }}</th>
                 </tr>
                 </thead>
@@ -35,7 +34,6 @@
                         <td>{{ re.room }}</td>
                         <td>{{ re.days }}</td>
                         <td>{{ re.endDate | date('Y-m-d') }}</td>
-                        <td class="text-center"><a><i class="fa fa-edit"></i></a></td>
                         <td class="text-center">
                             <a data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
                                data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
