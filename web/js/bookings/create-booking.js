@@ -29,11 +29,8 @@ function searchHotelsByReservationDate(element)
             success: function (data, status) {
                 $('.wrapper').html(data);
                 $('#load-rooms').html("");
-                $('#appbundle_reservationDto_hotel').selectpicker('refresh');
-                $('.date-input input').datepicker({
-                    format: 'mm/dd/yyyy',
-                    startDate: '0d'
-                });
+                hms.customSelect();
+                hms.customDatepicker();
             },
             error: function (xhr, textStatus, errorThrown) {
                 alert('Ajax request failed.')
@@ -52,12 +49,8 @@ function searchRoomsByHotelAndReservationDate(element)
 
         success: function (data, status) {
             $('.wrapper').html(data);
-            $('#appbundle_reservationDto_hotel').selectpicker('refresh');
-            $('#appbundle_reservationDto_room').selectpicker('refresh');
-            $('.date-input input').datepicker({
-                format: 'mm/dd/yyyy',
-                startDate: '0d'
-            });
+            hms.customSelect();
+            hms.customDatepicker();
         },
         error: function (xhr, textStatus, errorThrown) {
             alert('Ajax request failed.')

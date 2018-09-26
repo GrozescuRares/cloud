@@ -11,7 +11,7 @@
                             <h1 class="text-center">{{ 'page.hotel-management.show-hotel-information.title'| trans }}</h1>
                         </div>
                         <div class="col-md-12 col-xs-12 no-lr-padding">
-                            <p>{{ 'page.hotel-management.show-hotel-information.message'| trans({'%name%': hotel.name, '%location%': hotel.location, '%description%': hotel.description, '%employees%': hotel.employees, '%availability%': availability, '%earnings%': earnings, '%facilities%': hotel.facilities}) }}</p>
+                            <p>{{ 'page.hotel-management.show-hotel-information.message'| trans({'%name%': hotel.name, '%location%': hotel.location, '%description%': hotel.description, '%employees%': hotel.employees, '%availability%': availability, '%earnings%': earnings, '%facilities%': hotel.facilities}) | raw }}</p>
                         </div>
                         <div class="col-md-12 col-xs-12 no-lr-padding account-btn">
                             <a href="{{ path('edit-hotel-information', {'hotelId': hotel.hotelId}) }}" class="btn edit pull-right">{{ 'page.hotel-management.show-hotel-information.edit'| trans }}</a>

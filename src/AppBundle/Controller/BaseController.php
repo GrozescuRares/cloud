@@ -10,11 +10,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto\ReservationDto;
 use AppBundle\Enum\RoomConfig;
-
 use AppBundle\Helper\ValidateReservationHelper;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class BaseController
@@ -28,36 +27,27 @@ class BaseController extends Controller
      */
     protected function getRequestParameters(Request $request)
     {
-        $hotelId = $request->query->get('hotelId');
-        $pageNumber = $request->query->get('pageNumber');
-        $column = $request->query->get('column');
-        $sort = $request->query->get('sort');
-        $paginate = $request->query->get('paginate');
-        $petFilter = $request->query->get('petFilter');
-        $smokingFilter = $request->query->get('smokingFilter');
-        $petFilter = RoomConfig::CONVERT[$petFilter];
-        $smokingFilter = RoomConfig::CONVERT[$smokingFilter];
+        $parametersName = ['hotelId', 'pageNumber', 'column', 'sort', 'paginate'];
+        $requestParameters = [];
 
-        return array($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter);
+        foreach ($parametersName as $parameter) {
+            $requestParameters[] = $request->query->get($parameter) ?: null;
+        }
+
+        $requestParameters[] = $request->query->get('petFilter') ? RoomConfig::CONVERT[$request->query->get('petFilter')] : null;
+        $requestParameters[] = $request->query->get('smokingFilter') ? RoomConfig::CONVERT[$request->query->get('smokingFilter')] : null;
+
+        return $requestParameters;
     }
 
     protected function handleReservation(Request $request)
     {
         $reservation = $request->request->get('appbundle_reservationDto');
         $reservationDto = new ReservationDto();
-
-        if (!empty($reservation['startDate'])) {
-            $reservationDto->startDate = ValidateReservationHelper::convertToDateTime($reservation['startDate']);
-        }
-        if (!empty($reservation['endDate'])) {
-            $reservationDto->endDate = ValidateReservationHelper::convertToDateTime($reservation['endDate']);
-        }
-        if (!empty($reservation['hotel'])) {
-            $reservationDto->hotel = $reservation['hotel'];
-        }
-        if (!empty($reservation['room'])) {
-            $reservationDto->room = $reservation['room'];
-        }
+        $reservationDto->startDate = !empty($reservation['startDate']) ? ValidateReservationHelper::convertToDateTime($reservation['startDate']) : null;
+        $reservationDto->endDate = !empty($reservation['endDate']) ? ValidateReservationHelper::convertToDateTime($reservation['endDate']) : null;
+        $reservationDto->hotel = $reservation['hotel'] ?? null;
+        $reservationDto->room = $reservation['room'] ?? null;
 
         return $reservationDto;
     }
@@ -65,30 +55,13 @@ class BaseController extends Controller
     protected function getDatesInStringFormat(Request $request)
     {
         $reservation = $request->request->get('appbundle_reservationDto');
-        $startDate = $endDate = "";
-        if (!empty($reservation['startDate'])) {
-            $startDate = $reservation['startDate'];
-        }
-        if (!empty($reservation['endDate'])) {
-            $endDate = $reservation['endDate'];
+        $parametersName = ['startDate', 'endDate'];
+        $requestParameters = [];
+
+        foreach ($parametersName as $parameter) {
+            $requestParameters[] = $reservation[$parameter] ?: null;
         }
 
-        return array($startDate, $endDate);
-    }
-
-    /**
-     * @param Request $request
-     * @return Response
-     */
-    protected function checkIfItsAjaxRequest(Request $request)
-    {
-        if (!$request->isXmlHttpRequest()) {
-            return $this->render(
-                'error.html.twig',
-                [
-                    'error' => 'Stay out of here.',
-                ]
-            );
-        }
+        return $requestParameters;
     }
 }

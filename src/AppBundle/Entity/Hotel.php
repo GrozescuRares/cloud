@@ -39,14 +39,14 @@ class Hotel implements \Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=255)
+     * @ORM\Column(name="description", type="text")
      */
     private $description;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="facilities", type="string", length=255)
+     * @ORM\Column(name="facilities", type="text")
      */
     private $facilities;
 

@@ -11,6 +11,7 @@ namespace AppBundle\Form;
 use AppBundle\Entity\User;
 use AppBundle\Enum\UserConfig;
 
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -152,7 +153,7 @@ class UserTypeForm extends AbstractType
             )
             ->add(
                 'bio',
-                TextareaType::class,
+                CKEditorType::class,
                 [
                     'required' => false,
                 ]
