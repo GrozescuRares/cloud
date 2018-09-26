@@ -178,6 +178,8 @@ emails:
   booking_congratulations: 'Congratulations, the booking has been successful!'
   booking_message: 'We will be waiting for your arrival on the %startDate% at %hotel% in %location%. MR/s %name%, you will be staying in room %room%!'
   booking_day: 'Have a great day!'
+  delete_title: 'Canceled Booking'
+  delete_message: "Your booking from %startDate% at %hotel% in %location% has been canceled."
 
 flash_messages:
   message: '%message%'

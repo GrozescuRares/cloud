@@ -158,6 +158,8 @@ class ReservationService
      * @param array $hotels
      * @param mixed $reservationId
      * @throws OptimisticLockException
+     *
+     * @return ReservationDto
      */
     public function deleteReservationByOwner(array $hotels, $reservationId)
     {
@@ -179,12 +181,16 @@ class ReservationService
 
         $this->em->persist($reservation);
         $this->em->flush();
+
+        return $this->reservationAdapter->convertToDto($reservation);
     }
 
     /**
      * @param mixed $hotelId
      * @param mixed $reservationId
      * @throws OptimisticLockException
+     *
+     * @return ReservationDto
      */
     public function deleteReservationByManager($hotelId, $reservationId)
     {
@@ -197,6 +203,8 @@ class ReservationService
 
         $this->em->persist($reservation);
         $this->em->flush();
+
+        return $this->reservationAdapter->convertToDto($reservation);
     }
 
     /**
@@ -229,6 +237,8 @@ class ReservationService
      * @param User  $client
      * @param mixed $reservationId
      * @throws OptimisticLockException
+     *
+     * @return ReservationDto
      */
     public function deleteBooking(User $client, $reservationId)
     {
@@ -242,6 +252,8 @@ class ReservationService
 
         $this->em->persist($reservation);
         $this->em->flush();
+
+        return $this->reservationAdapter->convertToDto($reservation);
     }
 
     /**

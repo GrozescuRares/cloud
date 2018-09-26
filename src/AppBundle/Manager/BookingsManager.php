@@ -144,20 +144,46 @@ class BookingsManager
      * @param array $hotels
      * @param mixed $reservationId
      * @throws OptimisticLockException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
      */
     public function deleteReservationByOwner(array $hotels, $reservationId)
     {
-        $this->reservationService->deleteReservationByOwner($hotels, $reservationId);
+        $deletedReservationDto = $this->reservationService->deleteReservationByOwner($hotels, $reservationId);
+        $this->mailHelper->sendEmail(
+            $deletedReservationDto->user->email,
+            'Canceled Booking',
+            [
+                'hotel' => $deletedReservationDto->hotel->name,
+                'startDate' => $deletedReservationDto->startDate,
+                'location' => $deletedReservationDto->hotel->location,
+            ],
+            'emails/delete-reservation.html.twig'
+        );
     }
 
     /**
      * @param mixed $hotelId
      * @param mixed $reservationId
      * @throws OptimisticLockException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
      */
     public function deleteReservationByManager($hotelId, $reservationId)
     {
-        $this->reservationService->deleteReservationByManager($hotelId, $reservationId);
+        $deletedReservationDto = $this->reservationService->deleteReservationByManager($hotelId, $reservationId);
+        $this->mailHelper->sendEmail(
+            $deletedReservationDto->user->email,
+            'Canceled Booking',
+            [
+                'hotel' => $deletedReservationDto->hotel->name,
+                'startDate' => $deletedReservationDto->startDate,
+                'location' => $deletedReservationDto->hotel->location,
+            ],
+            'emails/delete-reservation.html.twig'
+        );
     }
 
     /**
@@ -185,9 +211,22 @@ class BookingsManager
      * @param User  $client
      * @param mixed $reservationId
      * @throws OptimisticLockException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
      */
     public function deleteBooking(User $client, $reservationId)
     {
-        $this->reservationService->deleteBooking($client, $reservationId);
+        $deletedReservationDto = $this->reservationService->deleteBooking($client, $reservationId);
+        $this->mailHelper->sendEmail(
+            $deletedReservationDto->user->email,
+            'Canceled Booking',
+            [
+                'hotel' => $deletedReservationDto->hotel->name,
+                'startDate' => $deletedReservationDto->startDate,
+                'location' => $deletedReservationDto->hotel->location,
+            ],
+            'emails/delete-reservation.html.twig'
+        );
     }
 }
