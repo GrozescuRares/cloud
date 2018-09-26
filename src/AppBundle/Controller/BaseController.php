@@ -10,11 +10,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto\ReservationDto;
 use AppBundle\Enum\RoomConfig;
-
 use AppBundle\Helper\ValidateReservationHelper;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class BaseController
@@ -28,28 +27,13 @@ class BaseController extends Controller
      */
     protected function getRequestParameters(Request $request)
     {
-        $hotelId = $pageNumber = $column = $sort = $paginate = $petFilter = $smokingFilter = "";
-        if (!empty($request->query->get('hotelId'))) {
-            $hotelId = $request->query->get('hotelId');
-        }
-        if (!empty($request->query->get('pageNumber'))) {
-            $pageNumber = $request->query->get('pageNumber');
-        }
-        if (!empty($request->query->get('column'))) {
-            $column = $request->query->get('column');
-        }
-        if (!empty($request->query->get('sort'))) {
-            $sort = $request->query->get('sort');
-        }
-        if (!empty($request->query->get('paginate'))) {
-            $paginate = $request->query->get('paginate');
-        }
-        if (!empty($request->query->get('petFilter'))) {
-            $petFilter = RoomConfig::CONVERT[$request->query->get('petFilter')];
-        }
-        if (!empty($request->query->get('smokingFilter'))) {
-            $smokingFilter = RoomConfig::CONVERT[$request->query->get('smokingFilter')];
-        }
+        $hotelId = !empty($request->query->get('hotelId')) ? $request->query->get('hotelId') : null;
+        $pageNumber = !empty($request->query->get('pageNumber')) ? $request->query->get('pageNumber') : null;
+        $column = !empty($request->query->get('column')) ? $request->query->get('column') : null;
+        $sort = !empty($request->query->get('sort')) ? $request->query->get('sort') : null;
+        $paginate = !empty($request->query->get('paginate')) ? $request->query->get('paginate') : null;
+        $petFilter = !empty($request->query->get('petFilter')) ? RoomConfig::CONVERT[$request->query->get('petFilter')] : null;
+        $smokingFilter = !empty($request->query->get('smokingFilter')) ? RoomConfig::CONVERT[$request->query->get('smokingFilter')] : null;
 
         return array($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter);
     }
@@ -58,19 +42,10 @@ class BaseController extends Controller
     {
         $reservation = $request->request->get('appbundle_reservationDto');
         $reservationDto = new ReservationDto();
-
-        if (!empty($reservation['startDate'])) {
-            $reservationDto->startDate = ValidateReservationHelper::convertToDateTime($reservation['startDate']);
-        }
-        if (!empty($reservation['endDate'])) {
-            $reservationDto->endDate = ValidateReservationHelper::convertToDateTime($reservation['endDate']);
-        }
-        if (!empty($reservation['hotel'])) {
-            $reservationDto->hotel = $reservation['hotel'];
-        }
-        if (!empty($reservation['room'])) {
-            $reservationDto->room = $reservation['room'];
-        }
+        $reservationDto->startDate = !empty($reservation['startDate']) ? ValidateReservationHelper::convertToDateTime($reservation['startDate']) : null;
+        $reservationDto->endDate = !empty($reservation['endDate']) ? ValidateReservationHelper::convertToDateTime($reservation['endDate']) : null;
+        $reservationDto->hotel = !empty($reservation['hotel']) ? $reservation['hotel'] : null;
+        $reservationDto->room = !empty($reservation['room']) ? $reservation['room'] : null;
 
         return $reservationDto;
     }
@@ -78,30 +53,9 @@ class BaseController extends Controller
     protected function getDatesInStringFormat(Request $request)
     {
         $reservation = $request->request->get('appbundle_reservationDto');
-        $startDate = $endDate = "";
-        if (!empty($reservation['startDate'])) {
-            $startDate = $reservation['startDate'];
-        }
-        if (!empty($reservation['endDate'])) {
-            $endDate = $reservation['endDate'];
-        }
+        $startDate = !empty($reservation['startDate']) ? $reservation['startDate'] : null;
+        $endDate = !empty($reservation['endDate']) ? $reservation['endDate'] : null;
 
         return array($startDate, $endDate);
-    }
-
-    /**
-     * @param Request $request
-     * @return Response
-     */
-    protected function checkIfItsAjaxRequest(Request $request)
-    {
-        if (!$request->isXmlHttpRequest()) {
-            return $this->render(
-                'error.html.twig',
-                [
-                    'error' => 'Stay out of here.',
-                ]
-            );
-        }
     }
 }
