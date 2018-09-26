@@ -99,7 +99,7 @@ class UserManagementController extends BaseController
         $userService = $this->get('app.user.service');
         $hotelService = $this->get('app.hotel.service');
         $roleService = $this->get('app.role.service');
-        $roles = $roleService->getUserCreationalRoleDtos($loggedUser);
+        $roles = $roleService->getUserCreationalRoleDtos($loggedUser, $username);
         $hotels = $hotelService->getHotelsByOwner($loggedUser);
 
         $form = $this->createForm(

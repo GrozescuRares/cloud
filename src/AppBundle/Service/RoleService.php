@@ -12,6 +12,7 @@ use AppBundle\Adapter\RoleAdapter;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Enum\UserConfig;
+use AppBundle\Exception\UserNotFoundException;
 use AppBundle\Helper\ValidateUserHelper;
 
 use Doctrine\ORM\EntityManager;
@@ -49,22 +50,29 @@ class RoleService
      *              an array containing all the roles except ROLE_OWNER,
      *              ROLE_MANAGER and ROLE_CLIENT.
      *
-     * @param User $user
+     * @param User  $user
+     * @param mixed $username
      *
      * @return array
      */
-    public function getUserCreationalRoleDtos(User $user)
+    public function getUserCreationalRoleDtos(User $user, $username)
     {
         $userRole = ValidateUserHelper::checkIfUserHasRole($user->getRoles());
 
         $roles = $this->em->getRepository(Role::class)->findAll();
+        $editedUserRole = $this->em->getRepository(User::class)->findOneBy([
+            'username' => $username,
+        ]);
+        if (empty($editedUserRole)) {
+            throw new UserNotFoundException('There is no user with this username.');
+        }
         $result = [];
 
         /** @var Role $role */
         foreach ($roles as $role) {
             $roleDescription = $role->getDescription();
 
-            if (!($roleDescription === UserConfig::ROLE_CLIENT || $roleDescription === $userRole)) {
+            if (!($roleDescription === UserConfig::ROLE_CLIENT || $roleDescription === $userRole || $roleDescription === $editedUserRole->getRole()->getDescription())) {
                 $result[$roleDescription] = $this->roleAdapter->convertToDto($role);
             }
         }
