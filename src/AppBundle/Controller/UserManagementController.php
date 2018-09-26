@@ -204,7 +204,7 @@ class UserManagementController extends BaseController
         $type = $request->query->get('type');
         try {
             if ($type === 'manager') {
-                list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+                list($hotelId, $pageNumber, $column, $sort, $paginate, $items) = $this->getPaginationParameters($request);
                 $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
 
                 list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
@@ -214,7 +214,7 @@ class UserManagementController extends BaseController
             }
 
             if ($type === 'owner') {
-                list($hotelId, $pageNumber, $column, $sort, $paginate) = $this->getPaginationParameters($request);
+                list($hotelId, $pageNumber, $column, $sort, $paginate, $items) = $this->getPaginationParameters($request);
                 $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
 
                 list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
@@ -223,6 +223,57 @@ class UserManagementController extends BaseController
 
                 return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
             }
+        } catch (NoRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InappropriateUserRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/user-management/delete-user/{username}", name="delete-user")
+     *
+     * @param mixed   $username
+     * @param Request $request
+     *
+     * @throws OptimisticLockException
+     *
+     * @return Response
+     */
+    public function deleteUserAction($username, Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render(
+                'error.html.twig',
+                [
+                    'error' => 'Stay out of here.',
+                ]
+            );
+        }
+
+        $loggedUser = $this->getUser();
+        $userService = $this->get('app.user.service');
+        $type = $request->query->get('type');
+        try {
+            $userService->deleteUser($loggedUser, $username);
+            list($hotelId, $pageNumber, $column, $sort, $paginate, $items) = $this->getPaginationParameters($request);
+            if ($items == 1) {
+                $pageNumber--;
+            }
+            list($sortType, $sort, $offset, $pageNumber) = PaginateAndSortHelper::configPaginationFilters($column, $sort, $paginate, $pageNumber);
+
+            if ($type === 'manager') {
+                $nrPages = $userService->getPagesNumberForManagerManagement($loggedUser);
+                $usersDto = $userService->paginateAndSortManagersUsers($loggedUser, $offset, $column, $sortType);
+            }
+
+            if ($type === 'owner') {
+                $nrPages = $userService->getPagesNumberForOwnerManagement($loggedUser, $hotelId);
+                $usersDto = $userService->paginateAndSortOwnersUsers($loggedUser, $offset, $column, $sortType, $hotelId);
+            }
+            $this->addFlash('success', 'User successfully deleted.');
+
+            return $this->renderPaginatedTable($usersDto, $nrPages, $pageNumber, $column, $sort);
         } catch (NoRoleException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         } catch (InappropriateUserRoleException $ex) {
@@ -242,8 +293,9 @@ class UserManagementController extends BaseController
         $column = $request->query->get('column');
         $sort = $request->query->get('sort');
         $paginate = $request->query->get('paginate');
+        $items = $request->query->get('items');
 
-        return array($hotelId, $pageNumber, $column, $sort, $paginate);
+        return array($hotelId, $pageNumber, $column, $sort, $paginate, $items);
     }
 
     /**

@@ -180,6 +180,8 @@ emails:
   booking_day: 'Have a great day!'
   delete_title: 'Canceled Booking'
   delete_message: "Your booking from %startDate% at %hotel% in %location% has been canceled."
+  delete_user_title: 'Account deleted'
+  delete_user_messege: 'The %username% account has been deleted.'
 
 flash_messages:
   message: '%message%'

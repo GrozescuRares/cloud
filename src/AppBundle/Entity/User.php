@@ -182,12 +182,38 @@ class User implements UserInterface, \Serializable
     private $expirationDate;
 
     /**
+     *
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private $deletedAt;
+
+    /**
      * User constructor.
      */
     public function __construct()
     {
         $this->ownedHotels = new ArrayCollection();
         $this->reservations = new ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * @param mixed $deletedAt
+     *
+     * @return User
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
     }
 
     /**

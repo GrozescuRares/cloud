@@ -28,12 +28,13 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
      */
     public function loadUserByUsername($username)
     {
-        $user = $this->createQueryBuilder('u')
+        $qb = $this->createQueryBuilder('u');
+        $qb
             ->where('u.username = :username')
-            ->setParameter('username', $username)
-            ->getQuery()
-            ->getOneOrNullResult();
+            ->andWhere($qb->expr()->isNull('u.deletedAt'))
+            ->setParameter('username', $username);
 
+        $user = $qb->getQuery()->getOneOrNullResult();
         if (!$user instanceof User) {
             throw new UserNotFoundException('Bad credentials !');
         }
@@ -50,14 +51,14 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
      */
     public function getUsersPagesNumberFromManagerHotel(User $loggedUser)
     {
-        $usersCount = $this->createQueryBuilder('user')
-            ->where('user.hotel = :managerHotel')
+        $qb = $this->createQueryBuilder('user');
+        $qb ->where('user.hotel = :managerHotel')
             ->andWhere('user.userId != :managerId')
+            ->andWhere($qb->expr()->isNull('user.deletedAt'))
             ->setParameter('managerHotel', $loggedUser->getHotel())
-            ->setParameter('managerId', $loggedUser->getUserId())
-            ->getQuery()->execute();
+            ->setParameter('managerId', $loggedUser->getUserId());
 
-        return ceil(count($usersCount) / PaginationConfig::ITEMS);
+        return ceil(count($qb->getQuery()->getResult()) / PaginationConfig::ITEMS);
     }
 
     /**
@@ -75,6 +76,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
             ->innerJoin('user.role', 'role')
             ->where('user.hotel = :managerHotel')
             ->andWhere('user.userId != :managerId')
+            ->andWhere($qb->expr()->isNull('user.deletedAt'))
             ->setParameter('managerHotel', $loggedUser->getHotel())
             ->setParameter('managerId', $loggedUser->getUserId())
             ->setMaxResults(PaginationConfig::ITEMS)
@@ -100,15 +102,16 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
      */
     public function getUsersPagesNumberFromOwnerHotel(User $loggedUser, $hotelId)
     {
-        $usersCount = $this->createQueryBuilder('user')
+        $qb = $this->createQueryBuilder('user');
+        $qb
             ->innerJoin('user.hotel', 'hotel')
             ->where('hotel.owner = :owner')
             ->andWhere('hotel.hotelId = :hotelId')
+            ->andWhere($qb->expr()->isNull('user.deletedAt'))
             ->setParameter('owner', $loggedUser)
-            ->setParameter('hotelId', $hotelId)
-            ->getQuery()->execute();
+            ->setParameter('hotelId', $hotelId);
 
-        return ceil(count($usersCount) / PaginationConfig::ITEMS);
+        return ceil(count($qb->getQuery()->getResult()) / PaginationConfig::ITEMS);
     }
 
     /**
@@ -128,6 +131,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
             ->innerJoin('user.role', 'role')
             ->where('hotel.owner = :owner')
             ->andWhere('hotel.hotelId = :hotelId')
+            ->andWhere($qb->expr()->isNull('user.deletedAt'))
             ->setParameter('owner', $loggedUser)
             ->setParameter('hotelId', $hotelId)
             ->setFirstResult($offset)
@@ -152,18 +156,18 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
      */
     public function getNumberOfEmployeesByHotel(Hotel $hotel)
     {
-        $nrEmployees = $this->createQueryBuilder('user')
+        $qb = $this->createQueryBuilder('user');
+        $qb
             ->select('COUNT(user)')
             ->innerJoin('user.role', 'role')
             ->where('user.hotel = :hotel')
             ->andWhere('role.description != :client')
             ->andWhere('role.description != :owner')
+            ->andWhere($qb->expr()->isNull('user.deletedAt'))
             ->setParameter('hotel', $hotel)
             ->setParameter('client', UserConfig::ROLE_CLIENT)
-            ->setParameter('owner', UserConfig::ROLE_OWNER)
-            ->getQuery()
-            ->getResult();
+            ->setParameter('owner', UserConfig::ROLE_OWNER);
 
-        return $nrEmployees;
+        return $qb->getQuery()->getResult();
     }
 }

@@ -14,6 +14,7 @@ use AppBundle\Dto\UserDto;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Enum\UserConfig;
+use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
@@ -329,6 +330,44 @@ class UserService
     }
 
     /**
+     * @param User  $loggedUser
+     * @param mixed $username
+     * @return UserDto
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function deleteUser($loggedUser, $username)
+    {
+        $userRole = ValidateUserHelper::checkIfUserIsOwnerOrManager($loggedUser);
+
+        if ($userRole === UserConfig::ROLE_MANAGER && !$this->checkIfUserHasManagerHotelId($loggedUser->getHotel(), $username)) {
+            throw new InappropriateUserRoleException('This user is not part of your hotel');
+        }
+        if ($userRole === UserConfig::ROLE_OWNER && !$this->checkIfUserHasOneOfOwnersHotelId($loggedUser->getOwnedHotels(), $username)) {
+            throw new InappropriateUserRoleException('This user is not part of your hotels');
+        }
+
+        $user = $this->getUserByUsername($username);
+        if (empty($user)) {
+            throw new UserNotFoundException('There is no user with username '.$username);
+        }
+
+        $user->setDeletedAt(new \DateTime('now'));
+        $this->em->persist($user);
+        $this->em->flush();
+
+        $this->mailHelper->sendEmail(
+            $user->getEmail(),
+            'Account Deleted',
+            [
+                'username' => $user->getUsername(),
+            ],
+            'emails/delete-user.html.twig'
+        );
+
+        return $this->userAdapter->convertToDto($user);
+    }
+
+    /**
      * @param User $loggedUser
      * @return UserDto
      */
@@ -392,6 +431,19 @@ class UserService
         return $this->em->getRepository(User::class)->findOneBy(
             [
                 'username' => $userDto->username,
+            ]
+        );
+    }
+
+    /**
+     * @param $username
+     * @return User|null|object
+     */
+    private function getUserByUsername($username)
+    {
+        return $this->em->getRepository(User::class)->findOneBy(
+            [
+                'username' => $username,
             ]
         );
     }

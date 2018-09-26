@@ -266,6 +266,9 @@ class BookingsController extends BaseController
      * @param Request $request
      *
      * @throws OptimisticLockException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
      *
      * @return Response
      */

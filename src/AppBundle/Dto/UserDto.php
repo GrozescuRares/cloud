@@ -35,4 +35,5 @@ class UserDto
     public $email;
     public $dateOfBirth;
     public $expirationDate;
+    public $deletedAt;
 }

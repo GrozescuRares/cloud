@@ -83,10 +83,14 @@ class Reservation
 
     /**
      * @param \DateTime $deletedAt
+     *
+     * @return Reservation
      */
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
+
+        return $this;
     }
 
     /**
