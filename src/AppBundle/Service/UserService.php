@@ -353,6 +353,9 @@ class UserService
 
         $user->setDeletedAt(new \DateTime('now'));
         $this->em->persist($user);
+        $hotel = $user->getHotel();
+        $hotel->setEmployees($hotel->getEmployees()-1);
+        $this->em->persist($hotel);
         $this->em->flush();
 
         $this->mailHelper->sendEmail(

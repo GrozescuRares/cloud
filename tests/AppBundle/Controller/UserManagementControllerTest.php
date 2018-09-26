@@ -215,7 +215,7 @@ class UserManagementControllerTest extends BaseWebTestCase
             $form,
             'appbundle_userDto',
             [
-                '[role]' => 1,
+                '[role]' => 0,
             ]
         );
         $client->submit($form);
@@ -225,33 +225,11 @@ class UserManagementControllerTest extends BaseWebTestCase
     }
 
     /**
-     * Tests edit user by owner
-     * @group edit-user
-     */
-    public function testEditUserRoleByManager()
-    {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/employee', TestDataConfig::MANAGER_USER, TestDataConfig::MANAGER_PASSWORD, ['username' => 'employee']);
-
-        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateForm(
-            $form,
-            'appbundle_userDto',
-            [
-                '[role]' => 0,
-            ]
-        );
-        $client->submit($form);
-        $crawler = $client->followRedirect();
-
-        $this->assertContains('already has', $crawler->filter('div.alert')->text());
-    }
-
-    /**
      * @group edit-user
      */
     public function testThatOwnerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
     {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/ramadaUser1', TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
+        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/cookRamadaCluj', TestDataConfig::OWNER_USER, TestDataConfig::OWNER_PASSWORD);
 
         $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
         $form = $this->generateForm(
@@ -265,27 +243,6 @@ class UserManagementControllerTest extends BaseWebTestCase
         $crawler = $client->followRedirect();
 
         $this->assertContains('This user is not part of owners hotels.', $crawler->filter('div.alert')->text());
-    }
-
-    /**
-     * @group edit-user
-     */
-    public function testThatManagerCanNotEditTheRoleOfAUserThatIsNotPartOfHisHotels()
-    {
-        list($client, $crawler) = $this->accessRoute(RoutesConfig::EDIT_USER.'/ramadaUser1', TestDataConfig::MANAGER_USER, TestDataConfig::MANAGER_PASSWORD, ['username' => 'client']);
-
-        $form = $crawler->selectButton('appbundle_userDto[submit]')->form();
-        $form = $this->generateForm(
-            $form,
-            'appbundle_userDto',
-            [
-                '[role]' => 0,
-            ]
-        );
-        $client->submit($form);
-        $crawler = $client->followRedirect();
-
-        $this->assertContains('This user is not part of managers hotel.', $crawler->filter('div.alert')->text());
     }
 
     /**
