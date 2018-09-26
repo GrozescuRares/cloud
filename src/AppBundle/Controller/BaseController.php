@@ -27,15 +27,17 @@ class BaseController extends Controller
      */
     protected function getRequestParameters(Request $request)
     {
-        $hotelId = !empty($request->query->get('hotelId')) ? $request->query->get('hotelId') : null;
-        $pageNumber = !empty($request->query->get('pageNumber')) ? $request->query->get('pageNumber') : null;
-        $column = !empty($request->query->get('column')) ? $request->query->get('column') : null;
-        $sort = !empty($request->query->get('sort')) ? $request->query->get('sort') : null;
-        $paginate = !empty($request->query->get('paginate')) ? $request->query->get('paginate') : null;
-        $petFilter = !empty($request->query->get('petFilter')) ? RoomConfig::CONVERT[$request->query->get('petFilter')] : null;
-        $smokingFilter = !empty($request->query->get('smokingFilter')) ? RoomConfig::CONVERT[$request->query->get('smokingFilter')] : null;
+        $parametersName = ['hotelId', 'pageNumber', 'column', 'sort', 'paginate'];
+        $requestParameters = [];
 
-        return array($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter);
+        foreach ($parametersName as $parameter) {
+            $requestParameters[] = $request->query->get($parameter) ?: null;
+        }
+
+        $requestParameters[] = $request->query->get('petFilter') ? RoomConfig::CONVERT[$request->query->get('petFilter')] : null;
+        $requestParameters[] = $request->query->get('smokingFilter') ? RoomConfig::CONVERT[$request->query->get('smokingFilter')] : null;
+
+        return $requestParameters;
     }
 
     protected function handleReservation(Request $request)
@@ -53,9 +55,13 @@ class BaseController extends Controller
     protected function getDatesInStringFormat(Request $request)
     {
         $reservation = $request->request->get('appbundle_reservationDto');
-        $startDate = !empty($reservation['startDate']) ? $reservation['startDate'] : null;
-        $endDate = !empty($reservation['endDate']) ? $reservation['endDate'] : null;
+        $parametersName = ['startDate', 'endDate'];
+        $requestParameters = [];
 
-        return array($startDate, $endDate);
+        foreach ($parametersName as $parameter) {
+            $requestParameters[] = $reservation[$parameter] ?: null;
+        }
+
+        return $requestParameters;
     }
 }
