@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 use AppBundle\Dto\UserDto;
 use AppBundle\Entity\User;
 use AppBundle\Enum\PaginationConfig;
+use AppBundle\Enum\RoutesConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Enum\OrderConfig;
@@ -169,7 +170,8 @@ class UserManagementController extends BaseController
                     'users' => $usersDto,
                     'nrPages' => $nrPages,
                     'currentPage' => 1,
-                    'nrUsers' => count($usersDto),
+                    'nrItems' => count($usersDto),
+                    'target' => RoutesConfig::PAGINATE_AND_SORT_USERS,
                     'sortBy' => [],
                 ]
             );
@@ -315,7 +317,8 @@ class UserManagementController extends BaseController
                 'users' => $users,
                 'nrPages' => $nrPages,
                 'currentPage' => $pageNumber,
-                'nrUsers' => count($users),
+                'nrItems' => count($users),
+                'target' => RoutesConfig::PAGINATE_AND_SORT_USERS,
                 'sortBy' => [
                     $column => $sort,
                 ],

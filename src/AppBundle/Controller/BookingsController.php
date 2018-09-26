@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Dto\ReservationDto;
+use AppBundle\Enum\RoutesConfig;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\InvalidDateException;
@@ -211,7 +212,8 @@ class BookingsController extends BaseController
                     'reservations' => $reservationDtos,
                     'nrPages' => $nrPages,
                     'currentPage' => 1,
-                    'nrReservations' => count($reservationDtos),
+                    'nrItems' => count($reservationDtos),
+                    'target' => RoutesConfig::PAGINATE_AND_SORT_RESERVATIONS,
                     'sortBy' => [],
                 ]
             );
@@ -325,7 +327,8 @@ class BookingsController extends BaseController
                     'reservations' => $reservationDtos,
                     'currentPage' => 1,
                     'nrPages' => $nrPages,
-                    'nrReservations' => count($reservationDtos),
+                    'nrItems' => count($reservationDtos),
+                    'target' => RoutesConfig::PAGINATE_AND_SORT_RESERVATIONS,
                     'sortBy' => [],
                 ]
             );
@@ -436,7 +439,8 @@ class BookingsController extends BaseController
                 'reservations' => $reservationDtos,
                 'currentPage' => $pageNumber,
                 'nrPages' => $nrPages,
-                'nrReservations' => count($reservationDtos),
+                'nrItems' => count($reservationDtos),
+                'target' => RoutesConfig::PAGINATE_AND_SORT_RESERVATIONS,
                 'sortBy' => [
                     $column => $sort,
                 ],
@@ -476,7 +480,8 @@ class BookingsController extends BaseController
                     'reservations' => $reservationDtos,
                     'nrPages' => $nrPages,
                     'currentPage' => $pageNumber,
-                    'nrReservations' => count($reservationDtos),
+                    'nrItems' => count($reservationDtos),
+                    'target' => RoutesConfig::PAGINATE_AND_SORT_RESERVATIONS,
                     'sortBy' => [
                         $column => $sort,
                     ],
@@ -501,7 +506,8 @@ class BookingsController extends BaseController
                 'reservations' => $reservationDtos,
                 'nrPages' => $nrPages,
                 'currentPage' => $pageNumber,
-                'nrReservations' => count($reservationDtos),
+                'nrItems' => count($reservationDtos),
+                'target' => RoutesConfig::PAGINATE_AND_SORT_RESERVATIONS,
                 'sortBy' => [
                     $column => $sort,
                 ],

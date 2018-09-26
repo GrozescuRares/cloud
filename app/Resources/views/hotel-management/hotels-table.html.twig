@@ -33,46 +33,7 @@
             </tbody>
         </table>
     </div>
-    <div class="table-items">{{ 'page.hotel-management.hotel-information.items'| trans({'%hotels%': nrHotels}) }}</div>
-    <nav class="table-pagination">
-        <ul class="pagination">
-            {% if currentPage != 1 %}
-                <li class="prev">
-                    <a data-action="{{ path('paginate-and-sort-hotels') }}"
-                       data-page="{{ currentPage -1 }}"
-                       data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
-                       data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
-                       data-paginate="true"
-                       aria-label="Previous">
-                        <span aria-hidden="true">&laquo; {{ 'page.hotel-management.hotel-information.previous'| trans }}</span>
-                    </a>
-                </li>
-            {% endif %}
-            {% if nrPages > 1 %}
-                {% for page in 1..nrPages %}
-                    <li {% if currentPage == page %} class="active" {% endif %}><a
-                                data-action="{{ path('paginate-and-sort-hotels') }}"
-                                data-page="{{ page }}"
-                                data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
-                                data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
-                                data-paginate="true">{{ 'page.hotel-management.hotel-information.page-number' |trans({'%page%': page}) }}</a>
-                    </li>
-                {% endfor %}
-            {% endif %}
-            {% if currentPage != nrPages %}
-                <li class="next">
-                    <a data-action="{{ path('paginate-and-sort-hotels') }}"
-                       data-page="{{ currentPage + 1 }}"
-                       data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
-                       data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
-                       data-paginate="true"
-                       aria-label="Next">
-                        <span aria-hidden="true">{{ 'page.hotel-management.hotel-information.next'| trans }} &raquo;</span>
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
+    {{ include('pagination.html.twig') }}
 </div>
 {% else %}
     <h1>{{ 'page.hotel-management.hotel-information.no_hotels'| trans }}</h1>

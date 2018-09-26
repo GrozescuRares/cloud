@@ -36,7 +36,7 @@
                                 data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
                                 data-page="{{ currentPage }}"
                                 data-paginate="true"
-                                data-items = {{ nrReservations }}
+                                data-items = {{ nrItems }}
                                 href="{{ path('delete-reservation', {'reservationId': re.reservationId}) }}" class="delete-reservation">
                                 <i class="fa fa-trash"></i>
                             </a>
@@ -46,46 +46,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="table-items">{{ 'page.user-management.user-management.items'|trans({'%users%': nrReservations}) }}</div>
-        <nav class="table-pagination">
-            <ul class="pagination">
-                {% if currentPage != 1 %}
-                    <li class="prev">
-                        <a data-action="{{ path('paginate-and-sort-reservations') }}"
-                           data-page="{{ currentPage -1 }}"
-                           data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
-                           data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
-                           data-paginate="true"
-                           aria-label="Previous">
-                            <span aria-hidden="true">&laquo; {{ 'page.user-management.user-management.previous'|trans }}</span>
-                        </a>
-                    </li>
-                {% endif %}
-                {% if nrPages > 1 %}
-                    {% for page in 1..nrPages %}
-                        <li {% if currentPage == page %} class="active" {% endif %}><a
-                                    data-action="{{ path('paginate-and-sort-reservations') }}"
-                                    data-page="{{ page }}"
-                                    data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
-                                    data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
-                                    data-paginate="true">{{ 'page.user-management.user-management.page-number'| trans({'%page%': page}) }}</a>
-                        </li>
-                    {% endfor %}
-                {% endif %}
-                {% if currentPage != nrPages %}
-                    <li class="next">
-                        <a data-action="{{ path('paginate-and-sort-reservations') }}"
-                           data-page="{{ currentPage + 1 }}"
-                           data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
-                           data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
-                           data-paginate="true"
-                           aria-label="Next">
-                            <span aria-hidden="true">{{ 'page.user-management.user-management.next'|trans }} &raquo;</span>
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
+        {{ include('pagination.html.twig') }}
     </div>
 {% else %}
     <div class="table-paginated">

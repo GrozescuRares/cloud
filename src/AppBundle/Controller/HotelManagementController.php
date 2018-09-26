@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 use AppBundle\Dto\RoomDto;
 use AppBundle\Enum\PaginationConfig;
 use AppBundle\Enum\RoomConfig;
+use AppBundle\Enum\RoutesConfig;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\NoRoleException;
@@ -102,7 +103,8 @@ class HotelManagementController extends BaseController
                     'availableHotels' => $availableHotels,
                     'nrPages' => $pages,
                     'currentPage' => 1,
-                    'nrHotels' => count($hotelsDto),
+                    'nrItems' => count($hotelsDto),
+                    'target' => RoutesConfig::PAGINATE_AND_SORT_HOTELS,
                     'sortBy' => [],
                 ]
             );
@@ -136,7 +138,7 @@ class HotelManagementController extends BaseController
         $bookingManager = $this->get('app.bookings.manager');
 
         try {
-            list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
+            list($hotelId, $pageNumber, $column, $sort, $paginate, $items, $petFilter, $smokingFilter) = $this->getRequestParameters(
                 $request
             );
             $pages = $hotelManagementManager->getHotelPagesNumber($loggedUser);
@@ -158,7 +160,8 @@ class HotelManagementController extends BaseController
                     'availableHotels' => $availableHotels,
                     'nrPages' => $pages,
                     'currentPage' => $pageNumber,
-                    'nrHotels' => count($hotelsDto),
+                    'nrItems' => count($hotelsDto),
+                    'target' => RoutesConfig::PAGINATE_AND_SORT_HOTELS,
                     'sortBy' => [
                         $column => $sort,
                     ],
@@ -209,7 +212,8 @@ class HotelManagementController extends BaseController
                     'nrPages' => $nrPages,
                     'currentPage' => 1,
                     'availableRooms' => $availableRooms,
-                    'nrRooms' => count($roomDtos),
+                    'nrItems' => count($roomDtos),
+                    'target' => RoutesConfig::PAGINATE_FILTER_AND_SORT_ROOMS,
                     'sortBy' => [],
                     'filters' => [
                         'petFilter' => RoomConfig::ALL,
@@ -249,7 +253,7 @@ class HotelManagementController extends BaseController
         $bookingManager = $this->get('app.bookings.manager');
 
         try {
-            list($hotelId, $pageNumber, $column, $sort, $paginate, $petFilter, $smokingFilter) = $this->getRequestParameters(
+            list($hotelId, $pageNumber, $column, $sort, $paginate, $items, $petFilter, $smokingFilter) = $this->getRequestParameters(
                 $request
             );
             $nrPages = $hotelManagementManager->getRoomsPagesNumber($hotelId, $petFilter, $smokingFilter);
@@ -273,7 +277,8 @@ class HotelManagementController extends BaseController
                     'nrPages' => $nrPages,
                     'currentPage' => $pageNumber,
                     'availableRooms' => $availableRooms,
-                    'nrRooms' => count($roomDtos),
+                    'nrItems' => count($roomDtos),
+                    'target' => RoutesConfig::PAGINATE_FILTER_AND_SORT_ROOMS,
                     'sortBy' => [
                         $column => $sort,
                     ],

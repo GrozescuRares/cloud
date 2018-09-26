@@ -72,10 +72,6 @@ page:
       title: 'Add User'
       back: 'Back'
     user-management:
-      items: '%users% item(s)'
-      previous: 'Previous'
-      next: 'Next'
-      page-number: '%page%'
       add_new_user: 'Add New User'
       back: 'Back'
       title: 'User Management'
@@ -87,10 +83,6 @@ page:
       title: 'Add New Room'
       back: 'Back'
     hotel-information:
-      items: '%hotels% item(s)'
-      previous: 'Previous'
-      next: 'Next'
-      page-number: '%page%'
       back: 'Back'
       title: 'Hotels Information'
       hotel: 'Hotel Name'
@@ -203,3 +195,9 @@ capacity:
   five: '5'
   six: '6'
   title: 'Room capacity'
+
+pagination:
+  items: '%items% item(s)'
+  previous: 'Previous'
+  next: 'Next'
+  page-number: '%page%'

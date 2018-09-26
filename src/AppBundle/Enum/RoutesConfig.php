@@ -69,4 +69,9 @@ class RoutesConfig
       self::MY_BOOKINGS_ROUTE,
       self::CREATE_BOOKING_ROUTE,
     ];
+
+    const PAGINATE_AND_SORT_RESERVATIONS = 'paginate-and-sort-reservations';
+    const PAGINATE_AND_SORT_HOTELS = 'paginate-and-sort-hotels';
+    const PAGINATE_FILTER_AND_SORT_ROOMS = 'paginate-filter-and-sort-rooms';
+    const PAGINATE_AND_SORT_USERS = 'paginate-and-sort';
 }
