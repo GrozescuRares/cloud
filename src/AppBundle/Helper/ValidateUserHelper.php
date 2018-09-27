@@ -107,4 +107,5 @@ class ValidateUserHelper
 
         return ValidateUserHelper::checkIfUserHasRoleClient($userRole);
     }
+
 }

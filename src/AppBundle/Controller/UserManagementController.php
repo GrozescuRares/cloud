@@ -13,6 +13,7 @@ use AppBundle\Entity\User;
 use AppBundle\Enum\PaginationConfig;
 use AppBundle\Enum\RoutesConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
+use AppBundle\Exception\InvalidDateException;
 use AppBundle\Exception\NoRoleException;
 use AppBundle\Enum\OrderConfig;
 use AppBundle\Exception\SameRoleException;
@@ -100,42 +101,45 @@ class UserManagementController extends BaseController
         $userService = $this->get('app.user.service');
         $hotelService = $this->get('app.hotel.service');
         $roleService = $this->get('app.role.service');
-        $roles = $roleService->getUserCreationalRoleDtos($loggedUser, $username);
-        $hotels = $hotelService->getHotelsByOwner($loggedUser);
-
-        $form = $this->createForm(
-            EditUserTypeForm::class,
-            $userDto,
-            [
-                'validation_groups' => ['edit-user'],
-                'roles' => $roles,
-            ]
-        );
-
-        $form->handleRequest($request);
-
-        if (!($form->isSubmitted() && $form->isValid())) {
-            return $this->render(
-                'user_management/edit-user.html.twig',
-                [
-                    'edit_user_form' => $form->createView(),
-                    'username' => $username,
-                ]
-            );
-        }
 
         try {
-            $userService->editUserRole($userDto, $loggedUser, $hotels);
-            $this->addFlash('success', 'User role successfully edited.');
-        } catch (UserNotFoundException $ex) {
-            $this->addFlash('danger', $ex->getMessage());
-        } catch (SameRoleException $ex) {
-            $this->addFlash('danger', $ex->getMessage());
-        } catch (UneditableRoleException $ex) {
-            $this->addFlash('danger', $ex->getMessage());
-        }
+            $hotels = $hotelService->getHotelsByOwner($loggedUser);
+            $userService->checkIfUserIsEditable($loggedUser, $username, $hotels);
+            $roles = $roleService->getUserCreationalRoleDtos($loggedUser, $username);
 
-        return $this->redirectToRoute('edit-user', ['username' => $username]);
+            $form = $this->createForm(
+                EditUserTypeForm::class,
+                $userDto,
+                [
+                    'validation_groups' => ['edit-user'],
+                    'roles' => $roles,
+                ]
+            );
+
+            $form->handleRequest($request);
+
+            if (!($form->isSubmitted() && $form->isValid())) {
+                return $this->render(
+                    'user_management/edit-user.html.twig',
+                    [
+                        'edit_user_form' => $form->createView(),
+                        'username' => $username,
+                    ]
+                );
+            }
+            $userService->editUserRole($userDto, $loggedUser, $username);
+            $this->addFlash('success', 'User role successfully edited.');
+
+            return $this->redirectToRoute('edit-user', ['username' => $userDto->username]);
+        } catch (UserNotFoundException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (SameRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (UneditableRoleException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (InvalidDateException $ex) {
+            return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        }
     }
 
     /**

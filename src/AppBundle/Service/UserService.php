@@ -15,6 +15,8 @@ use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Enum\UserConfig;
 use AppBundle\Exception\InappropriateUserRoleException;
+use AppBundle\Exception\InvalidDateException;
+use AppBundle\Exception\NoRoleException;
 use AppBundle\Exception\TokenExpiredException;
 use AppBundle\Exception\UneditableRoleException;
 use AppBundle\Exception\UserNotFoundException;
@@ -294,31 +296,17 @@ class UserService
      *
      * @param UserDto $userDto
      * @param User    $loggedUser
-     * @param array   $hotels
+     * @param mixed   $username
      *
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function editUserRole(UserDto $userDto, User $loggedUser, $hotels)
+    public function editUserRole(UserDto $userDto, User $loggedUser, $username)
     {
-        $loggedUserRole = ValidateUserHelper::checkIfUserIsOwnerOrManager($loggedUser);
+        ValidateUserHelper::checkIfUserIsOwnerOrManager($loggedUser);
 
-        if ($loggedUserRole === UserConfig::ROLE_MANAGER) {
-            if (!$this->checkIfUserHasManagerHotelId($loggedUser->getHotel(), $userDto->username)) {
-                throw new UserNotFoundException('This user is not part of managers hotel.');
-            }
-        }
-
-        if ($loggedUserRole === UserConfig::ROLE_OWNER) {
-            if (!$this->checkIfUserHasOneOfOwnersHotelId($hotels, $userDto->username)) {
-                throw new UserNotFoundException('This user is not part of owners hotels.');
-            }
-        }
-
-        $userEntity = $this->getUserFromDto($userDto);
+        $userEntity = $this->getUserByUsername($username);
         $userEntityRole = $userEntity->getRole()->getDescription();
-        if ($userEntityRole === $userDto->role->description) {
-            throw new SameRoleException($userDto->username." already has ".$userDto->role->description);
-        }
+
         if (array_search($userEntityRole, UserConfig::EDITABLE_ROLES) === false) {
             throw new UneditableRoleException('Can not edit users with '.$userEntityRole.'.');
         }
@@ -327,6 +315,33 @@ class UserService
         $editedUser->setRole($this->getRoleFromDto($userDto->role));
         $this->em->persist($editedUser);
         $this->em->flush();
+    }
+
+    /**
+     * @param User  $loggedUser
+     * @param mixed $username
+     * @param mixed $hotels
+     */
+    public function checkIfUserIsEditable(User $loggedUser, $username, $hotels)
+    {
+        $loggedUserRole = ValidateUserHelper::checkIfUserIsOwnerOrManager($loggedUser);
+
+        $this->checkIfUserExistByUsername($username);
+
+        if ($loggedUser->getUsername() == $username) {
+            throw new InvalidDateException('You can not edit your own role !');
+        }
+
+        if ($loggedUserRole === UserConfig::ROLE_MANAGER) {
+            if (!$this->checkIfUserHasManagerHotelId($loggedUser->getHotel(), $username)) {
+                throw new UserNotFoundException('This user is not part of your hotel.');
+            }
+        }
+        if ($loggedUserRole === UserConfig::ROLE_OWNER) {
+            if (!$this->checkIfUserHasOneOfOwnersHotelId($hotels, $username)) {
+                throw new UserNotFoundException('This user is not part of your hotels.');
+            }
+        }
     }
 
     /**
@@ -464,8 +479,25 @@ class UserService
 
     private function getRoleFromDto(RoleDto $roleDto)
     {
-        return $this->em->getRepository(Role::class)->findOneBy([
+        $role = $this->em->getRepository(Role::class)->findOneBy([
             'description' => $roleDto->description,
         ]);
+
+        if (empty($role)) {
+            throw new NoRoleException('There is no '.$roleDto->description.'.');
+        }
+
+        return $role;
+    }
+
+    private function checkIfUserExistByUsername($username)
+    {
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => $username,
+        ]);
+
+        if (empty($user)) {
+            throw new UserNotFoundException('There is no user with username '.$username.'.');
+        }
     }
 }

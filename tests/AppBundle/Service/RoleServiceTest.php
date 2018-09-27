@@ -115,13 +115,16 @@ class RoleServiceTest extends EntityManagerMock
                 'username' => 'username',
             ])
             ->willReturn($editedUserMock);
+        $editedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_EMPLOYEE]);
 
-        $this->roleAdapterMock->expects($this->once())
+        $this->roleAdapterMock->expects($this->exactly(2))
             ->method('convertToDto')
             ->willReturn($this->createMock(RoleDto::class));
 
         $this->assertEquals(
-            [UserConfig::ROLE_MANAGER => $this->createMock(RoleDto::class)],
+            [UserConfig::ROLE_EMPLOYEE => $this->createMock(RoleDto::class), UserConfig::ROLE_MANAGER => $this->createMock(RoleDto::class)],
             $this->roleService->getUserCreationalRoleDtos($userMock, 'username')
         );
     }
@@ -164,18 +167,21 @@ class RoleServiceTest extends EntityManagerMock
         $this->repositoriesMocks[EntityConfig::ROLE]->expects($this->once())
             ->method('findAll')
             ->willReturn([$roleManagerMock, $roleEmployeeMock, $roleClientMock, $roleOwnerMock]);
-
-        $this->roleAdapterMock->expects($this->once())
-            ->method('convertToDto');
         $this->repositoriesMocks[EntityConfig::USER]->expects($this->once())
             ->method('findOneBy')
             ->with([
                 'username' => 'username',
             ])
             ->willReturn($editedUserMock);
+        $editedUserMock->expects($this->once())
+            ->method('getRoles')
+            ->willReturn([UserConfig::ROLE_EMPLOYEE]);
+        $this->roleAdapterMock->expects($this->exactly(2))
+            ->method('convertToDto')
+            ->willReturn($this->createMock(RoleDto::class));
 
         $this->assertEquals(
-            [],
+            [UserConfig::ROLE_EMPLOYEE => $this->createMock(RoleDto::class)],
             $this->roleService->getUserCreationalRoleDtos($userMock, 'username')
         );
     }

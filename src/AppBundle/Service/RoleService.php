@@ -60,19 +60,20 @@ class RoleService
         $userRole = ValidateUserHelper::checkIfUserHasRole($user->getRoles());
 
         $roles = $this->em->getRepository(Role::class)->findAll();
-        $editedUserRole = $this->em->getRepository(User::class)->findOneBy([
+        $editedUser = $this->em->getRepository(User::class)->findOneBy([
             'username' => $username,
         ]);
-        if (empty($editedUserRole)) {
+        if (empty($editedUser)) {
             throw new UserNotFoundException('There is no user with this username.');
         }
-        $result = [];
+        $editedUserRole = ValidateUserHelper::checkIfUserHasRole($editedUser->getRoles());
+        $result = [$editedUserRole => $this->roleAdapter->convertToDto($editedUser->getRole())];
 
         /** @var Role $role */
         foreach ($roles as $role) {
             $roleDescription = $role->getDescription();
 
-            if (!($roleDescription === UserConfig::ROLE_CLIENT || $roleDescription === $userRole || $roleDescription === $editedUserRole->getRole()->getDescription())) {
+            if (!($roleDescription === UserConfig::ROLE_CLIENT || $roleDescription === $userRole || $roleDescription === $editedUserRole)) {
                 $result[$roleDescription] = $this->roleAdapter->convertToDto($role);
             }
         }
