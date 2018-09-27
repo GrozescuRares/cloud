@@ -6,7 +6,7 @@
             <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
                 <div class="row">
                     <div class="wrapper">
-                        <a href="{{ path('show-hotel-information', {'hotelId': hotel.hotelId}) }}" >{{'page.hotel-management.edit-hotel-information.back' | trans }}</a>
+                        {{ include('back.html.twig') }}
                         <div class="col-md-12 col-xs-12 no-lr-padding text-center title">
                             <h1 class="text-center">{{ 'page.hotel-management.edit-hotel-information.title'| trans }}</h1>
                         </div>
