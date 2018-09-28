@@ -4,6 +4,7 @@ namespace AppBundle\EventListener;
 
 use AppBundle\Entity\User;
 
+use AppBundle\Enum\RoutesConfig;
 use AppBundle\Enum\UserConfig;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -46,7 +47,6 @@ class LoggedUserListener
                 $event->setResponse($response);
             }
         }
-        $this->routeHistory($event);
     }
 
     /**
@@ -97,42 +97,5 @@ class LoggedUserListener
         }
 
         return false;
-    }
-
-    /**
-     * @param GetResponseEvent $event
-     */
-    private function routeHistory(GetResponseEvent $event)
-    {
-        if ($event->getRequestType() !== HttpKernel::MASTER_REQUEST) {
-            return;
-        }
-
-        $request = $event->getRequest();
-        $session = $request->getSession();
-
-        $routeName = $request->get('_route');
-        $routeParams = $request->get('_route_params');
-        if ($routeName[0] == '_') {
-            return;
-        }
-        $routeData = "";
-
-        if (!empty($routeName)) {
-            $routeData = $routeName;
-        }
-
-        if (!empty($routeParams)) {
-            foreach ($routeParams as $param) {
-                $routeData .= '/'.$param;
-            }
-        }
-
-        $thisRoute = $session->get('this_route', "/");
-        if ($thisRoute == $routeData) {
-            return;
-        }
-        $session->set('last_route', $thisRoute);
-        $session->set('this_route', $routeData);
     }
 }

@@ -70,6 +70,8 @@ class RoutesConfig
       self::CREATE_BOOKING_ROUTE,
     ];
 
+    const DASHBOARD_ROUTE = 'dashboard';
+
     const PAGINATE_AND_SORT_RESERVATIONS = 'paginate-and-sort-reservations';
     const PAGINATE_AND_SORT_HOTELS = 'paginate-and-sort-hotels';
     const PAGINATE_FILTER_AND_SORT_ROOMS = 'paginate-filter-and-sort-rooms';
