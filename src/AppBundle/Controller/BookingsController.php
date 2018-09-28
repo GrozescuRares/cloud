@@ -328,7 +328,7 @@ class BookingsController extends BaseController
                     'currentPage' => 1,
                     'nrPages' => $nrPages,
                     'nrItems' => count($reservationDtos),
-                    'target' => RoutesConfig::PAGINATE_AND_SORT_RESERVATIONS,
+                    'target' => RoutesConfig::PAGINATE_AND_SORT_BOOKINGS,
                     'sortBy' => [],
                 ]
             );
@@ -440,7 +440,7 @@ class BookingsController extends BaseController
                 'currentPage' => $pageNumber,
                 'nrPages' => $nrPages,
                 'nrItems' => count($reservationDtos),
-                'target' => RoutesConfig::PAGINATE_AND_SORT_RESERVATIONS,
+                'target' => RoutesConfig::PAGINATE_AND_SORT_BOOKINGS,
                 'sortBy' => [
                     $column => $sort,
                 ],

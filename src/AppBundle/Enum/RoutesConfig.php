@@ -76,4 +76,5 @@ class RoutesConfig
     const PAGINATE_AND_SORT_HOTELS = 'paginate-and-sort-hotels';
     const PAGINATE_FILTER_AND_SORT_ROOMS = 'paginate-filter-and-sort-rooms';
     const PAGINATE_AND_SORT_USERS = 'paginate-and-sort';
+    const PAGINATE_AND_SORT_BOOKINGS = 'paginate-and-sort-bookings';
 }

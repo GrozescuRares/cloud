@@ -250,6 +250,7 @@ hms.removeDocument = function (element) {
 /* DOCUMENT READY
  -------------------------------*/
 $(document).ready(function () {
+    $.fn.datepicker.defaults.autoclose = true;
     setTimeout(function () {
         hms.testLoginInputs();
     }, 1300);

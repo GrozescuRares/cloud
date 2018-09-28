@@ -201,3 +201,9 @@ pagination:
   previous: 'Previous'
   next: 'Next'
   page-number: '%page%'
+
+error:
+  code: '%error%'
+  message: 'Access Denied. Please return to '
+  return_to: 'homepage.'
+  title: '403 Access Denied'
