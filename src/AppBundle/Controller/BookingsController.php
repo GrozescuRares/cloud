@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto\ReservationDto;
 use AppBundle\Enum\RoutesConfig;
+use AppBundle\Exception\AlreadyBookedException;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\InappropriateUserRoleException;
 use AppBundle\Exception\InvalidDateException;
@@ -173,6 +174,8 @@ class BookingsController extends BaseController
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
         } catch (RoomNotFoundException $ex) {
             return $this->render('error.html.twig', ['error' => $ex->getMessage()]);
+        } catch (AlreadyBookedException $ex) {
+            $this->addFlash('danger', $ex->getMessage());
         }
 
         return $this->redirectToRoute('create-booking');

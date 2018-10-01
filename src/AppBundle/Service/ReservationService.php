@@ -13,10 +13,12 @@ use AppBundle\Dto\HotelDto;
 use AppBundle\Dto\ReservationDto;
 use AppBundle\Entity\Reservation;
 use AppBundle\Entity\User;
+use AppBundle\Exception\AlreadyBookedException;
 use AppBundle\Exception\HotelNotFoundException;
 use AppBundle\Exception\ReservationNotFoundException;
 use AppBundle\Exception\RoomNotFoundException;
 use AppBundle\Helper\GetEntitiesAndDtosHelper;
+use AppBundle\Helper\ValidateReservationHelper;
 use AppBundle\Helper\ValidateUserHelper;
 
 use Doctrine\ORM\EntityManager;
@@ -53,6 +55,7 @@ class ReservationService
      * @param User           $client
      * @param ReservationDto $reservationDto
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws NonUniqueResultException
      * @return ReservationDto
      */
     public function addReservation(User $client, ReservationDto $reservationDto)
@@ -77,6 +80,11 @@ class ReservationService
             ->setStartDate($reservationDto->startDate)
             ->setEndDate($reservationDto->endDate)
             ->setDays($reservationDto->endDate->diff($reservationDto->startDate)->format('%a'));
+
+        $meanWhileBooking = $this->em->getRepository(Reservation::class)->getBookedRoom($reservation);
+        if (!empty($meanWhileBooking)) {
+            throw new AlreadyBookedException('Someone booked this room faster than you.');
+        }
 
         $this->em->persist($reservation);
         $this->em->flush();

@@ -3,6 +3,8 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Hotel;
+use AppBundle\Entity\Reservation;
+use AppBundle\Entity\Room;
 use AppBundle\Entity\User;
 use AppBundle\Enum\PaginationConfig;
 use Doctrine\ORM\NonUniqueResultException;
@@ -172,5 +174,27 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param Reservation $newReservation
+     * @return mixed
+     * @throws NonUniqueResultException
+     */
+    public function getBookedRoom(Reservation $newReservation)
+    {
+        $qb = $this->createQueryBuilder('reservation');
+        $qb
+            ->where('reservation.startDate <= :endDate')
+            ->andWhere('reservation.endDate >= :startDate')
+            ->andWhere($qb->expr()->isNull('reservation.deletedAt'))
+            ->andWhere('reservation.hotel = :hotelId')
+            ->andWhere('reservation.room = :roomId')
+            ->setParameter('endDate', $newReservation->getEndDate())
+            ->setParameter('startDate', $newReservation->getStartDate())
+            ->setParameter('hotelId', $newReservation->getHotel()->getHotelId())
+            ->setParameter('roomId', $newReservation->getRoom()->getRoomId());
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 }

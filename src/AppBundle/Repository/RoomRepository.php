@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Hotel;
+use AppBundle\Entity\User;
 use AppBundle\Enum\PaginationConfig;
 use AppBundle\Enum\RoomConfig;
 
@@ -40,7 +41,6 @@ class RoomRepository extends \Doctrine\ORM\EntityRepository
 
         return $bookedRooms;
     }
-
 
     /**
      * @param mixed $hotelId
