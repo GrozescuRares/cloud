@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+            <div class="wrapper">
+            {% include 'bookings/reservation-form.html.twig' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/bookings/create-booking.js') }}"></script>
+{% endblock %}

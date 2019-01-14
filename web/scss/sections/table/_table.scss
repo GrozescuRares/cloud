@@ -1,0 +1,262 @@
+.table-responsive {
+    overflow-x: auto;
+    @include size($width: 100%);
+    width: 100%;
+    display: inline-block;
+    margin-top: 15px;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+
+    .table {
+        margin-bottom: 0;
+        border: 1px solid $border;
+    }
+
+    thead th {
+        @include font($text-transform: uppercase, $color: #ffffff, $font-size: 11px, $font-family: $semi-bold);
+        background: $brand-light;
+        padding: 12px 17px !important;
+    }
+
+    th, td {
+        white-space: nowrap;
+        padding: 10px 17px !important;
+        border-top: 1px solid $border;
+        border-bottom: 1px solid $border;
+    }
+
+    td {
+        font-size: 12px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        @include size($min-width: 120px, $max-width: 250px);
+    }
+
+    tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    tr:nth-child(even) td {
+        background: #f6f7f7;
+    }
+
+
+    .td {
+        &-small {
+            overflow: hidden;
+            @include size($width: 55px, $min-width: 55px !important, $max-width: 55px);
+        }
+
+        &-medium {
+            overflow: hidden;
+            @include size($width: 110px, $min-width: 110px !important, $max-width: 110px);
+        }
+
+        &-long {
+            @include size($width: 250px);
+        }
+    }
+
+    tr:nth-child(even) {
+        background: #e6e6e6;
+    }
+
+    th:hover {
+        cursor: pointer;
+    }
+
+    tr.task-warning {
+        td {
+            background: #ffc107;
+        }
+    }
+
+    tr.task-danger {
+        td {
+            background: #dc3545;
+            color: #ffffff;
+        }
+
+        a, i {
+            color: #ffffff;
+        }
+    }
+
+    .sort-icon {
+        padding-left: 10px;
+        position: relative;
+        font-size: 14px;
+
+        &:before, &:after {
+            position: absolute;
+            color: #ffffff;
+        }
+
+        &:before {
+            content: '\f0de';
+            @include font($font-family: FontAwesome);
+        }
+
+        &:after {
+            content: '\f0dd';
+            @include font($font-family: FontAwesome);
+        }
+
+        &.asc:before {
+            color: $accent-active;
+        }
+
+        &.desc:after {
+            color: $accent-active;
+        }
+    }
+
+    a:not(.download-file) {
+        @include font($font-size: 12px, $color: $medium, $font-family: $semi-bold);
+    }
+
+    .download-file {
+        display: block;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: none;
+
+            i {
+                color: $brand-light;
+            }
+        }
+
+        .fa-download {
+            color: #797979;
+        }
+    }
+
+    .approve-task, .amend-task {
+        i {
+            @include font($color: #797979, $font-size: 15px);
+        }
+
+        &:hover i {
+            color: $brand-light;
+        }
+    }
+
+    .approve-task {
+        margin-left: 18px;
+    }
+
+    tr:nth-child(even) .download-file span {
+        color: #f0f0f0;
+    }
+
+    tr:nth-child(odd) .download-file span {
+        color: #ffffff;
+    }
+}
+
+.table-pagination {
+    float: right;
+
+    .pagination {
+        margin-top: 10px;
+
+        a {
+            background: transparent;
+            border-radius: 0 !important;
+            border: none;
+            padding: 6px 12px;
+            @include font($color: $medium, $font-weight: bold);
+
+            @include on_event {
+                background: $brand-light;
+                color: #ffffff;
+            }
+        }
+
+        li.active a {
+            background: $brand-light;
+            border: none;
+            color: #ffffff;
+        }
+
+        li:first-child {
+            a {
+                color: $light;
+            }
+        }
+
+        li:last-child a {
+            padding-right: 5px;
+        }
+
+    }
+}
+
+.table-items {
+    padding: 15px 0 0;
+    @include font($font-size: 0.85em);
+}
+
+.table-filtered {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+
+    .filters-toggle {
+        @include position(absolute, -30px, 7px, null, null);
+
+        i {
+            @include prefix(transition, all .2s, webkit moz ms o);
+            @include font($font-size: 1.6em, $color: $medium);
+        }
+
+        &:hover i, &.open i {
+            color: $accent-active;
+        }
+    }
+
+    label {
+        padding-top: 0;
+    }
+
+    .filters-open {
+        display: none;
+        padding: 20px 15px 15px;
+        float: left;
+        background: #f6f7f7;
+        @include size($width: 100%);
+
+        .input-wrapper:nth-child(4) {
+            clear:left;
+            padding-left: 0;
+        }
+
+        .reset-filters {
+            margin-bottom: 8px;
+            display: inline-block;
+            @include font($color: $brand-light, $text-decoration: none);
+
+            i {
+                padding-right: 5px;
+            }
+
+            &:hover {
+                color: $accent-active;
+            }
+        }
+    }
+
+    .btn.submit {
+        float: right;
+        padding: 3px 25px;
+    }
+
+    .filters-open {
+        .btn.submit {
+            margin-top: 3px !important;
+            background: $accent-active !important;
+            border-color: $accent-active !important;
+        }
+    }
+}

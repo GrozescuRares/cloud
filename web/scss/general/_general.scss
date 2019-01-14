@@ -1,0 +1,179 @@
+/*********** GENERAL STYLE *********/
+body, html {
+    height: 100%;
+}
+
+body {
+    background: url("../img/element.png") no-repeat bottom right #ffffff;
+    @include font($font-size: 14px, $line-height: 1.6em);
+    font-family: 'open_sansregular', Arial;
+
+    .container-fluid {
+        @include size($width: 100%, $max-width: 1025px);
+    }
+
+    .container-small {
+        @include size($width: 100%, $max-width: 380px);
+        margin: 0 auto;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    pre {
+        background: $light;
+        text-align: left;
+    }
+
+    .margin-top-small {
+        margin-top: 20px !important;
+    }
+    
+    .margin-top-large {
+        margin-top: 40px !important;
+    }
+
+    p {
+        margin-bottom: 0;
+    }
+
+    h5 {
+        font-size: 15px;
+    }
+
+    .btn-primary {
+        background: $brand-light;
+        border-color: $brand-light;
+    }
+
+    .simple-list {
+        list-style-type: disc;
+        padding-left: 15px;
+        margin-top: 15px;
+
+        li {
+            float: none;
+            font-style: italic;
+        }
+    }
+
+    .bold {
+        font-family: $bold;
+    }
+
+    .pos-rel {
+        position: relative;
+    }
+
+    .wrapper {
+        padding-top: 13px;
+        
+        &.homepage {
+            padding-top: 15%;
+        }
+    }
+    
+    .rel {
+        position: relative;
+    }
+}
+
+.subtitle {
+    &.alert {
+        color: #ff0000;
+    }
+}
+
+.no-lr-padding {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.container-fluid>.navbar-collapse, .container-fluid>.navbar-header, .container>.navbar-collapse, .container>.navbar-header {
+    margin: 0;
+}
+
+.container-fluid>.navbar-collapse {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.title {
+    h1 {
+        @include font($font-size: 18px, $line-height: 26px, $font-family: $bold);
+        margin-bottom: 35px;
+    }
+
+    span {
+        @include font($font-family: $regular);
+    }
+}
+
+.field-error {
+    ul {
+        margin: 0;
+    }
+
+    .error {
+        @include font($color: #f42525 !important, $font-size: 0.85em, $font-family: $regular);
+    }
+}
+
+.autocomplete.field-error .pos-rel {
+    min-height: 45px;
+}
+
+.general {
+    margin: 15px 0 0;
+}
+
+.light {
+    color: $light;
+}
+
+.search {
+    @include font($font-size: 12px);
+    margin-bottom: 25px;
+
+    .styled-input {
+        @include size($max-width: 260px);
+        display: inline-block;
+        float: none;
+        padding: 0 15px;
+    }
+}
+
+.bootstrap-select>.dropdown-toggle.bs-placeholder, .bootstrap-select>.dropdown-toggle.bs-placeholder:active, .bootstrap-select>.dropdown-toggle.bs-placeholder:focus, .bootstrap-select>.dropdown-toggle.bs-placeholder:hover {
+    color: #000000;
+}
+
+.gender-block {
+    margin-bottom: 28px;
+    position: relative;
+}
+
+.register {
+    @include font($color: $brand-light);
+
+    &-link {
+        @include font($color: $brand-light, $text-decoration: underline, $font-family: $bold);
+        padding-top: 20px;
+        display: inline-block;
+    }
+}
+
+.button-wrapper {
+    margin: 30px 0;
+    padding-bottom: 30px;
+    border-bottom: 1px solid $light;
+}
+
+.back {
+    @include position(absolute, 28px, null, null, 0);
+    @include font($color: $light, $text-decoration: underline);
+}
+
+.field-error .dropdown-toggle {
+    border-color: #f42525 !important;
+}

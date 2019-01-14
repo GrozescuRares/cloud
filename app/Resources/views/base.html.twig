@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include 'header.inc.html.twig' %}
+    </head>
+    <body>
+
+        {% if app.user %}
+            {% include 'header.html.twig' %}
+        {% endif %}
+        {% include 'flash-messages.html.twig' %}
+
+        {% block body %}{% endblock %}
+
+        {% include 'footer.inc.html.twig' %}
+
+        {% block javascripts %}
+
+        {% endblock %}
+    </body>
+</html>

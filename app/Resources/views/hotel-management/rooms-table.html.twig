@@ -1,0 +1,55 @@
+{% if nrPages > 0 %}
+    <div class="table-responsive">
+        <table class="table"
+               data-filter-pet="{{ filters.petFilter }}"
+               data-filter-smoking="{{ filters.smokingFilter }}">
+            <thead>
+            <tr>
+                <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
+                    data-sort="{% if sortBy is empty or sortBy.roomId is not defined %}ASC{% else %}{{ sortBy.roomId }}{% endif %}"
+                    data-column="roomId"
+                    data-page="{{ currentPage }}">{{ 'page.hotel-management.room-management.number'| trans }}<span
+                            class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
+                    data-sort="{% if sortBy is empty or sortBy.capacity is not defined %}ASC{% else %}{{ sortBy.capacity }}{% endif %}"
+                    data-column="capacity"
+                    data-page="{{ currentPage }}">{{ 'page.hotel-management.room-management.people'| trans }}<span
+                            class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
+                    data-sort="{% if sortBy is empty or sortBy.price is not defined %}ASC{% else %}{{ sortBy.price }}{% endif %}"
+                    data-column="price"
+                    data-page="{{ currentPage }}">{{ 'page.hotel-management.room-management.price'| trans }}<span
+                            class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
+                    data-sort="{% if sortBy is empty or sortBy.smoking is not defined %}ASC{% else %}{{ sortBy.smoking }}{% endif %}"
+                    data-column="smoking"
+                    data-page="{{ currentPage }}">{{ 'page.hotel-management.room-management.smoking'| trans }}<span
+                            class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-filter-and-sort-rooms') }}"
+                    data-sort="{% if sortBy is empty or sortBy.pet is not defined %}ASC{% else %}{{ sortBy.pet }}{% endif %}"
+                    data-column="pet"
+                    data-page="{{ currentPage }}">{{ 'page.hotel-management.room-management.pets'| trans }}<span
+                            class="sort-icon"></span></th>
+                <th class="text-center">Reserved</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for r in rooms %}
+                <tr>
+                    <td>{{ r.roomId }}</td>
+                    <td>{{ r.capacity }}</td>
+                    <td>{{ r.price ~ currency }}</td>
+                    <td>{% if r.smoking %}Y{% else %}N{% endif %}</td>
+                    <td>{% if r.pet %}Y{% else %}N{% endif %}</td>
+                    <td class="text-center"><input type="checkbox"
+                                                   disabled="disabled" {% if availableRooms[r.getRoomDetails()] is not defined %} checked {% endif %}>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {{ include('pagination.html.twig') }}
+{% else %}
+    <h1>{{ 'page.hotel-management.room-management.no_rooms'| trans }}</h1>
+{% endif %}

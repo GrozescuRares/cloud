@@ -1,0 +1,46 @@
+
+/*-------------------------
+Custom Radio button
+-------------------------*/
+.custom-form {
+    [type="radio"]:checked,
+        [type="radio"]:not(:checked) {
+        @include position(absolute, null, null, null, -9999px);
+
+        & + label {
+            position: relative;
+            padding-left: 28px;
+            cursor: pointer;
+            line-height: 20px;
+            display: inline-block;
+        }
+
+        & + label:before {
+            content: '';
+            border: 1px solid #ddd;
+            border-radius: 100%;
+            background: #ffffff;
+            @include size($width: 18px, $height: 18px);
+            @include position(absolute, 0, null, null, 0);
+        }
+
+        & + label:after {
+            content: '';
+            background: $brand-light;
+            border-radius: 100%;
+            @include size($width: 12px, $height: 12px);
+            @include position(absolute, 3px, null, null, 3px);
+            @include prefix(transition, all 0.2s ease, webkit moz ms o);
+        }
+    }
+
+    [type="radio"]:not(:checked) + label:after {
+        opacity: 0;
+        @include prefix(transform, scale(0), webkit moz ms o);
+    }
+
+    [type="radio"]:checked + label:after {
+        opacity: 1;
+        @include prefix(transform, scale(1), webkit moz ms o);
+    }  
+}

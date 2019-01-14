@@ -1,0 +1,28 @@
+@media (max-width: 992px) {
+    .table-filtered {
+        .input-wrapper:nth-child(odd) {
+            padding-left: 0;
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .table-filtered {
+        .input-wrapper {
+            padding: 0 0 10px !important;
+        }
+    }
+}
+
+@media (max-width: 640px) {
+    .table-filtered {
+        .btn.submit {
+            margin-top: 15px!important;
+            @include size($width: 100%);
+        }
+        
+        .filters-open .reset-filters {
+            margin-top: 10px;
+        }
+    }
+}

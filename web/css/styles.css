@@ -1,0 +1,12 @@
+.alignRadio {
+    width: 200px;
+    display: inline-block;
+}
+
+.error-template {padding: 40px 15px;text-align: center;}
+.error-actions {margin-top:15px;margin-bottom:15px;}
+.error-actions .btn { margin-right:10px; }
+
+.navigation-item:hover{
+    background-color: #000;
+}

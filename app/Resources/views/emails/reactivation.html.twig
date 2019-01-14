@@ -1,0 +1,8 @@
+
+{{ 'emails.to_activate' | trans }}
+<a href="{{ url('activate-account', {'activationToken' : activationToken}) }}">
+    {{ 'emails.here' | trans }}
+</a>
+<br>
+<br>
+{{ 'emails.thanks' | trans }}

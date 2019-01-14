@@ -1,0 +1,8 @@
+@media (max-width: 768px) {
+    .user-info {
+
+        &-image {
+            @include size($max-height: 400px, $width: 100%);
+        }
+    }
+}

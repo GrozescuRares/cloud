@@ -1,0 +1,209 @@
+
+form:
+  label:
+    username: 'Username'
+    firstName: 'First Name'
+    lastName: 'Last Name'
+    password: 'Password'
+    confirmPassword: 'Confirm Password'
+    email: 'Email'
+    address: 'Address'
+    year: 'Year'
+    month: 'Month'
+    day: 'Day'
+    male: 'Male'
+    female: 'Female'
+    submit: 'Submit'
+    role: 'Role'
+    hotel: 'Hotel'
+    profile_picture: 'Profile Picture'
+    bio: 'Bio'
+    date_of_birth: 'Date Of Birth'
+    gender: 'Gender'
+    yes: 'Yes'
+    no: 'No'
+    save: 'Save'
+    people: 'People'
+    price: 'Price \ night in dollars'
+    smoking: 'Smoking'
+    pet: 'Pet'
+    birth_date: 'Birth date'
+    registration_date: 'Registration date'
+    room: 'Room'
+    hotel_name: 'Hotel Name'
+    location: 'Location'
+    description: 'Description'
+    facilities: 'Facilities'
+
+page:
+  activation-account:
+    message: '%message% !'
+    to_login: 'Take Me To Login'
+
+  error:
+    oops: 'Oops !'
+    message: '%error%'
+
+  dashboard:
+    welcome_user: 'Welcome, %user% !'
+    welcome: 'Welcome to our little application'
+    next: 'What would you like to do next? Please choose from the menu.'
+
+  confirmation:
+    title: 'Registration Confirmation'
+    congratulations: 'Congratulations, the registration has been successful!'
+    to_email: 'An activation message has been sent to %email%.'
+    welcome: 'Welcome to PitechPlus Hotel Management System!'
+
+  login:
+    welcome: 'Welcome to Hotel Management System,
+                                              please login!'
+    to_register: 'Don’t have an account? Please'
+    register: 'register.'
+    button_login: 'Login'
+    button_register: 'Register'
+
+  register:
+    title: 'Client Registration'
+    back: 'Back'
+
+  user-management:
+    add-user:
+      title: 'Add User'
+      back: 'Back'
+    user-management:
+      add_new_user: 'Add New User'
+      back: 'Back'
+      title: 'User Management'
+      search: 'Search by hotel all users'
+      no_users: "Sorry, but this hotel doesn't have any user."
+
+  hotel-management:
+    add-room:
+      title: 'Add New Room'
+      back: 'Back'
+    hotel-information:
+      back: 'Back'
+      title: 'Hotels Information'
+      hotel: 'Hotel Name'
+      location: 'Location'
+      employees: 'Number of employees'
+      availability: 'Availability'
+      edit: 'Edit'
+      no_hotels: "Sorry, but you don't have any hotel."
+    show-hotel-information:
+      message: "The %name% hotel is located in %location%. It is a %description% %employees% employees are working at this hotel. In this moment %name% %availability% available. This year the hotel earned %earnings%. Some facilities: %facilities%"
+      title: 'Hotel Information'
+      back: 'Back'
+      edit: 'Edit'
+    edit-hotel-information:
+      back: 'Back'
+      title: 'Edit Hotel Information'
+    room-management:
+      to: 'Room Management'
+      add_new_rom: 'Add New Room'
+      smoking: 'Smoking (Yes&No)'
+      pets: 'Pets (Yes&No)'
+      yes: 'Yes'
+      no: 'No'
+      filter: 'Filter'
+      reset: 'Reset filters'
+      number: 'Number'
+      people: 'People'
+      price: 'Price'
+      no_rooms: 'Sorry, but there are no rooms.'
+      items: '%nrRooms% item(s)'
+    reservation-management:
+      to: 'Reservations Management'
+      back: 'Back'
+      search: 'Search reservations by hotel'
+      start_date: 'Start date'
+      end_date: 'End date'
+      delete: 'Delete'
+      no_reservations: 'Sorry, but there are no reservations for this hotel.'
+
+  my-account:
+    back: 'Back'
+    title: 'My account'
+    labels:
+      email: 'E-mail'
+      address: 'Address'
+      date_of_birth: 'Date of birth'
+      gender: 'Gender'
+      bio: 'Bio'
+    edit: 'Edit'
+
+  edit-my-account:
+    back: 'Back'
+    title: 'Edit my account'
+    new_password: 'New password'
+    confirm_new_password: 'Confirm new password'
+
+  edit-user:
+    title: 'Edit user'
+    back: 'Back'
+
+  bookings:
+    create-booking:
+      back: 'Back'
+      title: 'Create New Booking'
+      date: 'From when till when?'
+      to: 'TO'
+    my-bookings:
+      back: 'Back'
+      title: 'My Bookings Management'
+      days: 'Days'
+      edit: 'Edit'
+      delete: 'Delete'
+      no_bookings: "Sorry, but you don't have any booking."
+
+emails:
+  to_activate: 'To activate the account, go to:'
+  here: 'here.'
+  thanks: 'Thanks !'
+  you_did_it: 'You did it! You registered!'
+  hi_user: "Hi %user% ! You're successfully registered."
+  credentials: 'Your credentials:'
+  username: 'Username: %user%'
+  password: 'Password: %pass%'
+  booking_confirmation: 'Booking Confirmation'
+  booking_congratulations: 'Congratulations, the booking has been successful!'
+  booking_message: 'We will be waiting for your arrival on the %startDate% at %hotel% in %location%. MR/s %name%, you will be staying in room %room%!'
+  booking_day: 'Have a great day!'
+  delete_title: 'Canceled Booking'
+  delete_message: "Your booking from %startDate% at %hotel% in %location% has been canceled."
+  delete_user_title: 'Account deleted'
+  delete_user_messege: 'The %username% account has been deleted.'
+
+flash_messages:
+  message: '%message%'
+  close: 'Close'
+
+navigation:
+  logo: 'Hotel Management System'
+  my_account: 'My Account'
+  hotel_management: 'Hotel Management'
+  user_management: 'User Management'
+  bookings: 'Bookings'
+  logout: 'Log Out'
+
+capacity:
+  one: '1'
+  two: '2'
+  three: '3'
+  four: '4'
+  five: '5'
+  six: '6'
+  title: 'Room capacity'
+
+pagination:
+  items: '%items% item(s)'
+  previous: 'Previous'
+  next: 'Next'
+  page-number: '%page%'
+
+error:
+  code: '%error%'
+  message: 'Access Denied. Please return to '
+  return_to: 'homepage.'
+  title: '403 Access Denied'

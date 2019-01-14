@@ -1,0 +1,60 @@
+
+/*-------------------------
+Selectpicker
+-------------------------*/
+.bootstrap-select {
+    width: 100% !important;
+
+    .btn-info {
+        background: #ffffff;
+        box-shadow: 0 3px 5px 0 hsla(0%, 0%, 0%, 0.1);
+        color: $medium;
+        border: 1px solid #f0f0f0;
+        border-radius: 0;
+        padding: 11px 12px;
+
+        @at-root .bootstrap-select.open .btn-info, .btn-info.active, .btn-info:active, .open>.dropdown-toggle.btn-info {
+            background-color: $brand-light !important;
+        }
+    }
+
+    a {
+        outline: none;
+        padding: 10px 20px !important;
+        margin-bottom: 0;
+    }
+
+    .caret {
+        border: none;
+
+        &:before {
+            content: "\f078";
+            @include font($font-family: "FontAwesome");
+            @include position(absolute, -8px, 4px, null, null);
+            @include prefix(transition, all .5s, webkit moz ms o);
+        }
+    }
+    
+    &.open {
+        .caret:before {
+            @include prefix(transform, rotate(180deg), webkit moz ms o);
+            @include prefix(transform-origin, 50% 50%, webkit moz ms o);
+        }
+    }
+    
+    .disabled {
+        background: #ededed;
+        border: transparent;
+        opacity: 1;
+    }
+}
+
+.dropdown-toggle {
+    overflow-x: hidden;
+    
+    span {
+        width: 85% !important;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}

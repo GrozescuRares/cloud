@@ -1,0 +1,43 @@
+<div class="table-items">{{ 'pagination.items'|trans({'%items%': nrItems}) }}</div>
+<nav class="table-pagination">
+    <ul class="pagination">
+        {% if currentPage != 1 %}
+            <li class="prev">
+                <a data-action="{{ path(target) }}"
+                   data-page="{{ currentPage -1 }}"
+                   data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                   data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                   data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
+                   data-paginate="true"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo; {{ 'pagination.previous'|trans }}</span>
+                </a>
+            </li>
+        {% endif %}
+        {% if nrPages > 1 %}
+            {% for page in 1..nrPages %}
+                <li {% if currentPage == page %} class="active" {% endif %}><a
+                            data-action="{{ path(target) }}"
+                            data-page="{{ page }}"
+                            data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                            data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                            data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
+                            data-paginate="true">{{ 'pagination.page-number'| trans({'%page%': page}) }}</a>
+                </li>
+            {% endfor %}
+        {% endif %}
+        {% if currentPage != nrPages %}
+            <li class="next">
+                <a data-action="{{ path(target) }}"
+                   data-page="{{ currentPage + 1 }}"
+                   data-role="{% if is_granted('ROLE_OWNER') %}owner{% else %}manager{% endif %}"
+                   data-column="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ key }}{% endfor %}{% endif %}"
+                   data-sort="{% if sortBy is not empty %}{% for key,value in sortBy %}{{ value }}{% endfor %}{% endif %}"
+                   data-paginate="true"
+                   aria-label="Next">
+                    <span aria-hidden="true">{{ 'pagination.next'|trans }} &raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>

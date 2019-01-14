@@ -1,0 +1,190 @@
+/* GENERAL MIXINS */ 
+/*
+  added null property so you can get away using only what you need from this mixin
+  ex: good: @include size($width: 100%, $max-widht: 320px);
+  bad: @include size(100px, 200px); works anyhow but it's difficult to maintain
+*/
+@mixin size($height: null,
+$width: null,
+$min-width: null,
+$max-width: null,
+$min-height: null,
+$max-height: null) {
+
+    height: $height;
+    width: $width;
+    min-width: $min-width;
+    max-width: $max-width;
+    min-height: $min-height;
+    max-height: $max-height;
+}
+
+/*
+  added null property so you can get away using only what you need from this mixin
+  ex1: @include font($font-size: 10px, $line-height: 1em);
+  ex2: @include font(10px, red,  center);
+  you can use it without variables but you MUST keep the order
+*/
+
+@mixin font($font-size: null,
+$color: null,
+$text-align: null,
+$line-height: null,
+$font-weight: null,
+$font-family: null,
+$text-indent: null,
+$white-space: null,
+$letter-spacing: null,
+$word-spacing: null,
+$text-transform: null,
+$text-decoration: null,
+$font-style: null) {
+
+    font-size: $font-size;
+    color: $color;
+    text-align: $text-align;
+    line-height: $line-height;
+    font-weight: $font-weight;
+    font-family: $font-family;
+    text-indent: $text-indent;
+    white-space: $white-space;
+    letter-spacing: $letter-spacing;
+    word-spacing: $word-spacing;
+    text-transform: $text-transform;
+    font-style: $font-style;
+    text-decoration: $text-decoration;
+}
+
+/*
+  on event like: hover, focus or active, execute style;
+  ex: .element { color: red;   @include on_event { color: blue }}
+*/
+@mixin on_event($self: false) {
+    @if $self {
+        &,
+        &:hover,
+            &:active,
+            &:focus {
+            @content;
+        }
+    } @else {
+        &:hover,
+            &:active,
+            &:focus {
+            @content;
+        }
+    }
+}
+
+/*
+  this is the most solid clearfix there is, it works even on IE6;
+  ex: .container-with-floated-children { @extend %clearfix; }
+*/
+%clearfix {
+    *zoom: 1;
+    &:before, &:after {
+        content: " ";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+/*
+  hides the element but still makes it audible for people with screen readers
+  ex:  <button class="mobile-navigation-trigger">
+            <b class="visually-hidden">Open the navigation</b>
+            <img src="img/mobile-navigation-icon.svg">
+        </button>
+*/
+%visuallyhidden {
+    margin: -1px;
+    padding: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip: rect(0, 0, 0, 0);
+    position: absolute;
+}
+
+/*
+  mixin for setting the possition;
+  if you don't want to set set/right/top/bottom you can use it like:
+  @include position(absolute);
+  .element { @include position(absolute, 10px, 20px, 30px, 40px); }
+  this is if you want to define top, right bottom, left in this exact order
+  .element { @include position(absolute, $top: 10px, left: 20px); }
+  this is if you don't keep the order
+*/
+@mixin position($position: null,
+$top: null,
+$right: null,
+$bottom: null,
+$left: null) {
+
+    position: $position;
+    top: $top;
+    right: $right;
+    bottom: $bottom;
+    left: $left;
+}
+
+/*
+  fallback mixin for any vendor prefix:
+    ex: @include prefix(transform, rotate(42deg), webkit moz ms o);
+  you don't have to include all 4 fallbacks, you have to include at least 1;
+*/
+@mixin prefix($property, $value, $vendors: webkit moz ms o) {
+    @if $vendors {
+        @each $vendor in $vendors {
+            #{"-" + $vendor + "-" + $property}: #{$value};
+        }
+    }
+    #{$property}: #{$value};
+}
+
+/*
+  mixin to vertically-align: center a selector;
+    ex: .txt { @include vertical_center(absolute); }
+  beware: gives position as param and adds top, left: 50%, and translates the container to center it.
+*/
+@mixin vertical_center($position){
+    @include prefix(transform, translateY(-50%), webkit moz ms o);
+    @include position($position, $top: 50%);
+}
+
+/*
+  mixin to vertically-align: center and horizontal align: center a selector;
+    ex: .txt { @include vertical_center(absolute); }
+  beware: gives position as param and adds top, left: 50%, and translates the container to center it.
+*/
+@mixin force_center($position){
+    @include prefix(transform, translate(-50%, -50%), webkit moz ms o);
+    @include position($position, $top: 50%, $left: 50%);
+}
+
+/*
+  mixin to add a border-radius to element;
+    ex: .txt { @include border-radius(20px); }
+*/
+@mixin border-radius($radius) {
+    border-radius: $radius;
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+}
+
+/*
+  fallback mixin for any vendor prefix:
+    ex: @include background-prefix(background-image, linear-gradient, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.12), webkit moz ms o);
+  you don't have to include all 4 fallbacks, you have to include at least 1;
+*/
+@mixin background-prefix($property, $value, $color-start, $color-end, $vendors: webkit moz ms o) {
+    @if $vendors {
+        @each $vendor in $vendors {
+            #{$property} : #{"-" + $vendor + "-" + $value + "(" + $color-start + "," + $color-end + ")"};
+        }
+    }
+    #{$property}: #{$value};
+}
