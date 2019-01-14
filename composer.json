@@ -42,9 +42,9 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
         ],
-        "post-install-cmd": [
-            "@symfony-scripts"
-        ],
+        "post-install-cmd": [ 
+	     "chmod -R ug+w $APP_DIR/var" 
+	],
         "post-update-cmd": [
             "@symfony-scripts"
         ]
