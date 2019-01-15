@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  labels:
+    app: app
+spec:
+  selector:
+    matchLabels:
+      app: app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - image: rares.azurecr.io/my-cluster/app
+        imagePullPolicy: Always
+        name: php
+        command: ['sh', '-c', 'cp -r /var/www/html/* /data/; docker-php-entrypoint php-fpm']
+        volumeMounts:
+          - name: datavolume
+            mountPath: /data
+      - image: nginx:latest
+        imagePullPolicy: Always
+        name: nginx
+        volumeMounts:
+        - name: nginxconfig
+          mountPath: /etc/nginx/conf.d
+        - name: datavolume
+          mountPath: /var/www/html
+      imagePullSecrets:
+          - name: root
+      volumes:
+        - name: nginxconfig
+          configMap:
+            name: nginx-config
+        - name: datavolume 
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service-1
+  labels:
+    app: app-service-1
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: app
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: nginx-config
+data: 
+  default.conf: |-
+    server {
+    root /var/www/html/web;
+    location / {
+    try_files $uri /app.php$is_args$args;
+    }
+    location ~ ^/(app_dev|config)\.php(/|$) {
+    fastcgi_pass 127.0.0.1:9000;
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+    fastcgi_param DOCUMENT_ROOT $realpath_root;
+    }
+    location ~ ^/app\.php(/|$) {
+    fastcgi_pass 127.0.0.1:9000;
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+    fastcgi_param DOCUMENT_ROOT $realpath_root;
+    internal;
+    }
+    location ~ \.php$ {
+    return 404;
+    }
+    error_log /var/log/nginx/project_error.log;
+    access_log /var/log/nginx/project_access.log;
+    }
