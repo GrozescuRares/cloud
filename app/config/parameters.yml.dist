@@ -1,9 +1,7 @@
-# This file is a "template" of what your parameters.yml file should look like
-# Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
-# https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
+# This file is auto-generated during the composer install
 parameters:
-    database_host: 127.0.0.1
-    database_port: null
+    database_host: 35.188.80.154
+    database_port: 3306
     database_name: hotel-management
     database_user: root
     database_password: root
@@ -12,6 +10,5 @@ parameters:
     mailer_user: pitech.hotel.management@gmail.com
     mailer_password: pitechplus
     secret: ThisTokenIsNotSoSecretChangeIt
-
     hotel_email: pitech.hotel.management@gmail.com
-    token_lifetime: +1 minutes
+    token_lifetime: '+1 minutes'
