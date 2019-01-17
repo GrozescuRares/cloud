@@ -1,0 +1,14 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: 35.188.80.154
+    database_port: 3306
+    database_name: hotel-management
+    database_user: root
+    database_password: root
+    mailer_transport: gmail
+    mailer_host: smtp.gmail.com
+    mailer_user: pitech.hotel.management@gmail.com
+    mailer_password: pitechplus
+    secret: ThisTokenIsNotSoSecretChangeIt
+    hotel_email: pitech.hotel.management@gmail.com
+    token_lifetime: '+1 minutes'

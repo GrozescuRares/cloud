@@ -1,0 +1,96 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: hotel-management
+  annotations:
+    openshift.io/display-name: hotel-management
+    description: hotel-management
+    tags: hotel-management
+    template.openshift.io/bindable: 'true'
+message: |-
+  You created the project: ${NAME}.
+labels:
+  template: hotel-management
+  app: hotel-management
+objects:
+
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${NAME}"
+    namespace: "${NAMESPACE}"
+  spec:
+    ports:
+    - name: nginx-tcp
+      port: 80
+      targetPort: 8080
+    selector:
+      app: "${NAME}"
+    type: ClusterIP
+
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: "${NAME}"
+    namespace: "${NAMESPACE}"
+  spec:
+    host: "${APPLICATION_DOMAIN}"
+    port:
+      targetPort: nginx-tcp
+    to:
+      kind: Service
+      name: "${NAME}"
+      weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    labels:
+      app: "${NAME}"
+    name: "${NAME}"
+    namespace: "${NAMESPACE}"
+  spec:
+    replicas: 1
+    selector:
+      app: "${NAME}"
+    template:
+      metadata:
+        labels:
+          app: "${NAME}"
+        name: "${NAME}"
+      spec:
+        containers:                           
+        - image : docker.io/grozescurares/cloud-computing:app
+          name : app-php
+          imagePullPolicy: Always
+        - image: docker.io/grozescurares/cloud-computing:nginx
+          name: app-nginx
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+
+parameters:
+- name: NAME
+  displayName: Name
+  description: The name assigned to all of the frontend objects defined in this template.
+  required: true
+  value: hotel-management
+  
+- name: NAMESPACE
+  displayName: Namespace
+  description: The OpenShift Namespace where the ImageStream resides.
+  required: true
+  value: hotel-management-4
+  
+- name: APPLICATION_DOMAIN
+  displayName: Application Hostname
+  description: The exposed hostname that will route to the Node.js service, if left
+    blank a value will be defaulted.
+  value: ''
