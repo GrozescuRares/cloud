@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="error-template">
+                <h1>
+                    {{ 'page.error.oops' | trans }}
+                </h1>
+                <h2>
+                    {{ 'page.error.message' | trans({'%error%' : error} ) }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

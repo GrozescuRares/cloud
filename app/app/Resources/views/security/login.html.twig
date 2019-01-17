@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="content login">
+    <div class="container-fluid">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="wrapper">
+                    <div class="container-small">
+                        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                            <h1 class="text-center">
+                                {{ 'page.login.welcome'| trans }}
+                            </h1>
+                        </div>
+                        <form class="login-form" action="{{ path('login') }}" method="post">
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>{{ 'form.label.username'| trans }}</label>
+                                    <div class="rel">
+                                        <input id="_username" name="_username" type="text" placeholder="Current Username" />
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <div class="styled-input">
+                                    <label>{{ 'form.label.password'| trans }}</label>
+                                    <div class="rel">
+                                        <input id="_password" name="_password" type="password" placeholder="Current Password" />
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding">
+                                <p> {{ 'page.login.to_register'| trans }}
+                                    <a href="{{ path('register') }}" class="register"> {{ 'page.login.register'| trans }}
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="col-md-12 col-xs-12 no-lr-padding button-wrapper">
+                                <a href="{{ path('register') }}" class="register-link"> {{ 'page.login.button_register'| trans }}</a>
+                                <button type="submit" id="submit" class="btn submit pull-right"> {{ 'page.login.button_login'| trans }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

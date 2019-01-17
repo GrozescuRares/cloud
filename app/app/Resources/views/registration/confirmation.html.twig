@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <center class="wrapper"
+            style="table-layout:fixed;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;Margin:0 auto;width:100%;max-width:716px;">
+        <div class="webkit" style="max-width:700px;">
+            <!--[if (gte mso 9)|(IE)]>
+            <table width="600" align="center" style="border-spacing:0;font-family:sans-serif;color:#333333;">
+                <tr>
+                    <td style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;">
+            <![endif]-->
+
+            <table class="outer" align="center"
+                   style="border-spacing:0;font-family:sans-serif;color:#333333;Margin:0 auto;width:100%;max-width:700px;">
+                <tr>
+                    <td style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;">
+                        <table class="outer" align="center"
+                               style="border-spacing:0;font-family:sans-serif;color:#333333;Margin:0 auto;width:100%;max-width:700px;">
+                            <tr>
+                                <td class="one-column"
+                                    style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;">
+                                    <table width="100%" style="border-spacing:0;font-family:sans-serif;color:#333333;">
+                                        <tr>
+                                            <td class="inner contents"
+                                                style="padding-top:30px;padding-bottom:0;padding-right:30px;padding-left:30px;padding-bottom:30px;width:100%;text-align:center; background-color: #f9f9f9;">
+                                                <p class="h1"
+                                                   style="font-size:18px;font-weight:bold;Margin-bottom:18px;color:#000000;"> {{ 'page.confirmation.title' | trans }}</p>
+                                                <p class="top-margin"
+                                                   style="margin-top:20px;font-size:12px;Margin-bottom:10px;">
+                                                <p style='font-weight: bold; font-size:12px; line-height: 18px;'> {{ 'page.confirmation.congratulations' | trans }}
+                                                    <br/>
+                                                    {{ 'page.confirmation.to_email'| trans({'%email%' : email}) }}
+                                                </p>
+                                                <p style='margin-top:20px; color: #cd0a0a; font-size: 12px;'> {{ 'page.confirmation.welcome'| trans }}</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </div>
+    </center>
+{% endblock %}

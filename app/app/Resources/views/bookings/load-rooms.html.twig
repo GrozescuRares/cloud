@@ -1,0 +1,10 @@
+{% if showRooms %}
+    <div class="col-md-12 col-xs-12 no-lr-padding">
+        <div class="styled-input">
+            {{ form_row(booking_form.room) }}
+        </div>
+    </div>
+{% endif %}
+{% if showSave %}
+    <button type="submit" class="btn submit pull-right margin-top-large">{{ 'form.label.save'| trans }}</button>
+{% endif %}

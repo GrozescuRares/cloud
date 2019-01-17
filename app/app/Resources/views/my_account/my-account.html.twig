@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="row">
+                    <div class="wrapper">
+                        {{ include('back.html.twig') }}
+                        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                            <h1 class="text-center">{{ 'page.my-account.title'| trans }}</h1>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class='user-info'>
+                                <div class='user-info-image'>
+                                    <img src='{% if user.profilePicture %} {{ asset('uploads/profile/' ~ user.profilePicture) }} {% else %} {{ asset('img/user.png') }} {% endif %}'
+                                         alt='user info'/>
+                                </div>
+                                <p class='user-info-fName'>{{ user.firstName }}</p>
+                                <p class='user-info-lName'>{{ user.lastName }}</p>
+                                <p class='user-info-role'>{{ user.role }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <form>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'page.my-account.labels.email'| trans }}</label>
+                                        <div class="rel">
+                                            {{ user.email }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'page.my-account.labels.address'| trans }}</label>
+                                        <div class="rel">
+                                            {% if user.address %}
+                                                {{ user.address }}
+                                            {% else %}
+                                                No address configured
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'page.my-account.labels.date_of_birth'| trans }}</label>
+                                        <div class="rel">
+                                            {{ user.dateOfBirth }}
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'page.my-account.labels.gender'| trans }}</label>
+                                        <div class="rel">
+                                            {{ user.gender }}
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'page.my-account.labels.bio'| trans }}</label>
+                                        <div class="rel">
+                                            {% if user.bio %}
+                                                {{ user.bio | raw}}
+                                            {% else %}
+                                                No bio configured
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 account-btn pull-right no-lr-padding">
+                                    <a class="btn edit pull-right" href="{{ path('edit-my-account') }}">{{ 'page.my-account.edit'| trans }}</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,99 @@
+imports:
+- { resource: parameters.yml }
+- { resource: security.yml }
+- { resource: services.yml }
+
+parameters:
+  locale: en
+  brochures_directory: '%kernel.project_dir%/web/uploads/profile'
+
+framework:
+  #esi: ~
+  translator: { fallbacks: ['%locale%'] }
+  secret: '%secret%'
+  router:
+    resource: '%kernel.project_dir%/app/config/routing.yml'
+    strict_requirements: ~
+  form: ~
+  csrf_protection: ~
+  validation: { enable_annotations: true }
+  serializer: { enable_annotations: true }
+  default_locale: '%locale%'
+  trusted_hosts: ~
+  session:
+    handler_id: session.handler.native_file
+    save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
+  fragments: ~
+  http_method_override: true
+  assets: ~
+  php_errors:
+    log: true
+
+twig:
+  debug: '%kernel.debug%'
+  strict_variables: '%kernel.debug%'
+
+doctrine:
+  dbal:
+    driver: pdo_mysql
+    host: '%database_host%'
+    port: '%database_port%'
+    dbname: '%database_name%'
+    user: '%database_user%'
+    password: '%database_password%'
+    charset: UTF8
+  orm:
+    auto_generate_proxy_classes: '%kernel.debug%'
+    naming_strategy: doctrine.orm.naming_strategy.underscore
+    auto_mapping: true
+
+swiftmailer:
+  transport: '%mailer_transport%'
+  host: '%mailer_host%'
+  username: '%mailer_user%'
+  password: '%mailer_password%'
+  spool: { type: memory }
+
+sensio_framework_extra:
+  router:
+    annotations: false
+
+ivory_ck_editor:
+  input_sync: true
+  default_config: base_config
+  configs:
+    base_config:
+      toolbar:
+      - {
+          name: "styles",
+          items: [
+                    'Source',
+                    'Preview',
+                    '-',
+                    'Bold',
+                    'Italic',
+                    'Underline',
+                    'Subscript',
+                    'Superscript',
+                    'NumberedList',
+                    'BulletedList',
+                    'Blockquote',
+                    '-',
+                    'JustifyLeft',
+                    'JustifyCenter',
+                    'JustifyRight',
+                    'JustifyBlock',
+                    '-',
+                    'Link',
+                    'Unlink',
+                    'Smiley',
+                    'SpecialChar',
+                    '-',
+                    'Styles',
+                    'Format',
+                    'Font',
+                    'FontSize',
+                    'TextColor',
+                    'BGColor',
+                  ]
+        }

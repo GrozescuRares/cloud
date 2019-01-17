@@ -1,0 +1,61 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+
+    role_hierarchy:
+        ROLE_OWNER: [ROLE_MANAGER, ROLE_EMPLOYEE, ROLE_CLIENT]
+        ROLE_MANAGER: [ROLE_EMPLOYEE, ROLE_CLIENT]
+        ROLE_EMPLOYEE: [ROLE_CLIENT]
+
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+        # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    providers:
+
+        db_provider:
+            entity:
+                class: AppBundle:User
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            pattern: ^/
+            provider: db_provider
+            form_login:
+                login_path: login
+                check_path: login
+                default_target_path: dashboard
+                always_use_default_target_path: true
+
+            logout:
+                path:   /logout
+                target: /login
+
+            logout_on_user_change: true
+            anonymous: ~
+            # activate different ways to authenticate
+
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+            #http_basic: ~
+
+            # https://symfony.com/doc/current/security/form_login_setup.html
+            #form_login: ~
+    access_control:
+    - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/registration-confirmation, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/activate-account, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/user-management/, role: ROLE_MANAGER }
+    - { path: ^/hotel-management/add-room, role: ROLE_OWNER }
+    - { path: ^/hotel-management/hotels-information, role: ROLE_OWNER }
+    - { path: ^/hotel-management/hotel-information, role: ROLE_OWNER }
+    - { path: ^/hotel-management/show-hotel-information, role: ROLE_OWNER }
+    - { path: ^/hotel-management/edit-hotel-information, role: ROLE_OWNER }
+    - { path: ^/hotel-management/room-management, role: ROLE_MANAGER }
+    - { path: ^/hotel-management/reservation-management, role: ROLE_MANAGER }
+    - { path: ^/, role: ROLE_CLIENT }

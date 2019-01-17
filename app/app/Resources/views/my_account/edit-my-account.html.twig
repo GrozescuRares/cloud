@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="row">
+                    <div class="wrapper">
+                        {{ include('back.html.twig') }}
+                        <div class="col-md-12 col-xs-12 no-lr-padding text-center title">
+                            <h1 class="text-center">{{ 'page.edit-my-account.title'| trans }}</h1>
+                        </div>
+                        <form action="{{ path('edit-my-account') }} " method="post" enctype="multipart/form-data">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(edit_form.firstName) }}
+                                        <div class="rel">
+                                            {{ form_errors(edit_form.firstName) }}
+                                            {{ form_widget(edit_form.firstName) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(edit_form.lastName) }}
+                                        <div class="rel">
+                                            {{ form_errors(edit_form.lastName) }}
+                                            {{ form_widget(edit_form.lastName) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'page.edit-my-account.new_password'| trans }}</label>
+                                        <div class="rel">
+                                            {{ form_errors(edit_form.plainPassword.first) }}
+                                            {{ form_widget(edit_form.plainPassword.first) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'page.edit-my-account.confirm_new_password' | trans}}</label>
+                                        <div class="rel">
+                                            {{ form_errors(edit_form.plainPassword.second) }}
+                                            {{ form_widget(edit_form.plainPassword.second) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(edit_form.email) }}
+                                        <div class="rel">
+                                            {{ form_errors(edit_form.email) }}
+                                            {{ form_widget(edit_form.email) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'form.label.address'| trans }} <span class="light">(optional)</span></label>
+                                        <div class="rel">
+                                            {{ form_errors(edit_form.address) }}
+                                            {{ form_widget(edit_form.address) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="col-md-12 col-xs-12 no-lr-padding">
+                                        <label class="custom-label">{{ 'form.label.date_of_birth'| trans }}</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12 no-lr-padding">
+                                        <div class="styled-input">
+                                            {{ form_errors(edit_form.dateOfBirth.day) }}
+                                            {{ form_widget(edit_form.dateOfBirth.day, {'attr': {'class': 'selectpicker'}}) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-5 col-sm-5 col-xs-12 no-padding-xs">
+                                        <div class="styled-input">
+                                            {{ form_errors(edit_form.dateOfBirth.month) }}
+                                            {{ form_widget(edit_form.dateOfBirth.month, {'attr': {'class': 'selectpicker'}}) }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12 no-lr-padding">
+                                        <div class="styled-input">
+                                            {{ form_errors(edit_form.dateOfBirth.year) }}
+                                            {{ form_widget(edit_form.dateOfBirth.year, {'attr': {'class': 'selectpicker'}}) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
+                                    <label class="custom-label large">{{ 'form.label.gender'| trans }}</label>
+                                    <div class="custom-form">
+                                        <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                            {{ form_widget(edit_form.gender.children[0]) }}
+                                            {{ form_label(edit_form.gender.children[0]) }}
+
+                                        </div>
+                                        <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                            {{ form_widget(edit_form.gender.children[1]) }}
+                                            {{ form_label(edit_form.gender.children[1]) }}
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label class="custom-label">{{ 'form.label.bio'| trans }} <span class="light">(optional)</span></label>
+                                        {{ form_errors(edit_form.bio) }}
+                                        {{ form_widget(edit_form.bio) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'form.label.profile_picture'| trans }}<span class="light">(optional)</span></label>
+                                        {{ form_errors(edit_form.image) }}
+                                        {{ form_widget(edit_form.image) }}
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form_row(edit_form._token) }}
+                            <div class="col-md-12 col-xs-12">
+                                {{ form_widget(edit_form.submit) }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+
+constraints:
+  username: 'The username should not be blank.'
+  email: 'That is not a valid e-mail address.'
+  first_name: 'The first name should not be blank.'
+  last_name: 'The last name should not be blank.'
+  gender: 'Please choose between Male or Female.'
+  image: 'That is not an allowed format.'
+  password: 'This value should not be blank.'
+  role: 'Please choose a role.'
+  price: 'This is not a valid value for price.'
+  choose-capacity: "Please choose capacity."
+  choose-hotel: "Please choose a hotel."
+  blank-price: 'The price field should not be blank.'
+  blank-date: 'The date field should not be blank.'
+  blank-hotel: 'Please choose a hotel.'
+  blank-room: 'Please choose a room.'
+  blank-hotel-name: 'The name field should not be blank.'
+  blank-location: 'The location field should not be blank.'
+  blank-facilities: 'The facilities field should not be blank.'
+  blank-description: 'The description field should not be blank.'

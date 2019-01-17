@@ -1,0 +1,40 @@
+{% if hotels|length > 0 %}
+<div class="table-paginated">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="columns" data-action="{{ path('paginate-and-sort-hotels') }}"
+                    data-sort="{% if sortBy is empty or sortBy.name is not defined %}ASC{% else %}{{ sortBy.name }}{% endif %}"
+                    data-column="name"
+                    data-page="{{ currentPage }}">{{ 'page.hotel-management.hotel-information.hotel'| trans }}<span class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-and-sort-hotels') }}"
+                    data-sort="{% if sortBy is empty or sortBy.location is not defined %}ASC{% else %}{{ sortBy.location }}{% endif %}"
+                    data-column="location"
+                    data-page="{{ currentPage }}">{{ 'page.hotel-management.hotel-information.location'| trans }}<span class="sort-icon"></span></th>
+                <th class="columns" data-action="{{ path('paginate-and-sort-hotels') }}"
+                    data-sort="{% if sortBy is empty or sortBy.employees is not defined %}ASC{% else %}{{ sortBy.employees }}{% endif %}"
+                    data-column="employees"
+                    data-page="{{ currentPage }}">{{ 'page.hotel-management.hotel-information.employees'| trans }}<span class="sort-icon"></span></th>
+                <th class="text-center">{{ 'page.hotel-management.hotel-information.availability'| trans }}</th>
+                <th class="text-center">{{ 'page.hotel-management.hotel-information.edit'| trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for h in hotels %}
+                <tr>
+                    <td>{{ h.name }}</td>
+                    <td>{{ h.location }}</td>
+                    <td>{{ h.employees }}</td>
+                    <td class="text-center"><input type="checkbox" disabled="disabled" {% if availableHotels[h.name] is defined %} checked {% endif %}></td>
+                    <td class="text-center"><a href="{{ path('show-hotel-information', {'hotelId': h.hotelId}) }}"><i class="fa fa-edit"></i></a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {{ include('pagination.html.twig') }}
+</div>
+{% else %}
+    <h1>{{ 'page.hotel-management.hotel-information.no_hotels'| trans }}</h1>
+{% endif %}

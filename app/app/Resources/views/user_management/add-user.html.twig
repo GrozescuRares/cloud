@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content general">
+        <div class="container-fluid">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding">
+                <div class="row">
+                    <div class="wrapper">
+                        {{ include('back.html.twig') }}
+                        <div class="col-md-12 col-sm-12 col-xs-12 no-lr-padding title">
+                            <h1 class="text-center">{{ 'page.user-management.add-user.title'| trans }}</h1>
+                        </div>
+                        <form class="user-form" action="{{ path('add-user') }}" method="post">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(add_user_form.username) }}
+                                        <div class="rel">
+                                            {{ form_errors(add_user_form.username) }}
+                                            {{ form_widget(add_user_form.username) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(add_user_form.plainPassword.first) }}
+                                        <div class="rel">
+                                            {{ form_errors(add_user_form.plainPassword.first) }}
+                                            {{ form_widget(add_user_form.plainPassword.first) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(add_user_form.plainPassword.second) }}
+                                        <div class="rel">
+                                            {{ form_errors(add_user_form.plainPassword.second) }}
+                                            {{ form_widget(add_user_form.plainPassword.second) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(add_user_form.email) }}
+                                        <div class="rel">
+                                            {{ form_errors(add_user_form.email) }}
+                                            {{ form_widget(add_user_form.email) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(add_user_form.firstName) }}
+                                        <div class="rel">
+                                            {{ form_errors(add_user_form.firstName) }}
+                                            {{ form_widget(add_user_form.firstName) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 second">
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        <label>{{ 'form.label.role'| trans }}</label>
+                                        {{ form_errors(add_user_form.role) }}
+                                        {{ form_widget(add_user_form.role, {'attr': {'class': 'selectpicker'}}) }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="col-md-12 col-xs-12 no-lr-padding">
+                                        <label class="custom-label">{{ 'form.label.date_of_birth'| trans }}</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12 no-lr-padding">
+                                        <div class="styled-input">
+                                            {{ form_errors(add_user_form.dateOfBirth.day) }}
+                                            {{ form_widget(add_user_form.dateOfBirth.day, {'attr': {'class': 'selectpicker'}}) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-5 col-sm-5 col-xs-12 no-padding-xs">
+                                        <div class="styled-input">
+                                            {{ form_errors(add_user_form.dateOfBirth.month) }}
+                                            {{ form_widget(add_user_form.dateOfBirth.month, {'attr': {'class': 'selectpicker'}}) }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12 no-lr-padding">
+                                        <div class="styled-input">
+                                            {{ form_errors(add_user_form.dateOfBirth.year) }}
+                                            {{ form_widget(add_user_form.dateOfBirth.year, {'attr': {'class': 'selectpicker'}}) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12 no-lr-padding gender-block">
+                                    <label class="custom-label large">{{ 'form.label.gender'|trans }}</label>
+                                    <div class="custom-form">
+                                        <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                            {{ form_widget(add_user_form.gender.children[0]) }}
+                                            {{ form_label(add_user_form.gender.children[0]) }}
+
+                                        </div>
+                                        <div class="col-md-3 col-sm-3 col-xs-6 no-lr-padding">
+                                            {{ form_widget(add_user_form.gender.children[1]) }}
+                                            {{ form_label(add_user_form.gender.children[1]) }}
+
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if is_granted('ROLE_OWNER') %}
+                                    <div class="col-md-12 col-xs-12 no-lr-padding">
+                                        <div class="styled-input">
+                                            <label>{{ 'form.label.hotel'| trans }}</label>
+                                            {{ form_errors(add_user_form.hotel) }}
+                                            {{ form_widget(add_user_form.hotel, {'attr': {'class': 'selectpicker'}}) }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="col-md-12 col-xs-12 no-lr-padding">
+                                    <div class="styled-input">
+                                        {{ form_label(add_user_form.lastName) }}
+                                        <div class="rel">
+                                            {{ form_errors(add_user_form.lastName) }}
+                                            {{ form_widget(add_user_form.lastName) }}
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form_row(add_user_form._token) }}
+                            <div class="col-md-12 col-xs-12">
+                                {{ form_widget(add_user_form.submit) }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,5 @@
+install gcloud, kubectl
+
+ip is static: http://13.95.110.9
+
+problema la external ip pending: am schimbat numele serviciului si a primit alt ip...
